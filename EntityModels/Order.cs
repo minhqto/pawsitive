@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace pawsitive.Models
+namespace pawsitive.EntityModels
 {
     public class Order
     {

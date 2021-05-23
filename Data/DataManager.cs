@@ -1,4 +1,5 @@
-﻿using pawsitive.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using pawsitive.EntityModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,9 @@ namespace pawsitive.Data
     {
         DataContext dtx;
 
-        public DataManager()
+        public DataManager(DataContext dataContext)
         {
-            dtx = new DataContext();
+            dtx = dataContext;
         }
 
         public void ProductAddNew()

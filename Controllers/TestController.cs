@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using pawsitive.Data;
-using pawsitive.Models;
+using pawsitive.EntityModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +15,9 @@ namespace pawsitive.Controllers
     {
         DataManager dm;
 
-        public TestController()
+        public TestController(DataManager dataManager)
         {
-            dm = new DataManager();
+            dm = dataManager;
         }
 
         [HttpPost]

@@ -1,4 +1,4 @@
-﻿namespace pawsitive.Models
+﻿namespace pawsitive.EntityModels
 {
     public class ProductOrder
     {
