@@ -32,7 +32,7 @@ A web application that helps pet owners find dog training services in surroundin
     npm install # install all the npm packages
     npm run start # start the application
     ```
-
+    
 3. Build and run the back-end
     - Method 1 (Recommended): Using Visual Studio
       - Step 1: Install all the following workloads in Visual Studio Installer:
@@ -43,3 +43,5 @@ A web application that helps pet owners find dog training services in surroundin
     - Method 2: Using dotnet commands
       - Step 1: Open a terminal, navigate to the root folder of the project `./pawsitive` and run `dotnet build`. This will build the project and all of its dependencies.
       - Step 2: After the build, run `dotnet run` to run the back-end server.
+
+    Notes: We have to run the front-end application first, then run the back-end application.
