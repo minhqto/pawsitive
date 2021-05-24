@@ -44,4 +44,4 @@ A web application that helps pet owners find dog training services in surroundin
       - Step 1: Open a terminal, navigate to the root folder of the project `./pawsitive` and run `dotnet build`. This will build the project and all of its dependencies.
       - Step 2: After the build, run `dotnet run` to run the back-end server.
 
-    Notes: We have to run the front-end application first, then run the back-end application.
+    **IMPORTANT**: We have to run the front-end application first, then run the back-end application.
