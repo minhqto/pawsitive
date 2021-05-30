@@ -44,10 +44,12 @@ A web application that helps pet owners find dog training services in surroundin
       - Step 1: Open a terminal, navigate to the root folder of the project `./pawsitive` and run `dotnet build`. This will build the project and all of its dependencies.
       - Step 2: After the build, run `dotnet run` to run the back-end server.
 
-    Notes: We have to run the front-end application first, then run the back-end application.
+    **IMPORTANT**: We have to run the front-end application first, then run the back-end application.
 
 
-## How to build the image and run the container with Docker
+## How to containerize the app
+Prerequisites: Docker (latest version prefered)
+
 Step 1: Build the image
 ```
 docker build -t qvnguyen/pawsitive:1.0 .
@@ -58,3 +60,4 @@ Step 2: Run the container
 # Run the container in detached mode, with the name called "pawsitive_app" and map the port 80 of the container to the port 80 of the host machine.
 docker run -d --name pawsitive_app -p 80:80 qvnguyen/pawsitive:1.0 
 ```
+

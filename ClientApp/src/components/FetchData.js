@@ -21,6 +21,7 @@ export class FetchData extends Component {
             <th>Temp. (C)</th>
             <th>Temp. (F)</th>
             <th>Summary</th>
+            <th>Skies</th>
           </tr>
         </thead>
         <tbody>
@@ -30,6 +31,7 @@ export class FetchData extends Component {
               <td>{forecast.temperatureC}</td>
               <td>{forecast.temperatureF}</td>
               <td>{forecast.summary}</td>
+              <td>{forecast.sky}</td>
             </tr>
           )}
         </tbody>

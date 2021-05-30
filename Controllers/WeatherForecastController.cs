@@ -16,6 +16,11 @@ namespace pawsitive.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
+        private static readonly string[] Skies = new[]
+        {
+            "Sunny", "Partly Cloudy", "Cloudy", "Raining"
+        };
+
         private readonly ILogger<WeatherForecastController> _logger;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
@@ -31,7 +36,8 @@ namespace pawsitive.Controllers
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
+                Summary = Summaries[rng.Next(Summaries.Length)],
+                Sky = Skies[rng.Next(Skies.Length)]
             })
             .ToArray();
 
