@@ -4,17 +4,24 @@ namespace pawsitive.EntityModels
 {
     public class Dog
     {
+
+        public Dog()
+        {
+            BirthDate = DateTime.Now;
+        }
+
         public int Id { get; set; }
 
-        public User User { get; set; }
+        public User Client { get; set; }
+        //public string ClientId { get; set; }
 
-        public char DogBreed { get; set; }
+        public string DogBreed { get; set; }
 
-        public char DogName { get; set; }
+        public string DogName { get; set; }
 
         public int DogWeight { get; set; }
 
-        public int DogAge { get; set; }
+        public DateTime BirthDate { get; set; }
 
         public bool HasBiteHistory { get; set; }
 

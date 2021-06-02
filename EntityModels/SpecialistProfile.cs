@@ -6,14 +6,15 @@ namespace pawsitive.EntityModels
     {
         public int Id { get; set; }
 
-        public User User { get; set; }
+        public User Specialist { get; set; }
+        //public string SpecialistId { get; set; }
 
-        public char Description { get; set; }
+        public string Description { get; set; }
 
         public bool Status { get; set; }
 
         public float Radius { get; set; }
 
-        public char Availability { get; set; }
+        public string Availability { get; set; }
     }
 }

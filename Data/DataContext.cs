@@ -24,7 +24,6 @@ namespace pawsitive.Data
         public DbSet<Service> Service { get; set; }
         public DbSet<ServiceType> ServiceType { get; set; }
         public DbSet<SpecialistProfile> SpecialistProfile { get; set; }
-        public DbSet<UserServiceType> UserServiceType { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {

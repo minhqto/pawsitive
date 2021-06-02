@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace pawsitive.EntityModels
 {
-    public class UserRoles
+    public static class UserRoles
     {
-        public int Id { get; set; }
-        public char RoleName { get; set; }
+        public const string Client = "Client";
+        public const string Specialist = "Specialist";
     }
 }

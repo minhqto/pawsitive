@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using pawsitive.Data;
 
 namespace pawsitive.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210602024203_Create_All_Entities")]
+    partial class Create_All_Entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,6 +189,9 @@ namespace pawsitive.Migrations
                     b.Property<string>("StreetAddress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Address");
@@ -205,24 +210,30 @@ namespace pawsitive.Migrations
                     b.Property<int>("BookingStatusId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ClientId")
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClientId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ServiceId")
                         .HasColumnType("int");
 
-                    b.Property<string>("SpecialistId")
+                    b.Property<int>("SpecialistId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SpecialistId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BookingStatusId");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("ClientId1");
 
                     b.HasIndex("ServiceId");
 
-                    b.HasIndex("SpecialistId");
+                    b.HasIndex("SpecialistId1");
 
                     b.ToTable("Booking");
                 });
@@ -243,14 +254,17 @@ namespace pawsitive.Migrations
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BookingId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId1");
 
                     b.ToTable("BookingMessage");
                 });
@@ -280,7 +294,10 @@ namespace pawsitive.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ClientId")
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClientId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DogBreed")
@@ -300,7 +317,7 @@ namespace pawsitive.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("ClientId1");
 
                     b.ToTable("Dog");
                 });
@@ -315,7 +332,10 @@ namespace pawsitive.Migrations
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ClientId")
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClientId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Rating")
@@ -324,16 +344,19 @@ namespace pawsitive.Migrations
                     b.Property<string>("ReviewText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SpecialistId")
+                    b.Property<int>("SpecialistId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SpecialistId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BookingId");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("ClientId1");
 
-                    b.HasIndex("SpecialistId");
+                    b.HasIndex("SpecialistId1");
 
                     b.ToTable("Review");
                 });
@@ -357,14 +380,17 @@ namespace pawsitive.Migrations
                     b.Property<int>("ServiceTypeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("SpecialistId")
+                    b.Property<int>("SpecialistId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SpecialistId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ServiceTypeId");
 
-                    b.HasIndex("SpecialistId");
+                    b.HasIndex("SpecialistId1");
 
                     b.ToTable("Service");
                 });
@@ -400,6 +426,9 @@ namespace pawsitive.Migrations
 
                     b.Property<float>("Radius")
                         .HasColumnType("real");
+
+                    b.Property<int>("SpecialistId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -568,7 +597,7 @@ namespace pawsitive.Migrations
 
                     b.HasOne("pawsitive.EntityModels.User", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId");
+                        .HasForeignKey("ClientId1");
 
                     b.HasOne("pawsitive.EntityModels.Service", "Service")
                         .WithMany()
@@ -578,7 +607,7 @@ namespace pawsitive.Migrations
 
                     b.HasOne("pawsitive.EntityModels.User", "Specialist")
                         .WithMany()
-                        .HasForeignKey("SpecialistId");
+                        .HasForeignKey("SpecialistId1");
 
                     b.Navigation("BookingStatus");
 
@@ -599,7 +628,7 @@ namespace pawsitive.Migrations
 
                     b.HasOne("pawsitive.EntityModels.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("Booking");
 
@@ -610,7 +639,7 @@ namespace pawsitive.Migrations
                 {
                     b.HasOne("pawsitive.EntityModels.User", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId");
+                        .HasForeignKey("ClientId1");
 
                     b.Navigation("Client");
                 });
@@ -625,11 +654,11 @@ namespace pawsitive.Migrations
 
                     b.HasOne("pawsitive.EntityModels.User", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId");
+                        .HasForeignKey("ClientId1");
 
                     b.HasOne("pawsitive.EntityModels.User", "Specialist")
                         .WithMany()
-                        .HasForeignKey("SpecialistId");
+                        .HasForeignKey("SpecialistId1");
 
                     b.Navigation("Booking");
 
@@ -648,7 +677,7 @@ namespace pawsitive.Migrations
 
                     b.HasOne("pawsitive.EntityModels.User", "Specialist")
                         .WithMany()
-                        .HasForeignKey("SpecialistId");
+                        .HasForeignKey("SpecialistId1");
 
                     b.Navigation("ServiceType");
 

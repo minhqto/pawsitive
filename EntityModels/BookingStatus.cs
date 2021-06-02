@@ -6,6 +6,6 @@ namespace pawsitive.EntityModels
     {
         public int Id { get; set; }
 
-        public char StatusName { get; set; }
+        public string StatusName { get; set; }
     }
 }
