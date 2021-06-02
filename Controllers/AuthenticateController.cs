@@ -108,14 +108,14 @@ namespace pawsitive.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
-            if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
-                await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-            if (!await roleManager.RoleExistsAsync(UserRoles.User))
-                await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+            if (!await roleManager.RoleExistsAsync(UserRoles.Specialist))
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.Specialist));
+            if (!await roleManager.RoleExistsAsync(UserRoles.Specialist))
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.Specialist));
 
-            if (await roleManager.RoleExistsAsync(UserRoles.Admin))
+            if (await roleManager.RoleExistsAsync(UserRoles.Specialist))
             {
-                await userManager.AddToRoleAsync(user, UserRoles.Admin);
+                await userManager.AddToRoleAsync(user, UserRoles.Specialist);
             }
 
             return Ok(new AuthResponse { Status = "Success", Message = "User created successfully!" });

@@ -15,33 +15,5 @@ namespace pawsitive.Data
         {
             dtx = dataContext;
         }
-
-        public void ProductAddNew()
-        {
-            Product newProduct = new Product()
-            {
-                Name = "Test Product",
-                Price = 1.10M
-            };
-
-            dtx.Products.Add(newProduct);
-            dtx.SaveChanges();
-
-            return;
-        }
-
-        public IEnumerable<Product> ProductGetAll()
-        {
-            var products = dtx.Products;
-
-            return products;
-        }
-
-        public Product ProductGetOne(int id)
-        {
-            var product = dtx.Products.Find(id);
-
-            return product;
-        }
     }
 }
