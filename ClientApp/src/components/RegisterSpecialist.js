@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -11,8 +11,7 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
-import PawsitiveTheme from "../../Theme";
-import RegisterModal from "../RegisterModal";
+import PawsitiveTheme from "../Theme";
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -35,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = () => {
+const RegisterSpecialist = () => {
   const classes = useStyles();
   const pawTheme = PawsitiveTheme;
 
@@ -48,7 +47,7 @@ const Login = () => {
           <div className={classes.paper}>
             <Avatar src="https://i.imgur.com/WHw5aeR.jpg"></Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Register
             </Typography>
             <form className={classes.form} noValidate>
               <TextField
@@ -92,7 +91,9 @@ const Login = () => {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <RegisterModal />
+                  <Link href="/signup" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
                 </Grid>
               </Grid>
             </form>
@@ -103,4 +104,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default RegisterSpecialist;

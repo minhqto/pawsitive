@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -11,8 +11,7 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
-import PawsitiveTheme from "../../Theme";
-import RegisterModal from "../RegisterModal";
+import PawsitiveTheme from "../Theme";
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -35,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = () => {
+const RegisterClient = () => {
   const classes = useStyles();
   const pawTheme = PawsitiveTheme;
 
@@ -48,7 +47,7 @@ const Login = () => {
           <div className={classes.paper}>
             <Avatar src="https://i.imgur.com/WHw5aeR.jpg"></Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Register as Client
             </Typography>
             <form className={classes.form} noValidate>
               <TextField
@@ -59,7 +58,6 @@ const Login = () => {
                 id="email"
                 label="Email Address"
                 name="email"
-                autoComplete="email"
                 autoFocus
               />
               <TextField
@@ -71,11 +69,16 @@ const Login = () => {
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete="current-password"
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password2"
+                label="Confirm Password"
+                type="password2"
+                id="password2"
               />
               <Button
                 type="submit"
@@ -83,18 +86,8 @@ const Login = () => {
                 variant="contained"
                 className={classes.submit}
               >
-                Sign In
+                Register
               </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <RegisterModal />
-                </Grid>
-              </Grid>
             </form>
           </div>
         </Grid>
@@ -103,4 +96,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default RegisterClient;

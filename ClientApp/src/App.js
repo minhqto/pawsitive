@@ -1,24 +1,26 @@
-import React, { Component } from 'react';
-import { Route } from 'react-router';
-import { Layout } from './components/Layout';
-import { Home } from './components/Home';
-import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
-import  Login  from './components/Login/Login';
-import Register from './components/Register';
-import './custom.css'
+import React, { Component } from "react";
+import { Route } from "react-router";
+import { Layout } from "./components/Layout";
+import { Home } from "./components/Home";
+import { FetchData } from "./components/FetchData";
+import { Counter } from "./components/Counter";
+import Login from "./components/Login/Login";
+import RegisterClient from "./components/RegisterClient";
+import RegisterSpecialist from "./components/RegisterSpecialist";
+import "./custom.css";
 
 export default class App extends Component {
   static displayName = App.name;
 
-  render () {
+  render() {
     return (
       <Layout>
-        <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetch-data' component={FetchData} />
-        <Route path='/login' component={Login} />
-        <Route path='/signup' component={Register} />
+        <Route exact path="/" component={Home} />
+        <Route path="/counter" component={Counter} />
+        <Route path="/fetch-data" component={FetchData} />
+        <Route path="/login" component={Login} />
+        <Route path="/signupClient" component={RegisterClient} />
+        <Route path="/signupSpecialist" component={RegisterSpecialist} />
       </Layout>
     );
   }
