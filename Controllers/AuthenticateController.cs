@@ -70,33 +70,51 @@ namespace pawsitive.Controllers
         }
 
         [HttpPost]
-        [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterVM model)
+        [Route("register-client")]
+        public async Task<IActionResult> RegisterClient([FromBody] RegisterClientVM model)
         {
             var userExists = await userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Status = "Error", Message = "User already exists!" });
+                return StatusCode(StatusCodes.Status409Conflict, new AuthResponse { Status = "Error", Message = "User already exists!" });
 
             User user = new User()
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                UserName = model.Username,
+                AddressId = null
             };
+
             var result = await userManager.CreateAsync(user, model.Password);
+
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new AuthResponse
+                    {
+                        Status = "Error",
+                        Message = result.Errors.Count() > 0 ? result.Errors.FirstOrDefault().Description : "User creation failed! Please check user details and try again."
+                    });
+
+            // Create Client role if it doesn't exist in the database yet
+            if (!await roleManager.RoleExistsAsync(UserRoles.Client))
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.Client));
+
+            // Add Client role to current user
+            if (await roleManager.RoleExistsAsync(UserRoles.Client))
+            {
+                await userManager.AddToRoleAsync(user, UserRoles.Client);
+            }
 
             return Ok(new AuthResponse { Status = "Success", Message = "User created successfully!" });
         }
 
         [HttpPost]
-        [Route("register-admin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterVM model)
+        [Route("register-specialist")]
+        public async Task<IActionResult> RegisterSpecialist([FromBody] RegisterSpecialistVM model)
         {
             var userExists = await userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Status = "Error", Message = "User already exists!" });
+                return StatusCode(StatusCodes.Status409Conflict, new AuthResponse { Status = "Error", Message = "User already exists!" });
 
             User user = new User()
             {
@@ -104,15 +122,22 @@ namespace pawsitive.Controllers
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username
             };
+
             var result = await userManager.CreateAsync(user, model.Password);
+
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new AuthResponse
+                    {
+                        Status = "Error",
+                        Message = result.Errors.Count() > 0 ? result.Errors.FirstOrDefault().Description : "User creation failed! Please check user details and try again."
+                    });
 
+            // Create Specialist role if it doesn't exist in the database yet
             if (!await roleManager.RoleExistsAsync(UserRoles.Specialist))
                 await roleManager.CreateAsync(new IdentityRole(UserRoles.Specialist));
-            if (!await roleManager.RoleExistsAsync(UserRoles.Specialist))
-                await roleManager.CreateAsync(new IdentityRole(UserRoles.Specialist));
 
+            // Add Specialist role to current user
             if (await roleManager.RoleExistsAsync(UserRoles.Specialist))
             {
                 await userManager.AddToRoleAsync(user, UserRoles.Specialist);

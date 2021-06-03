@@ -8,11 +8,16 @@ namespace pawsitive.EntityModels
 {
     public class User : IdentityUser
     {
+        public User()
+        {
+            ServiceTypes = new List<ServiceType>();
+        }
+
         public SpecialistProfile SpecialistProfile { get; set; }
-        public int SpecialistProfileId { get; set; }
+        public int? SpecialistProfileId { get; set; }
 
         public Address Address { get; set; }
-        public int AddressId { get; set; }
+        public int? AddressId { get; set; }
 
         public string FirstName { get; set; }
 
