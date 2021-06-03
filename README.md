@@ -61,5 +61,7 @@ Step 2: Run the container
 docker run -d --name pawsitive_app -p 80:80 qvnguyen/pawsitive:1.0 
 ```
 
-Project Schedule
-[WBS Implementation Schedule.pdf](https://github.com/minhqto/pawsitive/files/6581437/WBS.Implementation.Schedule.pdf)
+### Project Documents
+ * [WBS Implementation Schedule.pdf](https://github.com/minhqto/pawsitive/files/6581437/WBS.Implementation.Schedule.pdf)
+ * [Pawsitive Mockup.pdf](https://github.com/minhqto/pawsitive/files/6592879/Pawsitive.Mockup.pdf)
+
