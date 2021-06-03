@@ -16,7 +16,7 @@ import RegisterModal from "../RegisterModal";
 
 const useStyles = makeStyles((theme) => ({
   image: {
-    backgroundImage: "url(https://i.imgur.com/PUSQ6f7.png)",
+    backgroundImage: "url(https://i.imgur.com/lBFdmTL.png)",
     backgroundSize: "cover",
     backgroundPosition: "center",
   },

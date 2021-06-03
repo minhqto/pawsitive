@@ -12,10 +12,11 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import PawsitiveTheme from "../Theme";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   image: {
-    backgroundImage: "url(https://i.imgur.com/PUSQ6f7.png)",
+    backgroundImage: "url(https://i.imgur.com/lBFdmTL.png)",
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
@@ -37,6 +38,12 @@ const useStyles = makeStyles((theme) => ({
 const RegisterClient = () => {
   const classes = useStyles();
   const pawTheme = PawsitiveTheme;
+  const history = useHistory();
+
+  const handleLogInOnClick = (event) => {
+    event.preventDefault();
+    history.push("/login");
+  };
 
   return (
     <ThemeProvider theme={pawTheme}>
@@ -89,6 +96,15 @@ const RegisterClient = () => {
                 Register
               </Button>
             </form>
+            <Link
+              href="#"
+              variant="body2"
+              onClick={(event) => {
+                handleLogInOnClick(event);
+              }}
+            >
+              {"Already have an account? Log in"}
+            </Link>
           </div>
         </Grid>
       </Grid>

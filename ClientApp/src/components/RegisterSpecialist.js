@@ -12,6 +12,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import PawsitiveTheme from "../Theme";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -37,17 +38,22 @@ const useStyles = makeStyles((theme) => ({
 const RegisterSpecialist = () => {
   const classes = useStyles();
   const pawTheme = PawsitiveTheme;
+  const history = useHistory();
+
+  const handleLogInOnClick = (event) => {
+    event.preventDefault();
+    history.push("/login");
+  };
 
   return (
     <ThemeProvider theme={pawTheme}>
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
-        <Grid item xs={false} sm={4} md={7} className={classes.image} />
         <Grid item xs={12} sm={8} md={5} component={Paper} square>
           <div className={classes.paper}>
             <Avatar src="https://i.imgur.com/WHw5aeR.jpg"></Avatar>
             <Typography component="h1" variant="h5">
-              Register
+              Register as a Specialist
             </Typography>
             <form className={classes.form} noValidate>
               <TextField
@@ -84,19 +90,16 @@ const RegisterSpecialist = () => {
               >
                 Sign In
               </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="/signup" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
-              </Grid>
             </form>
+            <Link
+              href="#"
+              variant="body2"
+              onClick={(event) => {
+                handleLogInOnClick(event);
+              }}
+            >
+              {"Already have an account? Log in"}{" "}
+            </Link>
           </div>
         </Grid>
       </Grid>
