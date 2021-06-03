@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace pawsitive.ViewModels
 {
-    public class RegisterVM
+    public class RegisterClientVM
     {
         [Required(ErrorMessage = "User Name is required")]
         public string Username { get; set; }
@@ -17,5 +17,7 @@ namespace pawsitive.ViewModels
 
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
+
+        // Might add other fields if needed
     }
 }
