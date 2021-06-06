@@ -6,7 +6,7 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import Link from "@material-ui/core/Link";
 import { useHistory } from "react-router-dom";
-import PawsitiveTheme from "../Theme";
+import PawsitiveTheme from "../../Theme";
 
 const useStyles = makeStyles((theme) => ({
   modal: {

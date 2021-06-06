@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,7 +13,11 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import PawsitiveTheme from "../../Theme";
-import RegisterModal from "../RegisterModal";
+import RegisterModal from "../Register/RegisterModal";
+import { loginUser, setCurrentUser } from "../../redux/auth";
+import axios from "axios";
+import jwt_decode from "jwt-decode";
+import { setAuthToken } from "../../utils/auth";
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -36,8 +41,44 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   const classes = useStyles();
   const pawTheme = PawsitiveTheme;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (username != "" && password != "") {
+      const reqBody = {
+        username: username,
+        password: password,
+      };
+      axios
+        .post("/api/Authenticate/login", reqBody)
+        .then((res) => {
+          const { token } = res.data;
+
+          // get user data from the token
+          let decoded = jwt_decode(token);
+
+          // set token to request authorization header
+          setAuthToken(token);
+
+          // update user data in global state
+          dispatch(setCurrentUser(decoded));
+
+          localStorage.setItem("jwtToken", token);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      console.log("Please enter username and password");
+    }
+  };
 
   return (
     <ThemeProvider theme={pawTheme}>
@@ -50,7 +91,7 @@ const Login = () => {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <form className={classes.form} noValidate>
+            <form className={classes.form} noValidate onSubmit={handleSubmit}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -61,6 +102,9 @@ const Login = () => {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                }}
               />
               <TextField
                 variant="outlined"
@@ -72,6 +116,9 @@ const Login = () => {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
