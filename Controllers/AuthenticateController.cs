@@ -66,7 +66,7 @@ namespace pawsitive.Controllers
                     expiration = token.ValidTo
                 });
             }
-            return Unauthorized();
+            return StatusCode(StatusCodes.Status401Unauthorized, new AuthResponse { Status = "Error", Message = "Incorrect username or password. Please try again." }); ;
         }
 
         [HttpPost]
