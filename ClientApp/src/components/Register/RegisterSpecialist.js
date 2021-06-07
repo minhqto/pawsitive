@@ -11,7 +11,7 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
-import PawsitiveTheme from "../Theme";
+import PawsitiveTheme from "../../Theme";
 import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
