@@ -17,12 +17,14 @@ namespace pawsitive
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
+        private readonly IWebHostEnvironment _env;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -31,8 +33,15 @@ namespace pawsitive
             services.AddControllersWithViews();
             services.AddSwaggerGen();
 
-            // For Entity Framework  
-            services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDatabase")));
+            // For Entity Framework
+            if (_env.IsDevelopment())
+            {
+                services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDatabase")));
+            }
+            else
+            {
+                services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ProductionDatabase")));
+            }
 
             // For Identity  
             services.AddIdentity<User, IdentityRole>()
