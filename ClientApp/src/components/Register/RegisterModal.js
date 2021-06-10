@@ -10,21 +10,32 @@ import PawsitiveTheme from "../../Theme";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
-    margin: theme.spacing(8, 4),
     display: "flex",
-    alignItems: "center",
+    alignContent: "center",
     justifyContent: "center",
+    padding: theme.spacing(20, 0), //this is hacky. trying to center the modal
   },
   paper: {
+    width: 600,
+    height: 400,
     backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    padding: theme.spacing(20, 4, 3),
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonRows: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  modalTitle: {
+    display: "flex",
+    alignContent: "center",
+    justifyContent: "center",
+  },
+  button: {
+    padding: theme.spacing(2, 5),
   },
 }));
 
@@ -75,14 +86,22 @@ const RegisterModal = () => {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <h4 id="transition-modal-title">
+            <h4 id="transition-modal-title" className={classes.modalTitle}>
               Sign up as a Client or Specialist?
             </h4>
             <div className={classes.buttonRows}>
-              <Button onClick={() => handleClientClick()} color="primary">
+              <Button
+                className={classes.button}
+                onClick={() => handleClientClick()}
+                color="primary"
+              >
                 Client
               </Button>
-              <Button onClick={() => handleSpecialistClick()} color="primary">
+              <Button
+                className={classes.button}
+                onClick={() => handleSpecialistClick()}
+                color="primary"
+              >
                 Specialist
               </Button>
             </div>
