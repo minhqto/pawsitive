@@ -22,8 +22,7 @@ import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 
 // Custom components
 import PawsitiveTheme from "../../Theme";
-import RegisterModal from "../Register/RegisterModal";
-import { blueGrey, lightBlue } from "@material-ui/core/colors";
+import RegisterModal from "../Register/RegisterModal"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
-    backgroundColor: blueGrey
   },
 }));
 
