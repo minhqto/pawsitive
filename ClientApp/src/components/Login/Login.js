@@ -170,7 +170,7 @@ const Login = () => {
               />
               <FormControlLabel
                 control={<Checkbox onChange={() => setIsRemember(!isRemember)} value={isRemember} color="primary" />}
-                label="Remember me(deferred)"
+                label="Remember me"
               />
               <Button
                 type="submit"
