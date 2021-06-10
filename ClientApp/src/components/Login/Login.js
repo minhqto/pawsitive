@@ -50,9 +50,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Login = () => {
   const dispatch = useDispatch();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [usernameError, setUsernameError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [serverError, setServerError] = useState("");
 
@@ -62,9 +62,9 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (validateUsername() && validatePassword()) {
+    if (validateemail() && validatePassword()) {
       const reqBody = {
-        username: username,
+        email: email,
         password: password,
       };
       axios
@@ -96,19 +96,19 @@ const Login = () => {
     }
   };
 
-  const validateUsername = () => {
-    if (username === "") {
-      setUsernameError("Username must not be empty.");
+  const validateemail = () => {
+    if (email === "") {
+      setEmailError("email must not be empty.");
       return false;
     } else {
-      setUsernameError("");
+      setEmailError("");
       return true;
     }
   };
 
   const validatePassword = () => {
     if (password === "") {
-      setPasswordError("Username must not be empty.");
+      setPasswordError("email must not be empty.");
       return false;
     } else {
       setPasswordError("");
@@ -130,23 +130,23 @@ const Login = () => {
             </Typography>
             <form className={classes.form} noValidate onSubmit={handleSubmit}>
               <TextField
-                value={username}
+                value={email}
                 variant="outlined"
                 margin="normal"
                 required
                 fullWidth
-                id="username"
-                label="Username"
-                name="username"
-                autoComplete="username"
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
                 autoFocus
                 onChange={(e) => {
                   setServerError("");
-                  setUsernameError("");
-                  setUsername(e.target.value);
+                  setEmailError("");
+                  setEmail(e.target.value);
                 }}
-                error={usernameError !== ""}
-                helperText={usernameError}
+                error={emailError !== ""}
+                helperText={emailError}
               />
               <TextField
                 variant="outlined"
