@@ -34,14 +34,14 @@ namespace pawsitive.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginVM model)
         {
-            var user = await userManager.FindByNameAsync(model.Username);
+            var user = await userManager.FindByEmailAsync(model.Email);
             if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
             {
                 var userRoles = await userManager.GetRolesAsync(user);
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim("username", user.UserName),
+                    // Jihyun, 6/9, we will use Email as UserName
                     new Claim("email", user.Email),
                 };
 
@@ -55,7 +55,7 @@ namespace pawsitive.Controllers
                 var token = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
                     audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
+                    expires: model.RememberMe ? DateTime.Now.AddYears(30) : DateTime.Now.AddHours(3),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
@@ -66,7 +66,7 @@ namespace pawsitive.Controllers
                     expiration = token.ValidTo
                 });
             }
-            return StatusCode(StatusCodes.Status401Unauthorized, new AuthResponse { Status = "Error", Message = "Incorrect username or password. Please try again." }); ;
+            return StatusCode(StatusCodes.Status401Unauthorized, new AuthResponse { Status = "Error", Message = "Incorrect Email or password. Please try again." });
         }
 
         [HttpPost]
