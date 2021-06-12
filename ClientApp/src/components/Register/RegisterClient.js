@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -39,6 +39,28 @@ const RegisterClient = () => {
   const classes = useStyles();
   const pawTheme = PawsitiveTheme;
   const history = useHistory();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPasswordEqual, setIsPasswordEqual] = useState(true);
+
+  //crappy client side validation for password
+  const onChange = (field, value) => {
+    if (field === "password") {
+      setPassword(value);
+    }
+    if (field === "confirmPassword") {
+      setConfirmPassword(value);
+    }
+  };
+
+  const handleRegisterOnClick = (event) => {
+    event.preventDefault();
+    if (password !== confirmPassword) {
+      setIsPasswordEqual(false);
+    } else {
+      setIsPasswordEqual(true);
+    }
+  };
 
   const handleLogInOnClick = (event) => {
     event.preventDefault();
@@ -68,6 +90,8 @@ const RegisterClient = () => {
                 autoFocus
               />
               <TextField
+                error={!isPasswordEqual ? true : false}
+                helperText={!isPasswordEqual ? "Passwords must match!" : ""}
                 variant="outlined"
                 margin="normal"
                 required
@@ -76,22 +100,32 @@ const RegisterClient = () => {
                 label="Password"
                 type="password"
                 id="password"
+                onChange={(e) => {
+                  onChange("password", e.target.value);
+                }}
               />
               <TextField
+                error={!isPasswordEqual ? true : false}
                 variant="outlined"
                 margin="normal"
                 required
                 fullWidth
                 name="password2"
                 label="Confirm Password"
-                type="password2"
+                type="password"
                 id="password2"
+                onChange={(e) => {
+                  onChange("confirmPassword", e.target.value);
+                }}
               />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 className={classes.submit}
+                onClick={(event) => {
+                  handleRegisterOnClick(event);
+                }}
               >
                 Register
               </Button>
