@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -40,10 +40,27 @@ const RegisterSpecialist = () => {
   const classes = useStyles();
   const pawTheme = PawsitiveTheme;
   const history = useHistory();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPasswordEqual, setIsPasswordEqual] = useState(true);
 
-  const handleLogInOnClick = (event) => {
+  //crappy client side validation for password
+  const onChange = (field, value) => {
+    if (field === "password") {
+      setPassword(value);
+    }
+    if (field === "confirmPassword") {
+      setConfirmPassword(value);
+    }
+  };
+
+  const handleRegisterOnClick = (event) => {
     event.preventDefault();
-    history.push("/login");
+    if (password !== confirmPassword) {
+      setIsPasswordEqual(false);
+    } else {
+      setIsPasswordEqual(true);
+    }
   };
 
   return (
@@ -56,8 +73,8 @@ const RegisterSpecialist = () => {
             Register as Specialist
           </Typography>
           <form className={classes.form} noValidate>
-            <Grid container spacing={2}>
-              <Grid item xs={5}>
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
                 <TextField
                   autoComplete="fname"
                   name="firstName"
@@ -69,11 +86,8 @@ const RegisterSpecialist = () => {
                   autoFocus
                 />
               </Grid>
-              <Grid item xs={1} />
-              <Grid item xs={5}>
-                <DistanceSlider />
-              </Grid>
-              <Grid item xs={5}>
+
+              <Grid item xs={6}>
                 <TextField
                   variant="outlined"
                   required
@@ -84,17 +98,7 @@ const RegisterSpecialist = () => {
                   autoComplete="lname"
                 />
               </Grid>
-              <Grid item xs={1} />
-              <Grid item xs={5}>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  id="businessAddress"
-                  label="Business Address (optional)"
-                  name="businessAddress"
-                />
-              </Grid>
-              <Grid item xs={5}>
+              <Grid item xs={4}>
                 <TextField
                   variant="outlined"
                   required
@@ -105,9 +109,84 @@ const RegisterSpecialist = () => {
                   autoComplete="email"
                 />
               </Grid>
-              <Grid item xs={1} />
+              <Grid item xs={4}>
+                <TextField
+                  error={!isPasswordEqual ? true : false}
+                  helperText={!isPasswordEqual ? "Passwords must match!" : ""}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  onChange={(e) => {
+                    onChange("password", e.target.value);
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  error={!isPasswordEqual ? true : false}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  onChange={(e) => {
+                    onChange("confirmPassword", e.target.value);
+                  }}
+                />
+              </Grid>
               <Grid item xs={6}>
-                <FormLabel component="legend">Services you offer</FormLabel>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="streetAddress"
+                  label="Street Address"
+                  id="streetAddress"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="city"
+                  label="City"
+                  id="city"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="province"
+                  label="Province"
+                  id="province"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="postalCode"
+                  label="Postal Code"
+                  id="postalCode"
+                />
+              </Grid>
+            </Grid>
+            <br />
+            <Grid container spacing={3}>
+              <Grid item md={12}>
+                <FormLabel component="legend">
+                  Services you offer (check all that apply)
+                </FormLabel>
                 <FormControlLabel
                   control={<Checkbox name="training" color="primary" />}
                   label="Dog Training"
@@ -124,19 +203,19 @@ const RegisterSpecialist = () => {
                   control={<Checkbox name="therapy" color="primary" />}
                   label="Behavioural Therapy"
                 />
-              </Grid>
-              <Grid item xs={5}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="streetAddress"
-                  label="Street Address"
-                  id="streetAddress"
+                <FormControlLabel
+                  control={<Checkbox name="daycare" color="primary" />}
+                  label="Daycare"
+                />
+                <FormControlLabel
+                  control={<Checkbox name="boarding" color="primary" />}
+                  label="Boarding"
                 />
               </Grid>
-              <Grid item xs={1} />
-              <Grid item xs={5}>
+              <Grid item xs={4}>
+                <DistanceSlider />
+              </Grid>
+              <Grid item xs={8}>
                 <TextField
                   multiline
                   rows={6}
@@ -144,40 +223,8 @@ const RegisterSpecialist = () => {
                   required
                   fullWidth
                   name="about"
-                  label="About me"
+                  label="Tell us about yourself!"
                   id="about"
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="city"
-                  label="City"
-                  id="city"
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="postalCode"
-                  label="Postal Code"
-                  id="postalCode"
-                />
-              </Grid>
-              <Grid item xs={5}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
                 />
               </Grid>
             </Grid>
@@ -187,6 +234,9 @@ const RegisterSpecialist = () => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={(event) => {
+                handleRegisterOnClick(event);
+              }}
             >
               Register
             </Button>
