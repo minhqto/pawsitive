@@ -55,6 +55,7 @@ const Login = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [serverError, setServerError] = useState("");
+  const [isRemember, setIsRemember] = useState(false);
 
   const classes = useStyles();
   const pawTheme = PawsitiveTheme;
@@ -62,10 +63,11 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (validateemail() && validatePassword()) {
+    if (validateEmail() && validatePassword()) {
       const reqBody = {
         email: email,
         password: password,
+        rememberMe: isRemember,
       };
       axios
         .post("/api/Authenticate/login", reqBody)
@@ -84,7 +86,6 @@ const Login = () => {
 
             localStorage.setItem("jwtToken", token);
           } else {
-            console.log("hi");
             console.log(res);
           }
         })
@@ -96,9 +97,9 @@ const Login = () => {
     }
   };
 
-  const validateemail = () => {
+  const validateEmail = () => {
     if (email === "") {
-      setEmailError("email must not be empty.");
+      setEmailError("Email must not be empty.");
       return false;
     } else {
       setEmailError("");
@@ -108,7 +109,7 @@ const Login = () => {
 
   const validatePassword = () => {
     if (password === "") {
-      setPasswordError("email must not be empty.");
+      setPasswordError("Password must not be empty.");
       return false;
     } else {
       setPasswordError("");
@@ -136,7 +137,8 @@ const Login = () => {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Email"
+                type="email"
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -167,7 +169,13 @@ const Login = () => {
                 helperText={passwordError}
               />
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
+                control={
+                  <Checkbox
+                    onChange={() => setIsRemember(!isRemember)}
+                    value={isRemember}
+                    color="primary"
+                  />
+                }
                 label="Remember me"
               />
               <Button
