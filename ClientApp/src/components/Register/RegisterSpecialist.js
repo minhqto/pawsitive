@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
+import FormLabel from "@material-ui/core/FormLabel";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
-import Paper from "@material-ui/core/Paper";
-import Box from "@material-ui/core/Box";
+import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import PawsitiveTheme from "../../Theme";
+import DistanceSlider from "../DistanceSlider";
+import MUIRichTextEditor from "mui-rte";
 import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
@@ -39,70 +41,242 @@ const RegisterSpecialist = () => {
   const classes = useStyles();
   const pawTheme = PawsitiveTheme;
   const history = useHistory();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPasswordEqual, setIsPasswordEqual] = useState(true);
 
-  const handleLogInOnClick = (event) => {
+  Object.assign(pawTheme, {
+    overrides: {
+      MUIRichTextEditor: {
+        root: {
+          marginBottom: 150,
+          width: "100%",
+        },
+        editor: {
+          border: "1px solid gray",
+        },
+      },
+    },
+  });
+
+  //crappy client side validation for password
+  const onChange = (field, value) => {
+    if (field === "password") {
+      setPassword(value);
+    }
+    if (field === "confirmPassword") {
+      setConfirmPassword(value);
+    }
+  };
+
+  const getAboutMe = (state) => {
+    console.log(state.getCurrentContent().getPlainText());
+  };
+
+  const handleRegisterOnClick = (event) => {
     event.preventDefault();
-    history.push("/login");
+    if (password !== confirmPassword) {
+      setIsPasswordEqual(false);
+    } else {
+      setIsPasswordEqual(true);
+    }
   };
 
   return (
     <ThemeProvider theme={pawTheme}>
-      <Grid container component="main" className={classes.root}>
+      <Container component="main" maxWidth="md">
         <CssBaseline />
-        <Grid item xs={12} sm={8} md={5} component={Paper} square>
-          <div className={classes.paper}>
-            <Avatar src="https://i.imgur.com/WHw5aeR.jpg"></Avatar>
-            <Typography component="h1" variant="h5">
-              Register as a Specialist
-            </Typography>
-            <form className={classes.form} noValidate>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                className={classes.submit}
-              >
-                Sign In
-              </Button>
-            </form>
-            <Link
-              href="#"
-              variant="body2"
-              onClick={(event) => {
-                handleLogInOnClick(event);
-              }}
-            >
-              {"Already have an account? Log in"}{" "}
-            </Link>
-          </div>
-        </Grid>
-      </Grid>
+        <div className={classes.paper}>
+          <Avatar src="https://i.imgur.com/WHw5aeR.jpg"></Avatar>
+          <Typography component="h1" variant="h5">
+            Register as Specialist
+          </Typography>
+          <form className={classes.form} noValidate>
+            <Grid container spacing={3}>
+              <Grid item xs={3} />
+              <Grid item xs={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                />
+              </Grid>
+              <Grid item xs={3} />
+              <Grid item xs={6}>
+                <TextField
+                  error={!isPasswordEqual ? true : false}
+                  helperText={!isPasswordEqual ? "Passwords must match!" : ""}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  onChange={(e) => {
+                    onChange("password", e.target.value);
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  error={!isPasswordEqual ? true : false}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  onChange={(e) => {
+                    onChange("confirmPassword", e.target.value);
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  autoComplete="fname"
+                  name="firstName"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First Name"
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Last Name"
+                  name="lastName"
+                  autoComplete="lname"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="streetAddress"
+                  label="Street Address"
+                  id="streetAddress"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="city"
+                  label="City"
+                  id="city"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="province"
+                  label="Province"
+                  id="province"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="postalCode"
+                  label="Postal Code"
+                  id="postalCode"
+                />
+              </Grid>
+            </Grid>
+            <br />
+            <Grid container spacing={3}>
+              <Grid item md={12}>
+                <FormLabel component="legend">
+                  Services you offer (check all that apply)
+                </FormLabel>
+                <FormControlLabel
+                  control={<Checkbox name="training" color="primary" />}
+                  label="Dog Training"
+                />
+                <FormControlLabel
+                  control={<Checkbox name="grooming" color="primary" />}
+                  label="Dog Grooming"
+                />
+                <FormControlLabel
+                  control={<Checkbox name="food" color="primary" />}
+                  label="Pet Food"
+                />
+                <FormControlLabel
+                  control={<Checkbox name="therapy" color="primary" />}
+                  label="Behavioural Therapy"
+                />
+                <FormControlLabel
+                  control={<Checkbox name="daycare" color="primary" />}
+                  label="Daycare"
+                />
+                <FormControlLabel
+                  control={<Checkbox name="boarding" color="primary" />}
+                  label="Boarding"
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <DistanceSlider />
+              </Grid>
+
+              <Grid item xs={8}>
+                <MUIRichTextEditor
+                  label="Tell us about yourself!"
+                  onChange={getAboutMe}
+                />
+                {/* <TextField
+                  multiline
+                  rows={6}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="about"
+                  label="Tell us about yourself!"
+                  id="about"
+                /> */}
+              </Grid>
+            </Grid>
+            <Grid container spacing={3}>
+              <Grid item xs={4} />
+              <Grid item xs={4}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  onClick={(event) => {
+                    handleRegisterOnClick(event);
+                  }}
+                >
+                  Register
+                </Button>
+                <Link href="#" variant="body2">
+                  Already have an account? Sign in
+                </Link>
+              </Grid>
+              <Grid item xs={4} />
+            </Grid>
+          </form>
+        </div>
+      </Container>
     </ThemeProvider>
   );
 };
