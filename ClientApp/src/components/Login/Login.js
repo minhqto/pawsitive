@@ -22,7 +22,7 @@ import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 
 // Custom components
 import PawsitiveTheme from "../../Theme";
-import RegisterModal from "../Register/RegisterModal"
+import RegisterModal from "../Register/RegisterModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,7 +67,7 @@ const Login = () => {
       const reqBody = {
         email: email,
         password: password,
-        rememberMe: isRemember
+        rememberMe: isRemember,
       };
       axios
         .post("/api/Authenticate/login", reqBody)
@@ -169,7 +169,13 @@ const Login = () => {
                 helperText={passwordError}
               />
               <FormControlLabel
-                control={<Checkbox onChange={() => setIsRemember(!isRemember)} value={isRemember} color="primary" />}
+                control={
+                  <Checkbox
+                    onChange={() => setIsRemember(!isRemember)}
+                    value={isRemember}
+                    color="primary"
+                  />
+                }
                 label="Remember me"
               />
               <Button
