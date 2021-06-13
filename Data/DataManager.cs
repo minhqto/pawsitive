@@ -15,5 +15,10 @@ namespace pawsitive.Data
         {
             dtx = dataContext;
         }
+
+        public void loadServicesData()
+        {
+            
+        }
     }
 }

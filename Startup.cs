@@ -34,9 +34,10 @@ namespace pawsitive
             services.AddSwaggerGen();
 
             // For Entity Framework
+            // The DockerConnection connection string is just for Minh so he can use SQL Server via Docker
             if (_env.IsDevelopment())
             {
-                services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDatabase")));
+                services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DockerConnection")));
             }
             else
             {
