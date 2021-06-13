@@ -13,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import PawsitiveTheme from "../../Theme";
 import DistanceSlider from "../DistanceSlider";
+import MUIRichTextEditor from "mui-rte";
 import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +45,20 @@ const RegisterSpecialist = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isPasswordEqual, setIsPasswordEqual] = useState(true);
 
+  Object.assign(pawTheme, {
+    overrides: {
+      MUIRichTextEditor: {
+        root: {
+          marginBottom: 150,
+          width: "100%",
+        },
+        editor: {
+          border: "1px solid gray",
+        },
+      },
+    },
+  });
+
   //crappy client side validation for password
   const onChange = (field, value) => {
     if (field === "password") {
@@ -52,6 +67,10 @@ const RegisterSpecialist = () => {
     if (field === "confirmPassword") {
       setConfirmPassword(value);
     }
+  };
+
+  const getAboutMe = (state) => {
+    console.log(state.getCurrentContent().getPlainText());
   };
 
   const handleRegisterOnClick = (event) => {
@@ -74,31 +93,8 @@ const RegisterSpecialist = () => {
           </Typography>
           <form className={classes.form} noValidate>
             <Grid container spacing={3}>
+              <Grid item xs={3} />
               <Grid item xs={6}>
-                <TextField
-                  autoComplete="fname"
-                  name="firstName"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-
-              <Grid item xs={6}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="lname"
-                />
-              </Grid>
-              <Grid item xs={4}>
                 <TextField
                   variant="outlined"
                   required
@@ -109,7 +105,8 @@ const RegisterSpecialist = () => {
                   autoComplete="email"
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={3} />
+              <Grid item xs={6}>
                 <TextField
                   error={!isPasswordEqual ? true : false}
                   helperText={!isPasswordEqual ? "Passwords must match!" : ""}
@@ -125,7 +122,7 @@ const RegisterSpecialist = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <TextField
                   error={!isPasswordEqual ? true : false}
                   variant="outlined"
@@ -138,6 +135,29 @@ const RegisterSpecialist = () => {
                   onChange={(e) => {
                     onChange("confirmPassword", e.target.value);
                   }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  autoComplete="fname"
+                  name="firstName"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First Name"
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Last Name"
+                  name="lastName"
+                  autoComplete="lname"
                 />
               </Grid>
               <Grid item xs={6}>
@@ -215,8 +235,13 @@ const RegisterSpecialist = () => {
               <Grid item xs={4}>
                 <DistanceSlider />
               </Grid>
+
               <Grid item xs={8}>
-                <TextField
+                <MUIRichTextEditor
+                  label="Tell us about yourself!"
+                  onChange={getAboutMe}
+                />
+                {/* <TextField
                   multiline
                   rows={6}
                   variant="outlined"
@@ -225,27 +250,29 @@ const RegisterSpecialist = () => {
                   name="about"
                   label="Tell us about yourself!"
                   id="about"
-                />
+                /> */}
               </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={(event) => {
-                handleRegisterOnClick(event);
-              }}
-            >
-              Register
-            </Button>
-            <Grid container justify="flex-end">
-              <Grid item>
+            <Grid container spacing={3}>
+              <Grid item xs={4} />
+              <Grid item xs={4}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  onClick={(event) => {
+                    handleRegisterOnClick(event);
+                  }}
+                >
+                  Register
+                </Button>
                 <Link href="#" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
+              <Grid item xs={4} />
             </Grid>
           </form>
         </div>
