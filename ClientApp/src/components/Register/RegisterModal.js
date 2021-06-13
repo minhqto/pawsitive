@@ -12,16 +12,19 @@ import PawsitiveTheme from "../../Theme";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
-    margin: theme.spacing(8, 4),
     display: "flex",
-    alignItems: "center",
+    alignContent: "center",
     justifyContent: "center",
+    padding: theme.spacing(20, 0), //this is hacky. trying to center the modal
   },
   paper: {
+    width: 600,
+    height: 400,
     backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    padding: theme.spacing(20, 4, 3),
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonRows: {
     //background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
@@ -35,6 +38,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  modalTitle: {
+    display: "flex",
+    alignContent: "center",
+    justifyContent: "center",
+  },
+  button: {
+    padding: theme.spacing(2, 5),
   },
 }));
 
