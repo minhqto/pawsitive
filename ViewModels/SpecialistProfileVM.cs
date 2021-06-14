@@ -1,4 +1,5 @@
-﻿using System;
+﻿using pawsitive.EntityModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace pawsitive.ViewModels
 
         public SpecialistProfileVM()
         {
-            ServiceTypes = new List<ServiceTypeVM>();
+            ServiceTypes = new List<ServiceType>();
         }
 
 
@@ -19,11 +20,11 @@ namespace pawsitive.ViewModels
         public string ProfileImageUpload { get; set; }
 
 
-        public UserVM Specialist { get; set; }
+        public User Specialist { get; set; }
         //public string SpecialistId { get; set; }
 
         // Address Entity
-        public AddressVM address { get; set; }
+        public Address address { get; set; }
 
         // optional
         public string BusinessName { get; set; }
@@ -39,6 +40,6 @@ namespace pawsitive.ViewModels
 
         public string AboutMe { get; set; }
 
-        public IEnumerable<ServiceTypeVM> ServiceTypes { get; set; }
+        public IEnumerable<ServiceType> ServiceTypes { get; set; }
     }
 }
