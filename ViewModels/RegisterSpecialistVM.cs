@@ -34,8 +34,9 @@ namespace pawsitive.ViewModels
         [Required(ErrorMessage = "Last Name is required")]
         public string LastName { get; set; }
 
-        [DataType(DataType.Upload)]
-        public string ProfileImageUpload { get; set; }
+        // TODO - will work on this later
+        //[DataType(DataType.Upload)]
+        //public string ProfileImageUpload { get; set; }
 
 
         // Address Entity
@@ -43,8 +44,9 @@ namespace pawsitive.ViewModels
         public string City { get; set; }
         public string Province { get; set; }
         public string PostalCode { get; set; }
-        //public string Country { get; set; }
 
+
+        public string PhoneNumber { get; set; }
 
         // optional
         public string BusinessName { get; set; }
@@ -53,7 +55,7 @@ namespace pawsitive.ViewModels
         public bool ProvideHomeVisitService { get; set; }
 
         //Only if 'ProvideHomeVisitService' is True
-        public float Radius { get; set; }
+        public int? Radius { get; set; }
 
         //Business hour (optional)
         public string Availability { get; set; }

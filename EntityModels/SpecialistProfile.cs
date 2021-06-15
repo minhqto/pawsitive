@@ -20,7 +20,7 @@ namespace pawsitive.EntityModels
 
         public bool ProvideHomeVisitService { get; set; }
 
-        public float Radius { get; set; }
+        public int? Radius { get; set; }
 
         //Business hour
         public string Availability { get; set; }

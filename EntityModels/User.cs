@@ -20,9 +20,9 @@ namespace pawsitive.EntityModels
         public Address Address { get; set; }
         public int? AddressId { get; set; }
 
-
-        public string ProfileImageContentType { get; set; }
-        public byte[] ProfileImage { get; set; }
+        // TODO - will work on this later
+        //public string ProfileImageContentType { get; set; }
+        //public byte[] ProfileImage { get; set; }
 
     }
 }

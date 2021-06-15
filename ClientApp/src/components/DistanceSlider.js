@@ -33,7 +33,7 @@ const DistanceSlider = () => {
   return (
     <div className={classes.root}>
       <Typography id="discrete-slider-custom" gutterBottom>
-        Service Distance
+        Visit Distance
       </Typography>
       <Slider
         defaultValue={20}
@@ -42,6 +42,8 @@ const DistanceSlider = () => {
         step={1}
         valueLabelDisplay="auto"
         marks={marks}
+        //Will be abled only when 'ProvideHomeVisitService' is True
+        disabled={true}
       />
     </div>
   );
