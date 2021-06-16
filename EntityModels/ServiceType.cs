@@ -7,13 +7,13 @@ namespace pawsitive.EntityModels
     {
         public ServiceType()
         {
-            Users = new HashSet<User>();
+            SpecialistProfiles = new HashSet<SpecialistProfile>();
         }
 
         public int Id { get; set; }
 
         public String ServiceTypeName { get; set; }
 
-        public ICollection<User> Users { get; set; }
+        public ICollection<SpecialistProfile> SpecialistProfiles { get; set; }
     }
 }

@@ -13,8 +13,11 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import PawsitiveTheme from "../../Theme";
+import Alert from "@material-ui/lab/Alert";
 import DistanceSlider from "../DistanceSlider";
 import MUIRichTextEditor from "mui-rte";
+import { convertToRaw, convertFromRaw } from "draft-js";
+import { convertToHTML } from "draft-convert";
 import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
@@ -38,6 +41,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const SERVICE_TYPES = [
+  {
+    name: "traning",
+    label: "Dog Training",
+  },
+  {
+    name: "grooming",
+    label: "Dog Grooming",
+  },
+  {
+    name: "food",
+    label: "Dog Food",
+  },
+  {
+    name: "therapy",
+    label: "Behavioural Therapy",
+  },
+  {
+    name: "daycare",
+    label: "Daycare",
+  },
+  {
+    name: "boarding",
+    label: "Boarding",
+  },
+];
+
 const RegisterSpecialist = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,14 +77,15 @@ const RegisterSpecialist = () => {
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
   const [province, setProvince] = useState("");
+  const [country, setCountry] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [provideHomeVisitService, setProvideHomeVisitService] = useState("");
-  const [radius, setRadius] = useState("");
+  const [provideHomeVisitService, setProvideHomeVisitService] = useState(false);
+  const [radius, setRadius] = useState(0);
   const [availability, setAvailability] = useState("");
   const [aboutMe, setAboutMe] = useState("");
-  const [serviceTypes, setServiceTypes] = useState("");
+  const [serviceTypes, setServiceTypes] = useState([]);
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -64,6 +95,7 @@ const RegisterSpecialist = () => {
   const [streetAddressError, setStreetAddressError] = useState("");
   const [cityError, setCityError] = useState("");
   const [provinceError, setProvinceError] = useState("");
+  const [countryError, setCountryError] = useState("");
   const [postalCodeError, setPostalCodeError] = useState("");
   //const [businessNameError, setBusinessNameError] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState("");
@@ -98,7 +130,13 @@ const RegisterSpecialist = () => {
   };
 
   const getAboutMe = (state) => {
-    console.log(state.getCurrentContent().getPlainText());
+    const rteContent = convertToRaw(state.getCurrentContent());
+    setAboutMe(rteContent);
+
+    // How to convert state to HTML, for future display purpose
+    // let contentState = convertFromRaw(JSON.parse(jsonRte)); // convert json string to content state object
+    // let html = convertToHTML(contentState); // convert content state object to html
+    // console.log(html); // display the html
   };
 
   const handleRegisterOnClick = (event) => {
@@ -112,13 +150,14 @@ const RegisterSpecialist = () => {
         streetAddress: streetAddress,
         city: city,
         province: province,
+        country: country,
         postalCode: postalCode,
         businessName: businessName,
         phoneNumber: phoneNumber,
         provideHomeVisitService: provideHomeVisitService,
         radius: radius,
         availability: availability,
-        aboutMe: aboutMe,
+        aboutMe: JSON.stringify(aboutMe),
         serviceTypes: serviceTypes,
       };
       axios
@@ -140,20 +179,27 @@ const RegisterSpecialist = () => {
     }
   };
   const handleValidation = () => {
-
     //Email
     if (email === "") {
       setEmailError("Email must not be empty.");
       return false;
     } else {
       setEmailError("");
-    };
+    }
 
     if (typeof email !== "undefined") {
-      let lastAtPos = email.lastIndexOf('@');
-      let lastDotPos = email.lastIndexOf('.');
+      let lastAtPos = email.lastIndexOf("@");
+      let lastDotPos = email.lastIndexOf(".");
 
-      if (!(lastAtPos < lastDotPos && lastAtPos > 0 && email.indexOf('@@') == -1 && lastDotPos > 2 && (email.length - lastDotPos) > 2)) {
+      if (
+        !(
+          lastAtPos < lastDotPos &&
+          lastAtPos > 0 &&
+          email.indexOf("@@") == -1 &&
+          lastDotPos > 2 &&
+          email.length - lastDotPos > 2
+        )
+      ) {
         setEmailError("Email is not valid.");
         return false;
       }
@@ -172,10 +218,11 @@ const RegisterSpecialist = () => {
       setConfirmPasswordError("Confirmation Password is required");
       return false;
     } else if (confirmPassword !== password) {
-      setConfirmPasswordError("The password and confirmation password do not match.");
+      setConfirmPasswordError(
+        "The password and confirmation password do not match."
+      );
       return false;
-    }
-    else {
+    } else {
       setConfirmPasswordError("");
     }
 
@@ -219,6 +266,14 @@ const RegisterSpecialist = () => {
       setProvinceError("");
     }
 
+    //Province
+    if (country === "") {
+      setCountryError("Country is required");
+      return false;
+    } else {
+      setCountryError("");
+    }
+
     //PostalCode
     if (postalCode === "") {
       setPostalCodeError("Postal Code is required");
@@ -244,46 +299,11 @@ const RegisterSpecialist = () => {
     }
 
     return true;
-  }
-
-
-  // const validateEmail = () => {
-  //   if (email === "") {
-  //     setEmailError("Email must not be empty.");
-  //     return false;
-  //   } else {
-  //     setEmailError("");
-  //     return true;
-  //   }
-  // };
-
-  // const validatePassword = () => {
-  //   if (password === "") {
-  //     setPasswordError("Password is required");
-  //     return false;
-  //   } else {
-  //     setPasswordError("");
-  //     return true;
-  //   }
-  // };
-
-  // const validateConfirmPassword = () => {
-  //   if (confirmPassword === "") {
-  //     setConfirmPasswordError("Confirmation Password is required");
-  //     return false;
-  //   } else if (confirmPassword !== password) {
-  //     setConfirmPasswordError("The password and confirmation password do not match.");
-  //     return false;
-  //   }
-  //   else {
-  //     setConfirmPasswordError("");
-  //     return true;
-  //   }
-  // };
-
+  };
 
   return (
     <ThemeProvider theme={pawTheme}>
+      {serverError && <Alert severity="error">{serverError}</Alert>}
       <Container component="main" maxWidth="md">
         <CssBaseline />
         <div className={classes.paper}>
@@ -442,6 +462,23 @@ const RegisterSpecialist = () => {
                   variant="outlined"
                   required
                   fullWidth
+                  name="country"
+                  label="Country"
+                  id="country"
+                  onChange={(e) => {
+                    setServerError("");
+                    setCountryError("");
+                    setCountry(e.target.value);
+                  }}
+                  error={countryError !== ""}
+                  helperText={countryError}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
                   name="postalCode"
                   label="Postal Code"
                   id="postalCode"
@@ -478,6 +515,10 @@ const RegisterSpecialist = () => {
                   name="businessName"
                   label="Business Name"
                   id="businessName"
+                  onChange={(e) => {
+                    setServerError("");
+                    setBusinessName(e.target.value);
+                  }}
                 />
               </Grid>
             </Grid>
@@ -487,42 +528,51 @@ const RegisterSpecialist = () => {
                 <FormLabel component="legend">
                   Services you offer (check all that apply)
                 </FormLabel>
-                <FormControlLabel
-                  control={<Checkbox name="training" color="primary" />}
-                  label="Dog Training"
-                />
-                <FormControlLabel
-                  control={<Checkbox name="grooming" color="primary" />}
-                  label="Dog Grooming"
-                />
-                <FormControlLabel
-                  control={<Checkbox name="food" color="primary" />}
-                  label="Pet Food"
-                />
-                <FormControlLabel
-                  control={<Checkbox name="therapy" color="primary" />}
-                  label="Behavioural Therapy"
-                />
-                <FormControlLabel
-                  control={<Checkbox name="daycare" color="primary" />}
-                  label="Daycare"
-                />
-                <FormControlLabel
-                  control={<Checkbox name="boarding" color="primary" />}
-                  label="Boarding"
-                />
+
+                {SERVICE_TYPES.map((s, index) => (
+                  <FormControlLabel
+                    key={index}
+                    control={
+                      <Checkbox
+                        onChange={(e) => {
+                          if (!e.target.checked) {
+                            setServiceTypes(
+                              serviceTypes.filter((item) => item !== s.name)
+                            );
+                          } else {
+                            setServiceTypes([...serviceTypes, s.name]);
+                          }
+                        }}
+                        name={s.name}
+                        color="primary"
+                      />
+                    }
+                    label={s.label}
+                  />
+                ))}
               </Grid>
               <Grid item xs={4}>
                 <FormControlLabel
                   value="top"
-                  control={<Checkbox color="primary" />}
+                  control={
+                    <Checkbox
+                      onChange={() =>
+                        setProvideHomeVisitService(!provideHomeVisitService)
+                      }
+                      color="primary"
+                    />
+                  }
                   id="ProvideHomeVisitService"
                   label="Provide Home Visit Service?"
                   name="ProvideHomeVisitService"
                   labelPlacement="end"
                 />
-                <DistanceSlider
-                  id="radius" />
+                {provideHomeVisitService && (
+                  <DistanceSlider
+                    setValue={(value) => setRadius(value)}
+                    id="radius"
+                  />
+                )}
               </Grid>
 
               <Grid item xs={8}>
@@ -531,16 +581,6 @@ const RegisterSpecialist = () => {
                   label="Tell us about yourself!"
                   onChange={getAboutMe}
                 />
-                {/* <TextField
-                  multiline
-                  rows={6}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="about"
-                  label="Tell us about yourself!"
-                  id="about"
-                /> */}
               </Grid>
             </Grid>
             <Grid container spacing={3}>
@@ -558,11 +598,13 @@ const RegisterSpecialist = () => {
                 >
                   Register
                 </Button>
-                <Link href="#"
+                <Link
+                  href="#"
                   variant="body2"
                   onClick={(event) => {
                     handleLogInOnClick(event);
-                  }}>
+                  }}
+                >
                   Already have an account? Sign in
                 </Link>
               </Grid>
