@@ -37,7 +37,7 @@ namespace pawsitive
             // The DockerConnection connection string is just for Minh so he can use SQL Server via Docker
             if (_env.IsDevelopment())
             {
-                services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DockerConnection")));
+                services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDatabase")));
             }
             else
             {
