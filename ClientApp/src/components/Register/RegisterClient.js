@@ -1,13 +1,14 @@
 import React, { useState } from "react";
+import axios from "axios";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
+//import FormControlLabel from "@material-ui/core/FormControlLabel";
+//import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
-import Box from "@material-ui/core/Box";
+//import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
@@ -36,29 +37,86 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RegisterClient = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [serverError, setServerError] = useState("");
   const classes = useStyles();
   const pawTheme = PawsitiveTheme;
   const history = useHistory();
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isPasswordEqual, setIsPasswordEqual] = useState(true);
 
-  //crappy client side validation for password
-  const onChange = (field, value) => {
-    if (field === "password") {
-      setPassword(value);
-    }
-    if (field === "confirmPassword") {
-      setConfirmPassword(value);
-    }
-  };
 
   const handleRegisterOnClick = (event) => {
     event.preventDefault();
-    if (password !== confirmPassword) {
-      setIsPasswordEqual(false);
+    if (validateEmail() && validatePassword() && validateConfirmPassword()) {
+      const reqBody = {
+        email: email,
+        password: password,
+      };
+      axios
+        .post("/api/Authenticate/RegisterClient", reqBody)
+        .then((res) => {
+          if (res.status === 200) {
+            // Need to prompt pop-up "Thank you for Sign-up! Please sign-in"
+            alert("Thank you for Sign-up! Please sign-in");
+            history.push("/login");
+          } else {
+            console.log(res);
+          }
+        })
+        .catch((err) => {
+          const { message } = err.response.data;
+          console.error(err);
+          setServerError(message);
+        });
+    }
+  };
+
+  //TODO - checking if the email already exists in a real time
+  const validateEmail = () => {
+    if (email === "") {
+      setEmailError("Email is required.");
+      return false;
+    }
+    if (typeof email !== "undefined") {
+      let lastAtPos = email.lastIndexOf('@');
+      let lastDotPos = email.lastIndexOf('.');
+
+      if (!(lastAtPos < lastDotPos && lastAtPos > 0 && email.indexOf('@@') == -1 && lastDotPos > 2 && (email.length - lastDotPos) > 2)) {
+        setEmailError("Email is not valid.");
+        return false;
+      }
+    }
+    else {
+      setEmailError("");
+      return false;
+    }
+  };
+
+  const validatePassword = () => {
+    if (password === "") {
+      setPasswordError("Password is required");
+      return false;
     } else {
-      setIsPasswordEqual(true);
+      setPasswordError("");
+      return true;
+    }
+  };
+
+  const validateConfirmPassword = () => {
+    if (confirmPassword === "") {
+      setConfirmPasswordError("Confirmation Password is required");
+      return false;
+    } else if (confirmPassword !== password) {
+      setConfirmPasswordError("The password and confirmation password do not match.");
+      return false;
+    }
+    else {
+      setConfirmPasswordError("");
+      return true;
     }
   };
 
@@ -87,36 +145,49 @@ const RegisterClient = () => {
                 id="email"
                 label="Email Address"
                 name="email"
+                type="email"
                 autoFocus
+                onChange={(e) => {
+                  setServerError("");
+                  setEmailError("");
+                  setEmail(e.target.value);
+                }}
+                error={emailError !== ""}
+                helperText={emailError}
               />
               <TextField
-                error={!isPasswordEqual ? true : false}
-                helperText={!isPasswordEqual ? "Passwords must match!" : ""}
                 variant="outlined"
                 margin="normal"
                 required
                 fullWidth
+                id="password"
                 name="password"
                 label="Password"
                 type="password"
-                id="password"
                 onChange={(e) => {
-                  onChange("password", e.target.value);
+                  setServerError("");
+                  setPasswordError("");
+                  setPassword(e.target.value);
                 }}
+                error={passwordError !== ""}
+                helperText={passwordError}
               />
               <TextField
-                error={!isPasswordEqual ? true : false}
                 variant="outlined"
                 margin="normal"
                 required
                 fullWidth
+                id="password2"
                 name="password2"
                 label="Confirm Password"
                 type="password"
-                id="password2"
                 onChange={(e) => {
-                  onChange("confirmPassword", e.target.value);
+                  setServerError("");
+                  setConfirmPasswordError("");
+                  setConfirmPassword(e.target.value);
                 }}
+                error={confirmPasswordError !== ""}
+                helperText={confirmPasswordError}
               />
               <Button
                 type="submit"

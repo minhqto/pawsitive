@@ -7,7 +7,7 @@ namespace pawsitive.EntityModels
     {
         public ServiceType()
         {
-            Users = new List<User>();
+            Users = new HashSet<User>();
         }
 
         public int Id { get; set; }

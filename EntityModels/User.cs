@@ -8,21 +8,21 @@ namespace pawsitive.EntityModels
 {
     public class User : IdentityUser
     {
-        public User()
-        {
-            ServiceTypes = new List<ServiceType>();
-        }
+
+        // In IdentityUser: Email, PhoneNumber
 
         public SpecialistProfile SpecialistProfile { get; set; }
         public int? SpecialistProfileId { get; set; }
 
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
         public Address Address { get; set; }
         public int? AddressId { get; set; }
 
-        public string FirstName { get; set; }
+        // TODO - will work on this later
+        //public string ProfileImageContentType { get; set; }
+        //public byte[] ProfileImage { get; set; }
 
-        public string LastName { get; set; }
-
-        public ICollection<ServiceType> ServiceTypes { get; set; }
     }
 }
