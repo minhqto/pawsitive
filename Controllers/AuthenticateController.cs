@@ -79,8 +79,9 @@ namespace pawsitive.Controllers
 
             User user = new User()
             {
-                Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Email, // put here to make Identity User work, we don't use this field
+                Email = model.Email,
                 //TODO(Jihyun) - didn't decide yet to have names or not. If we do, need to change the page design
                 //FirstName = model.FirstName,
                 //LastName = model.LastName,

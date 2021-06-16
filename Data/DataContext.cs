@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using pawsitive.EntityModels;
@@ -11,10 +12,6 @@ namespace pawsitive.Data
 {
     public class DataContext : IdentityDbContext<User>
     {
-        /*public DbSet<Customer> Customers { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<ProductOrder> ProductOrders { get; set; }*/
         public DbSet<Address> Address { get; set; }
         public DbSet<Booking> Booking { get; set; }
         public DbSet<BookingMessage> BookingMessage { get; set; }
@@ -33,6 +30,8 @@ namespace pawsitive.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<IdentityUser>().Ignore(c => c.UserName);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

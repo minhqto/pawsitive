@@ -48,16 +48,17 @@ const RegisterClient = () => {
   const pawTheme = PawsitiveTheme;
   const history = useHistory();
 
-
   const handleRegisterOnClick = (event) => {
     event.preventDefault();
+    console.log("Button Clicked");
     if (validateEmail() && validatePassword() && validateConfirmPassword()) {
+      console.log("Request is going..");
       const reqBody = {
         email: email,
         password: password,
       };
       axios
-        .post("/api/Authenticate/RegisterClient", reqBody)
+        .post("/api/Authenticate/register-client", reqBody)
         .then((res) => {
           if (res.status === 200) {
             // Need to prompt pop-up "Thank you for Sign-up! Please sign-in"
@@ -81,22 +82,20 @@ const RegisterClient = () => {
       setEmailError("Email is required.");
       return false;
     }
-    if (typeof email !== "undefined") {
-      let lastAtPos = email.lastIndexOf('@');
-      let lastDotPos = email.lastIndexOf('.');
+    const re =
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-      if (!(lastAtPos < lastDotPos && lastAtPos > 0 && email.indexOf('@@') == -1 && lastDotPos > 2 && (email.length - lastDotPos) > 2)) {
-        setEmailError("Email is not valid.");
-        return false;
-      }
-    }
-    else {
-      setEmailError("");
+    if (!re.test(email)) {
+      setEmailError("Email is invalid.");
       return false;
     }
+
+    setEmailError("");
+    return true;
   };
 
   const validatePassword = () => {
+    console.log("Password validating");
     if (password === "") {
       setPasswordError("Password is required");
       return false;
@@ -111,10 +110,11 @@ const RegisterClient = () => {
       setConfirmPasswordError("Confirmation Password is required");
       return false;
     } else if (confirmPassword !== password) {
-      setConfirmPasswordError("The password and confirmation password do not match.");
+      setConfirmPasswordError(
+        "The password and confirmation password do not match."
+      );
       return false;
-    }
-    else {
+    } else {
       setConfirmPasswordError("");
       return true;
     }
@@ -136,7 +136,11 @@ const RegisterClient = () => {
             <Typography component="h1" variant="h5">
               Register as Client
             </Typography>
-            <form className={classes.form} noValidate>
+            <form
+              className={classes.form}
+              noValidate
+              onSubmit={handleRegisterOnClick}
+            >
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -147,6 +151,7 @@ const RegisterClient = () => {
                 name="email"
                 type="email"
                 autoFocus
+                value={email}
                 onChange={(e) => {
                   setServerError("");
                   setEmailError("");
@@ -164,6 +169,7 @@ const RegisterClient = () => {
                 name="password"
                 label="Password"
                 type="password"
+                value={password}
                 onChange={(e) => {
                   setServerError("");
                   setPasswordError("");
@@ -181,6 +187,7 @@ const RegisterClient = () => {
                 name="password2"
                 label="Confirm Password"
                 type="password"
+                value={confirmPassword}
                 onChange={(e) => {
                   setServerError("");
                   setConfirmPasswordError("");
@@ -194,9 +201,6 @@ const RegisterClient = () => {
                 fullWidth
                 variant="contained"
                 className={classes.submit}
-                onClick={(event) => {
-                  handleRegisterOnClick(event);
-                }}
               >
                 Register
               </Button>
