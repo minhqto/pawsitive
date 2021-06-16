@@ -187,22 +187,12 @@ const RegisterSpecialist = () => {
       setEmailError("");
     }
 
-    if (typeof email !== "undefined") {
-      let lastAtPos = email.lastIndexOf("@");
-      let lastDotPos = email.lastIndexOf(".");
+    const re =
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-      if (
-        !(
-          lastAtPos < lastDotPos &&
-          lastAtPos > 0 &&
-          email.indexOf("@@") == -1 &&
-          lastDotPos > 2 &&
-          email.length - lastDotPos > 2
-        )
-      ) {
-        setEmailError("Email is not valid.");
-        return false;
-      }
+    if (!re.test(email)) {
+      setEmailError("Email is invalid.");
+      return false;
     }
 
     //Password
