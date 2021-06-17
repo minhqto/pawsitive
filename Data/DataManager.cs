@@ -13,8 +13,8 @@ namespace pawsitive.Data
 {
     public class DataManager
     {
-        DataContext dtx;
-        UserManager<User> _userManager;
+        private readonly DataContext dtx;
+        private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> roleManager;
 
 
@@ -148,8 +148,6 @@ namespace pawsitive.Data
 
                     resultOne = await _userManager.CreateAsync(userOne , "12345678");
                     resultTwo = await _userManager.CreateAsync(userTwo, "12345678");
-
-
 
                     if (resultOne.Succeeded && resultTwo.Succeeded)
                     {

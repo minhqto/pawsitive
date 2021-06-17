@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using pawsitive.Data;
+using pawsitive.EntityModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace pawsitive.Controllers
 {
@@ -15,9 +16,9 @@ namespace pawsitive.Controllers
     {
         DataManager dataManager;
 
-        public LoadDummyDataController(DataContext context)
+        public LoadDummyDataController(DataContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManage)
         {
-            dataManager = new DataManager(context);
+            dataManager = new DataManager(context, userManager, roleManage);
         }
 
         [HttpGet]
