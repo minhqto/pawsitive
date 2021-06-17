@@ -14,6 +14,7 @@ import { isJwtTokenExist, isJwtTokenExpire } from "./utils/auth";
 import { setCurrentUser } from "./redux/auth";
 import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
+import { ServicePage } from "./components/Specialist/ServicePage";
 
 function App() {
   const history = useHistory();
@@ -40,6 +41,12 @@ function App() {
       <Switch>
         <PublicRoute restricted={false} component={Home} path="/" exact />
         <PublicRoute restricted={true} component={Login} path="/login" exact />
+        <PublicRoute
+          restricted={true}
+          component={ServicePage}
+          path="/specialistServicePage"
+          exact
+        />
         <PublicRoute
           restricted={true}
           component={RegisterClient}
