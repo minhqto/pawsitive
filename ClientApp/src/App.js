@@ -14,11 +14,8 @@ import { isJwtTokenExist, isJwtTokenExpire } from "./utils/auth";
 import { setCurrentUser } from "./redux/auth";
 import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
-<<<<<<< HEAD
 import { ServicePage } from "./components/Specialist/ServicePage";
-=======
 import ProfileView from "./components/ClientPages/ProfileView";
->>>>>>> 9f83430 (create client page with simple authorization based on user id)
 
 function App() {
   const history = useHistory();
@@ -46,7 +43,7 @@ function App() {
         <PublicRoute restricted={false} component={Home} path="/" exact />
         <PublicRoute restricted={true} component={Login} path="/login" exact />
         <PublicRoute
-          restricted={true}
+          restricted={false}
           component={ServicePage}
           path="/specialistServicePage"
           exact
