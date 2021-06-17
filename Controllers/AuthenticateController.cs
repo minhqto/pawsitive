@@ -46,6 +46,7 @@ namespace pawsitive.Controllers
                 {
                     // Jihyun, 6/9, we will use Email as UserName
                     new Claim("email", user.Email),
+                    new Claim("id", user.Id)
                 };
 
                 foreach (var userRole in userRoles)
