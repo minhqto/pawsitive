@@ -20,4 +20,4 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore "./pawsitive.csproj"
     - name: Build
-      run: dotnet publish "pawsitive.csproj" -c Release -o /app/publish
+      run: dotnet build "pawsitive.csproj"
