@@ -55,6 +55,17 @@ export const NavMenu = () => {
                   Home
                 </NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/specialistServicePage">
+                  Specialist
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/specialist/myprofile/editservice">
+                  Edit Service
+                </NavLink>
+              </NavItem>
+
               {!isAuthenticated ? (
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/login">
