@@ -15,7 +15,6 @@ namespace pawsitive.EntityModels
         public User Specialist { get; set; }
         //public string SpecialistId { get; set; }
 
-
         public string BusinessName { get; set; }
 
         public bool ProvideHomeVisitService { get; set; }
@@ -26,8 +25,6 @@ namespace pawsitive.EntityModels
         public string Availability { get; set; }
 
         public string AboutMe { get; set; }
-
-
 
         // Whether the specialist was approved or not
         public bool Status { get; set; }
