@@ -11,40 +11,23 @@ namespace pawsitive.ViewModels
     {
         public RegisterSpecialistVM()
         {
-            ServiceTypes = new List<ServiceType>();
+            ServiceTypes = new List<string>();
         }
 
-
-        [EmailAddress]
-        [Required(ErrorMessage = "Email is required")]
         public string Email { get; set; }
 
-        [DataType(DataType.Password)]
-        [Required(ErrorMessage = "Password is required")]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         public string Password { get; set; }
 
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
-
-        [Required(ErrorMessage = "First Name is required")]
         public string FirstName { get; set; }
-        [Required(ErrorMessage = "Last Name is required")]
+
         public string LastName { get; set; }
-
-        // TODO - will work on this later
-        //[DataType(DataType.Upload)]
-        //public string ProfileImageUpload { get; set; }
-
 
         // Address Entity
         public string StreetAddress { get; set; }
         public string City { get; set; }
         public string Province { get; set; }
         public string PostalCode { get; set; }
-
+        public string Country { get; set; }
 
         public string PhoneNumber { get; set; }
 
@@ -58,14 +41,14 @@ namespace pawsitive.ViewModels
         public int? Radius { get; set; }
 
         //Business hour (optional)
-        public string Availability { get; set; }
+        //public string Availability { get; set; }
 
-        [Required(ErrorMessage = "Please tell us about you")]
         public string AboutMe { get; set; }
         
+        public IEnumerable<string> ServiceTypes { get; set; }
 
-        public IEnumerable<ServiceType> ServiceTypes { get; set; }
-
-
+        // TODO - will work on this later
+        //[DataType(DataType.Upload)]
+        //public string ProfileImageUpload { get; set; }
     }
 }
