@@ -8,6 +8,8 @@ import { Counter } from "./components/Examples/Counter";
 import Login from "./components/Login/Login";
 import RegisterClient from "./components/Register/RegisterClient";
 import RegisterSpecialist from "./components/Register/RegisterSpecialist";
+import { Myprofile } from "./components/Specialist/Myprofile";
+import EditService from "./components/Specialist/EditService";
 import "./custom.css";
 import { isJwtTokenExist, isJwtTokenExpire } from "./utils/auth";
 
@@ -61,10 +63,24 @@ function App() {
           exact
         />
 
+        {/* Public for now to test, need to move to PrivateRoute later */}
+        <PublicRoute
+          restricted={false}
+          component={Myprofile}
+          path="/specialist/myprofile"
+          exact
+        />
+        {/* Public for now to test, need to move to PrivateRoute later */}
+        <PublicRoute
+          restricted={false}
+          component={EditService}
+          path="/specialist/myprofile/editservice"
+
         <PublicRoute
           restricted={false}
           component={ProfileView}
           path="/client/profile/:routeId"
+
           exact
         />
 
