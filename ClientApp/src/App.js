@@ -16,6 +16,8 @@ import { isJwtTokenExist, isJwtTokenExpire } from "./utils/auth";
 import { setCurrentUser } from "./redux/auth";
 import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
+import { ServicePage } from "./components/Specialist/ServicePage";
+import ProfileView from "./components/ClientPages/ProfileView";
 
 function App() {
   const history = useHistory();
@@ -43,6 +45,12 @@ function App() {
         <PublicRoute restricted={false} component={Home} path="/" exact />
         <PublicRoute restricted={true} component={Login} path="/login" exact />
         <PublicRoute
+          restricted={false}
+          component={ServicePage}
+          path="/specialistServicePage"
+          exact
+        />
+        <PublicRoute
           restricted={true}
           component={RegisterClient}
           path="/signupClient"
@@ -67,6 +75,12 @@ function App() {
           restricted={false}
           component={EditService}
           path="/specialist/myprofile/editservice"
+
+        <PublicRoute
+          restricted={false}
+          component={ProfileView}
+          path="/client/profile/:routeId"
+
           exact
         />
 

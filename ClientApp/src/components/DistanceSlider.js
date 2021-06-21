@@ -27,7 +27,7 @@ function valuetext(value) {
   return `{value}km`;
 }
 
-const DistanceSlider = () => {
+const DistanceSlider = ({ setValue }) => {
   const classes = useStyles();
 
   return (
@@ -36,6 +36,7 @@ const DistanceSlider = () => {
         Visit Distance
       </Typography>
       <Slider
+        onChange={(e, val) => setValue(val)}
         defaultValue={20}
         getAriaValueText={valuetext}
         aria-labelledby="discrete-slider-custom"
@@ -43,7 +44,7 @@ const DistanceSlider = () => {
         valueLabelDisplay="auto"
         marks={marks}
         //Will be abled only when 'ProvideHomeVisitService' is True
-        disabled={true}
+        disabled={false}
       />
     </div>
   );

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using pawsitive.Data;
 using pawsitive.EntityModels;
 using pawsitive.ViewModels;
 using System;
@@ -22,12 +23,14 @@ namespace pawsitive.Controllers
         private readonly UserManager<User> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration _configuration;
+        private readonly DataContext dx;
 
-        public AuthenticateController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public AuthenticateController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, DataContext dataContext)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
             _configuration = configuration;
+            dx = dataContext;
         }
 
         [HttpPost]
@@ -43,6 +46,7 @@ namespace pawsitive.Controllers
                 {
                     // Jihyun, 6/9, we will use Email as UserName
                     new Claim("email", user.Email),
+                    new Claim("id", user.Id)
                 };
 
                 foreach (var userRole in userRoles)
@@ -119,42 +123,66 @@ namespace pawsitive.Controllers
             if (userExists != null)
                 return StatusCode(StatusCodes.Status409Conflict, new AuthResponse { Status = "Error", Message = "User already exists!" });
 
+            // Create a new address
             Address address = new Address()
             {
                 StreetAddress = model.StreetAddress,
                 City = model.City,
                 Province = model.Province,
                 PostalCode = model.PostalCode,
+                Country = model.Country
             };
 
+            dx.Address.Add(address);
+            dx.SaveChanges();
+
+            // Create a new user
             User user = new User()
             {
-                Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
+                Email = model.Email,
+                UserName = model.Email,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
                 Address = address,
             };
 
+            // Convert the list of service type (string) into service type (entity model)
             var serviceTypes = new List<ServiceType>();
             foreach (var type in model.ServiceTypes)
             {
-                serviceTypes.Add(type);
+                var serviceType = dx.ServiceType.SingleOrDefault(s => s.ServiceTypeName.Equals(type));
+
+                if(serviceType != null)
+                {
+                    serviceTypes.Add(serviceType);
+                }
+                else
+                {
+                    var newServiceType = new ServiceType() { 
+                        ServiceTypeName = type
+                    };
+                    dx.Add(newServiceType);
+                    dx.SaveChanges();
+
+                    serviceTypes.Add(newServiceType);
+                }
             }
             
-            SpecialistProfile specialist = new SpecialistProfile()
+            SpecialistProfile specialistProfile = new SpecialistProfile()
             {
-                Specialist = user,
                 BusinessName = model.BusinessName,
                 ProvideHomeVisitService = model.ProvideHomeVisitService,
                 Radius = model.Radius,
-                Availability = model.Availability,
                 AboutMe = model.AboutMe,
                 ServiceTypes = serviceTypes,
             };
 
-            user.SpecialistProfile = specialist;
+            dx.SpecialistProfile.Add(specialistProfile);
+            dx.SaveChanges();
+
+            user.SpecialistProfile = specialistProfile;
 
             var result = await userManager.CreateAsync(user, model.Password);
 
