@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { loginUser, setCurrentUser } from "../../redux/auth";
+import { setCurrentUser } from "../../redux/auth";
 import { setAuthToken } from "../../utils/auth";
 
 // Material components
