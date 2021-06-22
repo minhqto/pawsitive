@@ -59,12 +59,12 @@ const EditService = () => {
     }, [user]);
 
     const columns = [
-        { field: 'serviceName', headerName: 'Service Name', width: "70%" },
+        { field: 'serviceName', headerName: 'Service Name', width: 300 },
         {
             field: 'servicePrice',
             headerName: 'Fee ($) ',
             type: 'number',
-            width: "30",
+            width: 130,
         },
     ];
 
@@ -79,7 +79,7 @@ const EditService = () => {
 
     const ServiceList = [{
         serviceName: "",
-        servicePrice: 0.00,
+        servicePrice: 0,
     }]
 
 
@@ -117,7 +117,7 @@ const EditService = () => {
             setServiceNameError("");
         }
 
-        if (servicePrice === 0.00) {
+        if (servicePrice === 0) {
             setServicePriceError("Service Fee is required");
             return false;
         } else {
@@ -154,7 +154,7 @@ const EditService = () => {
 
     return (
         <ThemeProvider theme={pawTheme}>
-            <Container component="main" maxWidth="md">
+            <Container component="main" maxWidth="lg">
                 <CssBaseline />
                 <div className={classes.paper}>
                     <Avatar src="https://i.imgur.com/WHw5aeR.jpg"></Avatar>
@@ -176,8 +176,9 @@ const EditService = () => {
                                 }} >
                                 Delete the selected Items
                             </Button></div>
-
-                        <h5>Add a new Service</h5>
+                        <Typography component="h1" variant="h6">
+                            Add a new Service
+                        </Typography>
                         <div>
                             <Grid container spacing={0}>
                                 <Grid item xs={6} >
