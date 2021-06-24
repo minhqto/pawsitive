@@ -79,28 +79,8 @@ function createDataService(name, fee) {
 const rowsService = [
   createDataService("Behaviour Training 1 day(Big dogs)", 70),
   createDataService("Behaviour Training 1 day(Small dogs)", 50),
-  createDataService("3 Days Packages", 180),
+  createDataService("3 Days Packages", 130),
   createDataService("5 Days Packages", 180),
-];
-
-//Logic for My Booking List
-function createDataBooking(date, type, clientName, status) {
-  return { date, type, clientName, status };
-}
-const rowsBooking = [
-  createDataBooking(
-    "2021-05-01",
-    "Training",
-    "Danial Craig",
-    "Waiting for approval"
-  ),
-  createDataBooking("2021-03-01", "Pet Food", "Anjolina Jolie", "Approved"),
-  createDataBooking(
-    "2021-01-21",
-    "Training",
-    "Anjolina Jolie",
-    "Canceled by client"
-  ),
 ];
 
 export const ProfilePage = function (specialistData) {
@@ -181,43 +161,6 @@ export const ProfilePage = function (specialistData) {
               </TableBody>
             </Table>
           </TableContainer>
-        </div>
-
-        {/* My Booking List */}
-        <div className={classes.table}>
-          <Typography variant="h6">My Booking List</Typography>
-          <TableContainer component={Paper} className={classes.marginTop}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell align="right">Type</TableCell>
-                  <TableCell align="right">Manage</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rowsBooking.map((row) => (
-                  <TableRow
-                    key={row.date}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.date}
-                    </TableCell>
-                    <TableCell align="right">{row.type}</TableCell>
-                    <TableCell align="right">{row.clientName}</TableCell>
-                    <TableCell align="right">{row.status}</TableCell>
-                    <TableCell align="right">
-                      <Button className={classes.button} color="primary">
-                        Detail
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <br />
         </div>
       </div>
     </div>

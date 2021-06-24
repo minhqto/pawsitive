@@ -1,5 +1,4 @@
 import React from "react";
-import Rating from "@material-ui/lab/Rating";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Button from "reactstrap/lib/Button";
@@ -12,6 +11,13 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import PropTypes from "prop-types";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -57,7 +63,30 @@ const useStyles = makeStyles({
     flexGrow: 1,
     width: 350,
   },
+  marginTop: {
+    marginTop: 20,
+  },
 });
+
+//Logic for Training List
+function createDataTraining(name, fee) {
+  return { name, fee };
+}
+const rowsTraining = [
+  createDataTraining("Behaviour Training 1 day(Big dogs)", 70),
+  createDataTraining("Behaviour Training 1 day(Small dogs)", 50),
+  createDataTraining("3 Days Packages", 130),
+  createDataTraining("5 Days Packages", 180),
+];
+
+//Logic for Pet Food List
+function createDataFood(name, fee) {
+  return { name, fee };
+}
+const rowsFood = [
+  createDataFood("Hill's Science Diet Adult (15.87Kg)", 50),
+  createDataFood("Rotal Canin Large Adult (13.6Kg)", 94.99),
+];
 
 export const ServicePage = function (specialistData) {
   const [valueRating, setValueRating] = React.useState(3);
@@ -122,15 +151,69 @@ export const ServicePage = function (specialistData) {
           <TabPanel value={valueProduct} index={0}>
             {
               <div>
-                <div>Item 1</div>
-                <div>Item 2</div>
-                <div>Item 3</div>
-                <div>Item 4</div>
+                {/* Training List */}
+                <div className={classes.marginTop}>
+                  <TableContainer
+                    component={Paper}
+                    className={classes.marginTop}
+                  >
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Service Name</TableCell>
+                          <TableCell align="right">Fee</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {rowsTraining.map((row) => (
+                          <TableRow
+                            key={row.name}
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              {row.name}
+                            </TableCell>
+                            <TableCell align="right">{row.fee}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </div>
               </div>
             }
           </TabPanel>
           <TabPanel value={valueProduct} index={1}>
-            Item Two
+            {/* Training List */}
+            <div className={classes.marginTop}>
+              <TableContainer component={Paper} className={classes.marginTop}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Service Name</TableCell>
+                      <TableCell align="right">Fee</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rowsFood.map((row) => (
+                      <TableRow
+                        key={row.name}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                        </TableCell>
+                        <TableCell align="right">{row.fee}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
           </TabPanel>
         </div>
 
