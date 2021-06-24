@@ -16,6 +16,7 @@ import { setCurrentUser } from "./redux/auth";
 import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { ServicePage } from "./components/Specialist/ServicePage";
+import { ProfilePage } from "./components/Specialist/ProfilePage";
 import ProfileView from "./components/ClientPages/ProfileView";
 import Map from "./components/Map";
 
@@ -62,19 +63,24 @@ function App() {
           path="/signupSpecialist"
           exact
         />
-
+        <PublicRoute
+          restricted={false}
+          component={ProfilePage}
+          path="/specialist/myprofile"
+          exact
+        />
 
         {/* Public for now to test, need to move to PrivateRoute later */}
         <PublicRoute
           restricted={false}
           component={EditService}
-          path="/specialist/myprofile/editservice" />
+          path="/specialist/myprofile/editservice"
+        />
 
         <PublicRoute
           restricted={false}
           component={ProfileView}
           path="/client/profile/:routeId"
-
           exact
         />
 
