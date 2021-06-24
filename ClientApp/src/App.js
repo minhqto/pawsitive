@@ -43,7 +43,7 @@ function App() {
   return (
     <Layout>
       <Switch>
-        <PublicRoute restricted={false} component={Home} path="/home" exact />
+        <PublicRoute restricted={false} component={Home} path="/" exact />
         <PublicRoute restricted={true} component={Login} path="/login" exact />
         <PublicRoute
           restricted={false}
@@ -84,7 +84,7 @@ function App() {
           exact
         />
 
-        <PublicRoute restricted={false} component={Map} path="/" exact />
+        <PublicRoute restricted={false} component={Map} path="/map" exact />
 
         {/* Example routes, won't be used in the main app */}
         <Route path="/counter" component={Counter} />
