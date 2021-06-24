@@ -8,7 +8,6 @@ import { Counter } from "./components/Examples/Counter";
 import Login from "./components/Login/Login";
 import RegisterClient from "./components/Register/RegisterClient";
 import RegisterSpecialist from "./components/Register/RegisterSpecialist";
-import { Myprofile } from "./components/Specialist/Myprofile";
 import EditService from "./components/Specialist/EditService";
 import "./custom.css";
 import { isJwtTokenExist, isJwtTokenExpire } from "./utils/auth";
@@ -17,7 +16,9 @@ import { setCurrentUser } from "./redux/auth";
 import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { ServicePage } from "./components/Specialist/ServicePage";
+import { ProfilePage } from "./components/Specialist/ProfilePage";
 import ProfileView from "./components/ClientPages/ProfileView";
+import Map from "./components/Map";
 
 function App() {
   const history = useHistory();
@@ -62,27 +63,28 @@ function App() {
           path="/signupSpecialist"
           exact
         />
-
-        {/* Public for now to test, need to move to PrivateRoute later */}
         <PublicRoute
           restricted={false}
-          component={Myprofile}
+          component={ProfilePage}
           path="/specialist/myprofile"
           exact
         />
+
         {/* Public for now to test, need to move to PrivateRoute later */}
         <PublicRoute
           restricted={false}
           component={EditService}
           path="/specialist/myprofile/editservice"
+        />
 
         <PublicRoute
           restricted={false}
           component={ProfileView}
           path="/client/profile/:routeId"
-
           exact
         />
+
+        <PublicRoute restricted={false} component={Map} path="/map" exact />
 
         {/* Example routes, won't be used in the main app */}
         <Route path="/counter" component={Counter} />
