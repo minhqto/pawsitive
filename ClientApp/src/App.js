@@ -43,7 +43,7 @@ function App() {
   return (
     <Layout>
       <Switch>
-        {/*<PublicRoute restricted={false} component={Home} path="/" exact /> */}
+        <PublicRoute restricted={false} component={Home} path="/home" exact />
         <PublicRoute restricted={true} component={Login} path="/login" exact />
         <PublicRoute
           restricted={false}
