@@ -119,12 +119,14 @@ export const ProfilePage = function (specialistData) {
               className={classes.root}
               src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
             />
-            <Button className={classes.button}>Edit Picture</Button>
+            <Button className={classes.button} color="primary">
+              Edit Picture
+            </Button>
           </Grid>
 
           <Grid item xs={8} direction="column">
             <Typography variant="h5">
-              Bread Pitt <Button>Edit</Button>
+              Bread Pitt <Button color="primary">Edit</Button>
             </Typography>
             <br />
             <Typography variant="subtitle1">
@@ -154,7 +156,7 @@ export const ProfilePage = function (specialistData) {
         {/* My Service List */}
         <div className={classes.table}>
           <Typography variant="h6">
-            My Service List <Button>Edit</Button>
+            My Service List <Button color="primary">Edit</Button>
           </Typography>
           <TableContainer component={Paper} className={classes.marginTop}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -206,7 +208,9 @@ export const ProfilePage = function (specialistData) {
                     <TableCell align="right">{row.clientName}</TableCell>
                     <TableCell align="right">{row.status}</TableCell>
                     <TableCell align="right">
-                      <Button className={classes.button}>Detail</Button>
+                      <Button className={classes.button} color="primary">
+                        Detail
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
