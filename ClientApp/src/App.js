@@ -17,6 +17,7 @@ import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { ServicePage } from "./components/Specialist/ServicePage";
 import ProfileView from "./components/ClientPages/ProfileView";
+import Map from "./components/Map";
 
 function App() {
   const history = useHistory();
@@ -76,6 +77,8 @@ function App() {
 
           exact
         />
+
+        <PublicRoute restricted={false} component={Map} path="/map" exact />
 
         {/* Example routes, won't be used in the main app */}
         <Route path="/counter" component={Counter} />
