@@ -3,6 +3,7 @@ import { Route, Redirect, Switch } from "react-router";
 import { useHistory } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
+import Main from "./components/Main";
 import { FetchData } from "./components/Examples/FetchData";
 import { Counter } from "./components/Examples/Counter";
 import Login from "./components/Login/Login";
@@ -84,7 +85,7 @@ function App() {
           exact
         />
 
-        <PublicRoute restricted={false} component={Map} path="/map" exact />
+        <PublicRoute restricted={false} component={Main} path="/search" exact />
 
         {/* Example routes, won't be used in the main app */}
         <Route path="/counter" component={Counter} />

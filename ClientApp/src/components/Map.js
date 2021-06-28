@@ -1,29 +1,62 @@
-﻿import React, { Component, useEffect, useState } from "react";
-import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
-import axios from "axios";
+﻿import { Loader } from "@googlemaps/js-api-loader";
+import React, { useEffect, useState } from "react";
 
-const useStyles = makeStyles((theme) => ({
-  size: { width: "100%", height: "100%" },
-}));
+const Map = (props) => {
+  const tourStops = [
+    // [{ lat: 34.8791806, lng: -111.8265049 }, "Boynton Pass"],
+    // [{ lat: 34.8559195, lng: -111.7988186 }, "Airport Mesa"],
+    // [{ lat: 34.832149, lng: -111.7695277 }, "Chapel of the Holy Cross"],
+    // [{ lat: 34.823736, lng: -111.8001857 }, "Red Rock Crossing"],
+    // [{ lat: 34.800326, lng: -111.7665047 }, "Bell Rock"],
+  ];
 
-const Map = () => {
-  const [map, setMap] = useState("");
+  const loader = new Loader({
+    apiKey: process.env.REACT_APP_API_KEY,
+    version: "weekly",
+  });
+
   useEffect(() => {
-    axios.get("https://localhost:5001/api/Map/map").then((result) => {
-      setMap(result.data.message);
-    });
-  }, []);
+    if (props.user != null) {
+      props.user.forEach((user) => {
+        tourStops.push([
+          {
+            lat: parseInt(user.address.geo.lat),
+            lng: parseInt(user.address.geo.lng),
+          },
+          user.name,
+        ]);
+      });
+    }
+    if (tourStops.length > 0) {
+      loader
+        .load()
+        .then(() => {
+          const map = new window.google.maps.Map(
+            document.getElementById("map"),
+            {
+              center: tourStops[0][0],
+              zoom: 2,
+            }
+          );
+          tourStops.forEach(([position, title], i) => {
+            const marker = new window.google.maps.Marker({
+              position,
+              map,
+              title: `${i + 1}. ${title}`,
+              label: `${i + 1}`,
+              optimized: false,
+            });
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [props]);
 
-  const classes = makeStyles();
   return (
-    <div className={classes.size}>
-      <iframe
-        width="600"
-        height="450"
-        loading="lazy"
-        allowFullScreen
-        src={map}
-      ></iframe>
+    <div>
+      <div className={props.className} id="map"></div>
     </div>
   );
 };
