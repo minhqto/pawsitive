@@ -21,7 +21,7 @@ const SearchResults = (props) => {
   return (
     <div>
       <h2>Search Results</h2>
-      {items.length != 0 ? items : <div>loading...</div>}
+      {items.length != 0 ? items : <div>Loading...</div>}
     </div>
   );
 };
