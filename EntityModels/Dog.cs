@@ -17,6 +17,8 @@ namespace pawsitive.EntityModels
 
         public string DogBreed { get; set; }
 
+        public string DogSex { get; set; }
+
         public string DogName { get; set; }
 
         public int DogWeight { get; set; }
@@ -26,5 +28,9 @@ namespace pawsitive.EntityModels
         public bool HasBiteHistory { get; set; }
 
         public bool IsVaccinated { get; set; }
+
+        public string AboutDog { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 }

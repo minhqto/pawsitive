@@ -30,8 +30,6 @@ namespace pawsitive.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<IdentityUser>().Ignore(c => c.UserName);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

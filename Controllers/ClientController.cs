@@ -21,7 +21,6 @@ namespace pawsitive.Controllers
         [HttpGet]
         public string Get()
         {
-            dm.SayHello();
             return "Success";
         }
     }

@@ -190,10 +190,18 @@ export default function ProfileView() {
                 size="small"
                 variant="outlined"
                 color="primary"
+                onClick={() => setOpenEditDogModal(true)}
               >
                 Edit
               </Button>
             )}
+
+            <Modal
+              open={openEditDogModal}
+              onClose={() => setOpenEditDogModal(false)}
+            >
+              <EditDogModal cancelClick={() => setOpenEditDogModal(false)} />
+            </Modal>
           </Grid>
         ))}
       </Grid>
@@ -476,6 +484,167 @@ const AddDogModal = ({ cancelClick }) => {
   );
 };
 
-const EditDogModal = () => {
-  return <div>Edit Dog Modal</div>;
+const EditDogModal = ({ cancelClick }) => {
+  const classes = useStyles();
+  const [dogName, setDogName] = useState("");
+  const [dogAge, setDogAge] = useState(0);
+  const [dogSex, setDogSex] = useState("");
+  const [dogBreed, setDogBreed] = useState("");
+  const [dogWeight, setDogWeight] = useState(0);
+  const [dogBirthDate, setDogBirthDate] = useState(Date.now());
+  const [dogBiteHistory, setDogBiteHistory] = useState(false);
+  const [dogIsVaccinated, setDogIsVaccinated] = useState(false);
+  const [aboutDog, setAboutDog] = useState("");
+
+  const getAboutDog = (state) => {
+    const rteContent = convertToRaw(state.getCurrentContent());
+    setAboutDog(rteContent);
+
+    // How to convert state to HTML, for future display purpose
+    // let contentState = convertFromRaw(JSON.parse(jsonRte)); // convert json string to content state object
+    // let html = convertToHTML(contentState); // convert content state object to html
+    // console.log(html); // display the html
+  };
+
+  const addNewDog = () => {
+    const dogObj = {
+      dogName: dogName,
+      dogAge: dogAge,
+      dogSex: dogSex,
+      dogBreed: dogBreed,
+      dogWeight: dogWeight,
+      birthDate: dogBirthDate,
+      hasBiteHistory: dogBiteHistory,
+      isVaccinated: dogIsVaccinated,
+      aboutDog: aboutDog,
+    };
+    console.log(dogObj);
+  };
+
+  return (
+    <div className={classes.paper}>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <h1>Add new dog: </h1>
+          <div>
+            <Button
+              style={{ marginRight: "20px" }}
+              variant="contained"
+              color="primary"
+              onClick={addNewDog}
+            >
+              Add dog
+            </Button>
+            <Button onClick={cancelClick} variant="contained">
+              Cancel
+            </Button>
+          </div>
+        </Grid>
+        <hr></hr>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Name"
+            defaultValue=""
+            variant="outlined"
+            onChange={(e) => {
+              setDogName(e.target.value);
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Weight"
+            defaultValue=""
+            variant="outlined"
+            onChange={(e) => {
+              setDogWeight(e.target.value);
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Birth Date"
+            type="date"
+            variant="outlined"
+            onChange={(e) => {
+              setDogBirthDate(e.target.value);
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Breed"
+            defaultValue=""
+            variant="outlined"
+            onChange={(e) => {
+              setDogBreed(e.target.value);
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Age (years, months)"
+            defaultValue=""
+            variant="outlined"
+            type="number"
+            onChange={(e) => {
+              setDogAge(e.target.value);
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Sex"
+            defaultValue=""
+            variant="outlined"
+            onChange={(e) => {
+              setDogSex(e.target.value);
+            }}
+          />
+        </Grid>
+
+        <Grid item xs={6}>
+          <RadioGroup
+            aria-label="isVaccinated"
+            name="isVaccinated"
+            value={dogIsVaccinated}
+            onChange={(e) => {
+              setDogIsVaccinated(e.target.value);
+            }}
+          >
+            <FormControlLabel value="true" control={<Radio />} label="Yes" />
+            <FormControlLabel value="false" control={<Radio />} label="No" />
+          </RadioGroup>
+        </Grid>
+
+        <Grid item xs={6}>
+          <RadioGroup
+            aria-label="biteHistory"
+            name="biteHistory"
+            value={dogBiteHistory}
+            onChange={(e) => {
+              setDogBiteHistory(e.target.value);
+            }}
+          >
+            <FormControlLabel value="true" control={<Radio />} label="Yes" />
+            <FormControlLabel value="false" control={<Radio />} label="No" />
+          </RadioGroup>
+        </Grid>
+
+        <Grid item xs={12}>
+          <h3>About your dog</h3>
+          <MUIRichTextEditor
+            label="Tell us about your dog!"
+            onChange={getAboutDog}
+          />
+        </Grid>
+      </Grid>
+    </div>
+  );
 };

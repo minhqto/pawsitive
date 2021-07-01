@@ -16,9 +16,19 @@ namespace pawsitive.Data
             dtx = dataContext;
         }
 
-        public void SayHello()
+        /**
+         * Client Database operations
+         */
+
+        public bool seedData()
         {
-            return;
+            // seed data for client
+
+            // seed data for specialist
+
+
+
+            return true;
         }
     }
 }
