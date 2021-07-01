@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using pawsitive.Data;
 
 namespace pawsitive.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210701222201_fix_client_profile")]
+    partial class fix_client_profile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -706,13 +708,11 @@ namespace pawsitive.Migrations
 
                     b.HasOne("pawsitive.EntityModels.ClientProfile", "ClientProfile")
                         .WithOne("Client")
-                        .HasForeignKey("pawsitive.EntityModels.User", "ClientProfileId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("pawsitive.EntityModels.User", "ClientProfileId");
 
                     b.HasOne("pawsitive.EntityModels.SpecialistProfile", "SpecialistProfile")
                         .WithOne("Specialist")
-                        .HasForeignKey("pawsitive.EntityModels.User", "SpecialistProfileId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("pawsitive.EntityModels.User", "SpecialistProfileId");
 
                     b.Navigation("Address");
 

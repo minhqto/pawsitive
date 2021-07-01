@@ -12,8 +12,8 @@ namespace pawsitive.EntityModels
 
         public int Id { get; set; }
 
-        public User Client { get; set; }
-        //public string ClientId { get; set; }
+        public ClientProfile ClientProfile { get; set; }
+        public int ClientProfileId { get; set; }
 
         public string DogBreed { get; set; }
 

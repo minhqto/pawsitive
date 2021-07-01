@@ -30,6 +30,8 @@ namespace pawsitive.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            //builder.Entity<User>().HasOne(u => u.SpecialistProfile).WithOne(s => s.Specialist).OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<User>().HasOne(u => u.ClientProfile).WithOne(s => s.Client).OnDelete(DeleteBehavior.Cascade);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using pawsitive.Data;
 using System;
 using System.Collections.Generic;
@@ -13,15 +14,18 @@ namespace pawsitive.Controllers
     public class ClientController : ControllerBase
     {
         DataManager dm;
-        public ClientController(DataContext dx)
+
+        public ClientController(DataManager dataManager)
         {
-            dm = new DataManager(dx);
+            dm = dataManager;
         }
 
         [HttpGet]
-        public string Get()
+        public async Task<string> Get()
         {
-            return "Success";
+            bool result = await dm.seedData();
+
+            return result ? "Seed data successfully" : "Seed data unsuccessfully";
         }
     }
 }
