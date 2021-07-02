@@ -12,10 +12,12 @@ namespace pawsitive.EntityModels
 
         public int Id { get; set; }
 
-        public User Client { get; set; }
-        //public string ClientId { get; set; }
+        public ClientProfile ClientProfile { get; set; }
+        public int ClientProfileId { get; set; }
 
         public string DogBreed { get; set; }
+
+        public string DogSex { get; set; }
 
         public string DogName { get; set; }
 
@@ -26,5 +28,9 @@ namespace pawsitive.EntityModels
         public bool HasBiteHistory { get; set; }
 
         public bool IsVaccinated { get; set; }
+
+        public string AboutDog { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 }

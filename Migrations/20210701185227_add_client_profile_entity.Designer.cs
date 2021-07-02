@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using pawsitive.Data;
 
 namespace pawsitive.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210701185227_add_client_profile_entity")]
+    partial class add_client_profile_entity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -298,7 +300,10 @@ namespace pawsitive.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ClientProfileId")
+                    b.Property<string>("ClientId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("ClientProfileId")
                         .HasColumnType("int");
 
                     b.Property<string>("DogBreed")
@@ -323,6 +328,8 @@ namespace pawsitive.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
 
                     b.HasIndex("ClientProfileId");
 
@@ -649,13 +656,15 @@ namespace pawsitive.Migrations
 
             modelBuilder.Entity("pawsitive.EntityModels.Dog", b =>
                 {
-                    b.HasOne("pawsitive.EntityModels.ClientProfile", "ClientProfile")
-                        .WithMany("Dogs")
-                        .HasForeignKey("ClientProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("pawsitive.EntityModels.User", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId");
 
-                    b.Navigation("ClientProfile");
+                    b.HasOne("pawsitive.EntityModels.ClientProfile", null)
+                        .WithMany("Dogs")
+                        .HasForeignKey("ClientProfileId");
+
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("pawsitive.EntityModels.Review", b =>
