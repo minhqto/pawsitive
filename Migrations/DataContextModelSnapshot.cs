@@ -706,13 +706,11 @@ namespace pawsitive.Migrations
 
                     b.HasOne("pawsitive.EntityModels.ClientProfile", "ClientProfile")
                         .WithOne("Client")
-                        .HasForeignKey("pawsitive.EntityModels.User", "ClientProfileId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("pawsitive.EntityModels.User", "ClientProfileId");
 
                     b.HasOne("pawsitive.EntityModels.SpecialistProfile", "SpecialistProfile")
                         .WithOne("Specialist")
-                        .HasForeignKey("pawsitive.EntityModels.User", "SpecialistProfileId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("pawsitive.EntityModels.User", "SpecialistProfileId");
 
                     b.Navigation("Address");
 

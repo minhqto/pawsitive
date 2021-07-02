@@ -44,7 +44,6 @@ namespace pawsitive.Data
             
 
             //optionsBuilder.UseSqlServer(configuration.GetConnectionString("LocalDatabase"));
-
         }
     }
 }
