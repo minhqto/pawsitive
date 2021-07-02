@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using pawsitive.EntityModels;
 using System;
 using System.Collections.Generic;
@@ -10,15 +11,146 @@ namespace pawsitive.Data
     public class DataManager
     {
         DataContext dtx;
+        private readonly UserManager<User> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
 
-        public DataManager(DataContext dataContext)
+        public DataManager(DataContext dataContext, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             dtx = dataContext;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
         }
 
-        public void SayHello()
+        /**
+         * Create 3 clients and 3 specialists with full profiles
+         */
+        public async Task<bool> seedData()
         {
-            return;
+            DateTime baseDate = new DateTime(2015, 2, 15);
+            List<Address> addresses = new List<Address>()
+            {
+                // addresses belong to clients
+                new Address{ City="Toronto", Country="Canada", Province="ON", PostalCode="M4L 1V3", StreetAddress="500 Kingston Rd"},
+                new Address{ City="Toronto", Country="Canada", Province="ON", PostalCode="M5M 1W4", StreetAddress="315 St Germain Ave"},
+                new Address{ City="Toronto", Country="Canada", Province="ON", PostalCode="M4E 3K7", StreetAddress="234 Willow Ave"},
+                // addresses belong to specialists
+                new Address{ City="Toronto", Country="Canada", Province="ON", PostalCode="M4C 2G5", StreetAddress="26 Goodwood Park Cres East"},
+                new Address{ City="Toronto", Country="Canada", Province="ON", PostalCode="M4V 2Z2", StreetAddress="48 St Clair Ave W"},
+                new Address{ City="Toronto", Country="Canada", Province="ON", PostalCode="M4L 1H8", StreetAddress="1974 Queen St E"},
+            };
+
+            List<string> serviceTypesString = new List<string>()
+            {
+                "Training", "Grooming", "Therapist", "Pet Food"
+            };
+
+            // Convert the list of service type (string) into service type (entity model)
+            var serviceTypes = new List<ServiceType>();
+            foreach (var type in serviceTypesString)
+            {
+                var serviceType = dtx.ServiceType.SingleOrDefault(s => s.ServiceTypeName.Equals(type));
+
+                if (serviceType != null)
+                {
+                    serviceTypes.Add(serviceType);
+                }
+                else
+                {
+                    var newServiceType = new ServiceType()
+                    {
+                        ServiceTypeName = type
+                    };
+                    dtx.Add(newServiceType);
+                    dtx.SaveChanges();
+
+                    serviceTypes.Add(newServiceType);
+                }
+            }
+
+            List<Dog> dogs = new List<Dog>()
+            {
+                new Dog{AboutDog="Beautiful dog", BirthDate=baseDate, DogBreed="Breed A", DogName="Bolt", DogSex="Male", DogWeight=10, HasBiteHistory=false, ImageUrl="https://images.dog.ceo/breeds/puggle/IMG_122350.jpg", IsVaccinated=true},
+                new Dog{AboutDog="Ugly dog", BirthDate=baseDate, DogBreed="Breed B", DogName="Poke", DogSex="Female", DogWeight=10, HasBiteHistory=false, ImageUrl="https://images.dog.ceo/breeds/brabancon/n02112706_1394.jpg", IsVaccinated=true},
+                new Dog{AboutDog="Funny dog", BirthDate=baseDate, DogBreed="Breed C", DogName="Lex", DogSex="Male", DogWeight=10, HasBiteHistory=false, ImageUrl="https://images.dog.ceo/breeds/african/n02116738_634.jpg", IsVaccinated=true},
+            };
+
+            List<SpecialistProfile> specialistProfiles = new List<SpecialistProfile>()
+            {
+                new SpecialistProfile{AboutMe="Best specialist", Availability="Everyday from 9am to 5pm", BusinessName="Spec1", ProvideHomeVisitService=false, Radius=20, ServiceTypes=serviceTypes, Status=true},
+                new SpecialistProfile{AboutMe="Good specialist", Availability="Everyday from 9am to 5pm", BusinessName="Spec2", ProvideHomeVisitService=false, Radius=20, ServiceTypes=serviceTypes, Status=true},
+                new SpecialistProfile{AboutMe="Okay specialist", Availability="Everyday from 9am to 5pm", BusinessName="Spec3", ProvideHomeVisitService=false, Radius=20, ServiceTypes=serviceTypes, Status=true},
+            };
+
+            List<ClientProfile> clientProfiles = new List<ClientProfile>()
+            {
+                new ClientProfile{AboutMe="I love dogs", Dogs=new List<Dog> { dogs.ElementAt(0)} },
+                new ClientProfile{AboutMe="I like dogs", Dogs=new List<Dog> { dogs.ElementAt(1)} },
+                new ClientProfile{AboutMe="I hate dogs", Dogs=new List<Dog> { dogs.ElementAt(2)} },
+            };
+
+            List<User> users = new List<User>()
+            {
+                // users with client role
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="client1@example.com", Email="client1@example.com", FirstName="C1FName", LastName ="C1LName", Address=addresses.ElementAt(0), ClientProfile=clientProfiles.ElementAt(0), ImageUrl="https://via.placeholder.com/150"},
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="client2@example.com", Email="client2@example.com", FirstName="C2FName", LastName ="C2LName", Address=addresses.ElementAt(1), ClientProfile=clientProfiles.ElementAt(1), ImageUrl="https://via.placeholder.com/150"},
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="client3@example.com", Email="client3@example.com", FirstName="C3FName", LastName ="C3LName", Address=addresses.ElementAt(2), ClientProfile=clientProfiles.ElementAt(2), ImageUrl="https://via.placeholder.com/150"},
+
+                // users with specialist role
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="specialist1@example.com", Email="specialist1@example.com", FirstName="S1FName", LastName ="S1LName", Address=addresses.ElementAt(3), SpecialistProfile=specialistProfiles.ElementAt(0), ImageUrl="https://via.placeholder.com/150"},
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="specialist2@example.com", Email="specialist2@example.com", FirstName="S2FName", LastName ="S2LName", Address=addresses.ElementAt(4), SpecialistProfile=specialistProfiles.ElementAt(1), ImageUrl="https://via.placeholder.com/150"},
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="specialist3@example.com", Email="specialist3@example.com", FirstName="S3FName", LastName ="S3LName", Address = addresses.ElementAt(5), SpecialistProfile = specialistProfiles.ElementAt(2), ImageUrl = "https://via.placeholder.com/150"},
+            };
+
+            string defaultPassword = "Password123!";
+
+            // Create Client role if it doesn't exist in the database yet
+            if (!await roleManager.RoleExistsAsync(UserRoles.Client))
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.Client));
+
+            // Create Specialist role if it doesn't exist in the database yet
+            if (!await roleManager.RoleExistsAsync(UserRoles.Specialist))
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.Specialist));
+
+            // add users
+            for (int i = 0; i < users.Count; i++)
+            {
+                User curUser = users.ElementAt(i);
+                var tmp = await userManager.FindByEmailAsync(curUser.Email);
+                if (tmp != null)
+                {
+                    await userManager.DeleteAsync(tmp);
+
+                    // Delete dependent records that refer to this user as foreign key (ClientProfile, SpecialistProfile)
+                    // There is a better way to make dependent records be deleted automatically by configuring OnCascadeDelete but we haven't figured out yet.
+
+                    if(tmp.SpecialistProfileId != null)
+                    {
+                        var specialistProfile = dtx.SpecialistProfile.Find(tmp.SpecialistProfileId);
+                        dtx.SpecialistProfile.Remove(specialistProfile);
+                    }
+
+
+                    if (tmp.ClientProfileId != null)
+                    {
+                        var clientProfile = dtx.ClientProfile.Find(tmp.ClientProfileId);
+                        dtx.ClientProfile.Remove(clientProfile);
+                    }
+                }
+
+                var result = await userManager.CreateAsync(curUser, defaultPassword);
+                if (!result.Succeeded) return false;
+                if (i < 3)
+                {
+                    await userManager.AddToRoleAsync(curUser, UserRoles.Client);
+                }
+                else
+                {
+                    await userManager.AddToRoleAsync(curUser, UserRoles.Specialist);
+                }
+                
+            }
+
+            return true;
         }
     }
 }

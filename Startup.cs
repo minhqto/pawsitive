@@ -43,6 +43,8 @@ namespace pawsitive
                 services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ProductionDatabase")));
             }
 
+            services.AddTransient<DataManager>();
+
             // For Identity  
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>()
