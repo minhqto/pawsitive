@@ -119,6 +119,22 @@ namespace pawsitive.Data
                 if (tmp != null)
                 {
                     await userManager.DeleteAsync(tmp);
+
+                    // Delete dependent records that refer to this user as foreign key (ClientProfile, SpecialistProfile)
+                    // There is a better way to make dependent records be deleted automatically by configuring OnCascadeDelete but we haven't figured out yet.
+
+                    if(tmp.SpecialistProfileId != null)
+                    {
+                        var specialistProfile = dtx.SpecialistProfile.Find(tmp.SpecialistProfileId);
+                        dtx.SpecialistProfile.Remove(specialistProfile);
+                    }
+
+
+                    if (tmp.ClientProfileId != null)
+                    {
+                        var clientProfile = dtx.ClientProfile.Find(tmp.ClientProfileId);
+                        dtx.ClientProfile.Remove(clientProfile);
+                    }
                 }
 
                 var result = await userManager.CreateAsync(curUser, defaultPassword);

@@ -21,6 +21,7 @@ namespace pawsitive.Data
         public DbSet<Service> Service { get; set; }
         public DbSet<ServiceType> ServiceType { get; set; }
         public DbSet<SpecialistProfile> SpecialistProfile { get; set; }
+        public DbSet<ClientProfile> ClientProfile { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -30,8 +31,13 @@ namespace pawsitive.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            //builder.Entity<User>().HasOne(u => u.SpecialistProfile).WithOne(s => s.Specialist).OnDelete(DeleteBehavior.Cascade);
+            // Configure to delete user when profile is deleted
+            //builder.Entity<User>().HasOne(u => u.SpecialistProfile).WithOne(s => s.Specialist).HasForeignKey<User>(u => u.SpecialistProfileId).OnDelete(DeleteBehavior.Cascade);
             //builder.Entity<User>().HasOne(u => u.ClientProfile).WithOne(s => s.Client).OnDelete(DeleteBehavior.Cascade);
+
+            // Configure to delete profiles when user is deleted
+            //builder.Entity<SpecialistProfile>().HasOne(sp => sp.Specialist).WithOne(s => s.SpecialistProfile).HasForeignKey<User>(u => u.SpecialistProfileId).OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<ClientProfile>().HasOne(cp => cp.Client).WithOne(c => c.ClientProfile).HasForeignKey<User>(u => u.ClientProfileId).OnDelete(DeleteBehavior.Cascade);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
