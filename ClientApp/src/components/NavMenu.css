@@ -1,11 +1,26 @@
+
+@import url('https://fonts.googleapis.com/css2?family=BioRhyme&display=swap');
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
 }
 
+#sitetitle {
+  font-size: 28px;
+  font-weight: bold;
+  font-family: 'BioRhyme', serif;
+}
+
+#navimenu, #navimenubtn, #menu-profile, #menu-logout {
+  font-size: 16px;
+  font-family: 'BioRhyme', serif;
+}
+
 html {
   font-size: 14px;
+  
 }
 @media (min-width: 768px) {
   html {
