@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using pawsitive.EntityModels;
+using pawsitive.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -152,5 +153,61 @@ namespace pawsitive.Data
 
             return true;
         }
+    
+        
+        /**
+         * Get client information by user id
+         */
+        public ClientDetailVM getClientDetail(string clientId)
+        {
+            var clientDetail = new ClientDetailVM();
+
+            try
+            {
+                // var user = userManager.Users.Include("Address").Include("ClientProfile").SingleOrDefault(u => u.Id.Equals(clientId));
+                var clientProfile = dtx.ClientProfile.Include("Dogs").Include("Client.Address").SingleOrDefault(cp => cp.Client.Id.Equals(clientId));
+
+                clientDetail.clientProfile = clientProfile;
+                return clientDetail;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        // Update client by user id
+        public async Task<bool> updateClientInfo(string clientId, ClientUpdateReqBody req)
+        {
+
+            try
+            {
+                var user = await userManager.FindByIdAsync(clientId);
+
+                if (user == null) return false;
+
+                user.FirstName = req.firstName;
+                user.LastName = req.lastName;
+
+                user.Address.Country = req.country;
+                user.Address.City = req.country;
+                user.Address.StreetAddress = req.country;
+                user.Address.Province = req.province;
+                user.Address.PostalCode = req.postalCode;
+
+                user.PhoneNumber = req.phoneNumber;
+                user.Email = req.email;
+                user.ClientProfile.AboutMe = req.firstName;
+
+
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }

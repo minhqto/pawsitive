@@ -18,6 +18,7 @@ import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
 import MUIRichTextEditor from "mui-rte";
 import { convertToRaw, convertFromRaw } from "draft-js";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   imgContainer: {
@@ -86,12 +87,14 @@ export default function ProfileView() {
   const history = useHistory();
 
   useEffect(() => {
-    console.log(routeId);
-    console.log(user.id);
-    if (isAuthenticated && user.id === routeId) {
+    if (isAuthenticated) {
       setAuthorized(true);
     }
   }, [user]);
+
+  const getClientInfo = () => {
+    // get current client information based on user id
+  };
 
   let clientInfo = {
     img: `http://writestylesonline.com/wp-content/uploads/2016/08/Follow-These-Steps-for-a-Flawless-Professional-Profile-Picture-1024x1024.jpg`,

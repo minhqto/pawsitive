@@ -33,6 +33,11 @@ namespace pawsitive
             services.AddControllersWithViews();
             services.AddSwaggerGen();
 
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+
             // For Entity Framework
             if (_env.IsDevelopment())
             {
