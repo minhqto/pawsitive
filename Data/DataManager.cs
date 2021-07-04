@@ -243,5 +243,33 @@ namespace pawsitive.Data
 
         }
 
+        // Add dog to client with clientId
+        public Dog editDog(EditDogReqBody req)
+        {
+            var dog = dtx.Dog.SingleOrDefault(d => d.Id.Equals(req.dogId));
+
+            if(dog != null)
+            {
+                dog.DogName = req.dogName; 
+                dog.DogBreed = req.dogBreed;                 
+                dog.DogSex = req.dogSex;
+                dog.DogWeight = req.dogWeight;
+                dog.AboutDog = req.aboutDog;
+                dog.ImageUrl = req.imageUrl;
+                dog.BirthDate = req.birthDate;
+                dog.HasBiteHistory = req.hasBiteHistory;
+                dog.IsVaccinated = req.isVaccinated;
+
+                dtx.SaveChanges();
+
+                return dog;
+            }
+
+            return null;
+
+        }
+
+
+
     }
 }

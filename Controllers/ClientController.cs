@@ -21,6 +21,7 @@ namespace pawsitive.Controllers
             dm = dataManager;
         }
 
+        // Get client information of client with id = clientId
         [HttpGet]
         [Route("clientDetail/{clientId}")]
         public ClientDetailVM Get([FromRoute] string clientId)
@@ -30,6 +31,7 @@ namespace pawsitive.Controllers
             return clientDetail;
         }
 
+        // Update client information of client with id = clientId
         [HttpPut]
         [Route("clientDetail/{clientId}")]
         public async Task<IActionResult> UpdateClientDetail([FromRoute] string clientId, [FromBody] ClientUpdateReqBody req)
@@ -47,6 +49,7 @@ namespace pawsitive.Controllers
             return StatusCode(StatusCodes.Status400BadRequest, new { error = "Could not find any user with id: " + clientId});
         }
 
+        // Add a new dog to a client with id = clientId
         [HttpPost]
         [Route("clientDetail/{clientId}/addDog")]
         public IActionResult AddDog([FromRoute] string clientId, [FromBody] AddDogReqBody req)
@@ -68,5 +71,27 @@ namespace pawsitive.Controllers
             }
         }
 
+        // Edit dog information based on dog id in the req body
+        [HttpPut]
+        [Route("clientDetail/editDog")]
+        public IActionResult EditDog([FromBody] EditDogReqBody req)
+        {
+            try
+            {
+                var updatedDog = dm.editDog(req);
+
+                return Ok(new
+                {
+                    message = "Dog updated successfully",
+                    dog = updatedDog
+                });
+
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = e.Message });
+            }
+        }
     }
 }
