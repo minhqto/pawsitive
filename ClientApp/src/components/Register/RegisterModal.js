@@ -19,16 +19,16 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     width: 600,
-    height: 400,
+    height: 300,
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(20, 4, 3),
+    padding: theme.spacing(8, 4, 3),
     alignItems: "center",
     justifyContent: "center",
   },
   buttonRows: {
     //background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-    background: 'linear-gradient(45deg, #53fcff 30%, #53a6ff 90%)',
+    background: 'linear-gradient(45deg, #89CFF0 30%, #53a6ff 90%)',
     borderRadius: 3,
     border: 0,
     color: 'white',
@@ -95,10 +95,10 @@ const RegisterModal = () => {
         }}
       >
         <Fade in={open}>
-          <div className={classes.paper}>
-            <h4 id="transition-modal-title">
+          <div className={classes.paper} >
+            <Box mb={3} ><h4 id="transition-modal-title">
               How do you want to use Pawsitive?
-            </h4>
+            </h4></Box>
             <div className={classes.buttonRows}>
               <Button onClick={() => handleClientClick()}>
                 <b>Client</b>: I want to use the service
