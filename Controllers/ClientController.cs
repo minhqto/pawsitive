@@ -47,6 +47,26 @@ namespace pawsitive.Controllers
             return StatusCode(StatusCodes.Status400BadRequest, new { error = "Could not find any user with id: " + clientId});
         }
 
+        [HttpPost]
+        [Route("clientDetail/{clientId}/addDog")]
+        public IActionResult AddDog([FromRoute] string clientId, [FromBody] AddDogReqBody req)
+        {
+            try
+            {
+                dm.addDogToClient(clientId, req);
+
+                return Ok(new
+                {
+                    message = "Dog added successfully",
+                });
+
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = e.Message });
+            }
+        }
 
     }
 }
