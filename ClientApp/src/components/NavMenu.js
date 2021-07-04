@@ -35,9 +35,6 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     marginLeft: theme.spacing(2),
   },
-  buttonWidth: {
-    marginLeft: theme.spacing(2),
-  }
 
 }));
 
@@ -104,7 +101,6 @@ export const NavMenu = () => {
         className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3"
         light
       ><Container>
-
           <Grid container spacing={3}>
             <Grid item xs
               container
@@ -128,13 +124,8 @@ export const NavMenu = () => {
               alignItems="center">
               <TestMenu />
               &nbsp;&nbsp;
-
               {!isAuthenticated ? (
-
-                <Typography className={classes.root} onClick={signin} id="navimenu">
-                  Sign In
-                </Typography>
-
+                <MenuItem onClick={signin} id="navimenu"><ExitToAppIcon />&nbsp;Sign In</MenuItem>
               ) : (
                 <div>
                   <Button

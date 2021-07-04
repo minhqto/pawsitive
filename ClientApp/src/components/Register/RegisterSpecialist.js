@@ -452,23 +452,6 @@ const RegisterSpecialist = () => {
                   variant="outlined"
                   required
                   fullWidth
-                  name="country"
-                  label="Country"
-                  id="country"
-                  onChange={(e) => {
-                    setServerError("");
-                    setCountryError("");
-                    setCountry(e.target.value);
-                  }}
-                  error={countryError !== ""}
-                  helperText={countryError}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
                   name="postalCode"
                   label="Postal Code"
                   id="postalCode"
