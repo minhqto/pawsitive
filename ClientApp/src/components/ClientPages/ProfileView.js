@@ -80,6 +80,7 @@ export default function ProfileView() {
   const classes = useStyles();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [isAuthorized, setAuthorized] = useState(false);
+  const [clientProfile, setClientProfile] = useState(null);
   const [openClientProfileModal, setOpenClientProfileModal] = useState(false);
   const [openAddDogModal, setOpenAddDogModal] = useState(false);
   const [openEditDogModal, setOpenEditDogModal] = useState(false);
@@ -89,11 +90,16 @@ export default function ProfileView() {
   useEffect(() => {
     if (isAuthenticated) {
       setAuthorized(true);
+      getClientInfo(user.id);
     }
   }, [user]);
 
-  const getClientInfo = () => {
-    // get current client information based on user id
+  const getClientInfo = (clientId) => {
+    // get current client information based on client id
+    axios.get(`/api/Client/clientDetail/${clientId}`).then((res) => {
+      console.log(res.data);
+      setClientProfile(res.data.clientProfile);
+    });
   };
 
   let clientInfo = {
@@ -113,103 +119,119 @@ export default function ProfileView() {
     ],
   };
 
-  return (
-    <Container>
-      <Box
-        width="100%"
-        display="flex"
-        flexDirection="row"
-        justifyContent="flex-start"
-      >
-        {/* Client Info */}
-        <div className={classes.imgContainer}>
-          <img className={classes.clientImg} src={clientInfo.img} />
-        </div>
+  if (clientProfile) {
+    const { imageUrl, firstName, lastName, address } = clientProfile.client;
+    const { aboutMe, dogs } = clientProfile;
+
+    return (
+      <Container>
         <Box
+          width="100%"
           display="flex"
-          flexDirection="column"
+          flexDirection="row"
           justifyContent="flex-start"
-          alignItems="flex-start"
         >
-          <div className={classes.clientName}>{clientInfo.name} </div>
-          <div className={classes.clientAddress}>{clientInfo.address}</div>
-          <div className={classes.clientBio}>{clientInfo.description}</div>
-        </Box>
-        {isAuthorized && (
-          <Button
-            className={classes.editButton}
-            size="small"
-            variant="outlined"
-            color="primary"
-            onClick={() => setOpenClientProfileModal(true)}
+          {/* Client Info */}
+          <div className={classes.imgContainer}>
+            <img
+              className={classes.clientImg}
+              src={imageUrl}
+              alt="Client Image"
+            />
+          </div>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="flex-start"
+            alignItems="flex-start"
           >
-            Edit
-          </Button>
-        )}
-        <Modal
-          open={openClientProfileModal}
-          onClose={() => setOpenClientProfileModal(false)}
-        >
-          <EditClientModal
-            firstName="viet"
-            cancelClick={() => setOpenClientProfileModal(false)}
-          />
-        </Modal>
-      </Box>
-
-      {/* Pet Info */}
-      <Grid className={classes.petSection} container spacing={3}>
-        <Grid item xs={12}>
-          <h3>
-            My Pets{" "}
-            {isAuthorized && (
-              <Button
-                className={classes.editButton}
-                size="small"
-                variant="outlined"
-                color="primary"
-                onClick={() => setOpenAddDogModal(true)}
-              >
-                Add
-              </Button>
-            )}
-            <Modal
-              open={openAddDogModal}
-              onClose={() => setOpenAddDogModal(false)}
+            <div
+              className={classes.clientName}
+            >{`${firstName} ${lastName}`}</div>
+            <div
+              className={classes.clientAddress}
+            >{`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`}</div>
+            <div className={classes.clientBio}>{aboutMe}</div>
+          </Box>
+          {isAuthorized && (
+            <Button
+              className={classes.editButton}
+              size="small"
+              variant="outlined"
+              color="primary"
+              onClick={() => setOpenClientProfileModal(true)}
             >
-              <AddDogModal cancelClick={() => setOpenAddDogModal(false)} />
-            </Modal>
-          </h3>
-        </Grid>
+              Edit
+            </Button>
+          )}
+          <Modal
+            open={openClientProfileModal}
+            onClose={() => setOpenClientProfileModal(false)}
+          >
+            <EditClientModal
+              firstName="viet"
+              cancelClick={() => setOpenClientProfileModal(false)}
+            />
+          </Modal>
+        </Box>
 
-        {/* Each pet detail */}
-        {clientInfo.dogs.map((dog, index) => (
-          <Grid key={index} className={classes.dogItem} item xs={6}>
-            <img className={classes.dogImg} src={dog.img} />
-            <div className={classes.dogInfo}>{dog.name}</div>
-            {isAuthorized && (
-              <Button
-                className={classes.editButton}
-                size="small"
-                variant="outlined"
-                color="primary"
-                onClick={() => setOpenEditDogModal(true)}
+        {/* Pet Info */}
+        <Grid className={classes.petSection} container spacing={3}>
+          <Grid item xs={12}>
+            <h3>
+              My Pets{" "}
+              {isAuthorized && (
+                <Button
+                  className={classes.editButton}
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenAddDogModal(true)}
+                >
+                  Add
+                </Button>
+              )}
+              <Modal
+                open={openAddDogModal}
+                onClose={() => setOpenAddDogModal(false)}
               >
-                Edit
-              </Button>
-            )}
-
-            <Modal
-              open={openEditDogModal}
-              onClose={() => setOpenEditDogModal(false)}
-            >
-              <EditDogModal cancelClick={() => setOpenEditDogModal(false)} />
-            </Modal>
+                <AddDogModal cancelClick={() => setOpenAddDogModal(false)} />
+              </Modal>
+            </h3>
           </Grid>
-        ))}
-      </Grid>
-    </Container>
-  );
+
+          {/* Each pet detail */}
+          {dogs.map((dog, index) => (
+            <Grid key={index} className={classes.dogItem} item xs={6}>
+              <img className={classes.dogImg} src={dog.imageUrl} />
+              <div className={classes.dogInfo}>{dog.dogName}</div>
+              {isAuthorized && (
+                <Button
+                  className={classes.editButton}
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenEditDogModal(true)}
+                >
+                  Edit
+                </Button>
+              )}
+
+              <Modal
+                open={openEditDogModal}
+                onClose={() => setOpenEditDogModal(false)}
+              >
+                <EditDogModal cancelClick={() => setOpenEditDogModal(false)} />
+              </Modal>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    );
+  } else {
+    // Show loading component
+    return <h1>Loading...</h1>;
+  }
 }
 
 const EditClientModal = ({ cancelClick }) => {
