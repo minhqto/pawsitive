@@ -18,6 +18,7 @@ import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
 import MUIRichTextEditor from "mui-rte";
 import { convertToRaw, convertFromRaw } from "draft-js";
+import { convertToHTML } from "draft-convert";
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
@@ -102,6 +103,13 @@ export default function ProfileView() {
     });
   };
 
+  const getAboutMeHTML = () => {
+    let contentState = convertFromRaw(JSON.parse(clientProfile.aboutMe)); // convert json string to content state object
+    let html = convertToHTML(contentState); // convert content state object to html
+
+    return html;
+  };
+
   let clientInfo = {
     img: `http://writestylesonline.com/wp-content/uploads/2016/08/Follow-These-Steps-for-a-Flawless-Professional-Profile-Picture-1024x1024.jpg`,
     name: `Angolina Jolie`,
@@ -151,7 +159,10 @@ export default function ProfileView() {
             <div
               className={classes.clientAddress}
             >{`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`}</div>
-            <div className={classes.clientBio}>{aboutMe}</div>
+            <div
+              dangerouslySetInnerHTML={{ __html: getAboutMeHTML() }}
+              className={classes.clientBio}
+            ></div>
           </Box>
           {isAuthorized && (
             <Button
@@ -169,7 +180,7 @@ export default function ProfileView() {
             onClose={() => setOpenClientProfileModal(false)}
           >
             <EditClientModal
-              firstName="viet"
+              clientProfile={clientProfile}
               cancelClick={() => setOpenClientProfileModal(false)}
             />
           </Modal>
@@ -234,18 +245,31 @@ export default function ProfileView() {
   }
 }
 
-const EditClientModal = ({ cancelClick }) => {
+const EditClientModal = ({ cancelClick, clientProfile }) => {
+  const { firstName, lastName, phoneNumber, email, imageUrl, id } =
+    clientProfile.client;
+  const { country, city, streetAddress, province, postalCode } =
+    clientProfile.client.address;
+  const { aboutMe } = clientProfile;
+
   const classes = useStyles();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [aboutMe, setAboutMe] = useState("");
+  const [clientObj, setClientObj] = useState({
+    firstName: firstName,
+    lastName: lastName,
+    phoneNumber: phoneNumber,
+    email: email,
+    imageUrl: imageUrl,
+    country: country,
+    city: city,
+    street: streetAddress,
+    province: province,
+    postalCode: postalCode,
+    aboutMe: aboutMe,
+  });
 
   const getAboutMe = (state) => {
     const rteContent = convertToRaw(state.getCurrentContent());
-    // setAboutMe(rteContent);
+    setClientObj({ ...clientObj, aboutMe: JSON.stringify(rteContent) });
 
     // How to convert state to HTML, for future display purpose
     // let contentState = convertFromRaw(JSON.parse(jsonRte)); // convert json string to content state object
@@ -254,16 +278,16 @@ const EditClientModal = ({ cancelClick }) => {
   };
 
   const updateClientInfo = () => {
-    const clientInfo = {
-      firstName: firstName,
-      lastName: lastName,
-      address: address,
-      phoneNumber: phoneNumber,
-      email: email,
-      aboutMe: aboutMe,
-    };
+    console.log(clientObj);
 
-    console.log(clientInfo);
+    // make api call to update client information
+    axios
+      .put(`/api/Client/clientDetail/${id}`, clientObj)
+      .then((res) => {
+        alert("Information updated successfully! Reloading...");
+        window.location.reload();
+      })
+      .catch((e) => console.error(e));
   };
 
   return (
@@ -290,51 +314,147 @@ const EditClientModal = ({ cancelClick }) => {
           <TextField
             fullWidth={true}
             label="First Name"
-            defaultValue=""
+            defaultValue={firstName}
             variant="outlined"
-            onChange={(e) => setFirstName(e.target.value)}
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                firstName: e.target.value,
+              })
+            }
           />
         </Grid>
         <Grid item xs={6}>
           <TextField
             fullWidth={true}
             label="Last Name"
-            defaultValue=""
+            defaultValue={lastName}
             variant="outlined"
-            onChange={(e) => setLastName(e.target.value)}
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                lastName: e.target.value,
+              })
+            }
           />
         </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Full Address"
-            defaultValue=""
-            variant="outlined"
-            onChange={(e) => setAddress(address)}
-          />
-        </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <TextField
             fullWidth={true}
             label="Phone Number"
-            defaultValue=""
+            defaultValue={phoneNumber}
             variant="outlined"
-            onChange={(e) => setPhoneNumber(phoneNumber)}
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                phoneNumber: e.target.value,
+              })
+            }
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <TextField
             fullWidth={true}
             label="Email"
-            defaultValue=""
+            defaultValue={email}
             variant="outlined"
-            onChange={(e) => setEmail(email)}
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                email: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            fullWidth={true}
+            label="Image URL"
+            defaultValue={imageUrl}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                imageUrl: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            fullWidth={true}
+            label="Country"
+            defaultValue={country}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                country: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            fullWidth={true}
+            label="City"
+            defaultValue={city}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                city: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            fullWidth={true}
+            label="Street Address"
+            defaultValue={streetAddress}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                street: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            fullWidth={true}
+            label="Province"
+            defaultValue={province}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                province: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            fullWidth={true}
+            label="Postal Code"
+            defaultValue={postalCode}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                postalCode: e.target.value,
+              })
+            }
           />
         </Grid>
 
         <Grid item xs={12}>
           <h3>About Me</h3>
           <MUIRichTextEditor
+            defaultValue={aboutMe}
             label="Tell us about yourself!"
             onChange={getAboutMe}
           />
