@@ -177,31 +177,34 @@ namespace pawsitive.Data
         }
 
         // Update client by user id
-        public async Task<bool> updateClientInfo(string clientId, ClientUpdateReqBody req)
+        public async Task<User> updateClientInfo(string clientId, ClientUpdateReqBody req)
         {
 
             try
             {
-                var user = await userManager.FindByIdAsync(clientId);
+                var user = userManager.Users.Include("Address").Include("ClientProfile").SingleOrDefault(u => u.Id.Equals(clientId));
 
-                if (user == null) return false;
+                if (user == null) return null;
 
+                // Update user information with new information from request body
                 user.FirstName = req.firstName;
                 user.LastName = req.lastName;
 
                 user.Address.Country = req.country;
-                user.Address.City = req.country;
-                user.Address.StreetAddress = req.country;
+                user.Address.City = req.city;
+                user.Address.StreetAddress = req.street;
                 user.Address.Province = req.province;
                 user.Address.PostalCode = req.postalCode;
 
                 user.PhoneNumber = req.phoneNumber;
                 user.Email = req.email;
-                user.ClientProfile.AboutMe = req.firstName;
+                user.ClientProfile.AboutMe = req.aboutMe;
 
+                user.ImageUrl = req.imageUrl;
 
+                await userManager.UpdateAsync(user);
 
-                return true;
+                return user;
             }
             catch (Exception)
             {

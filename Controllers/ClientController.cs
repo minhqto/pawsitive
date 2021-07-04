@@ -32,11 +32,19 @@ namespace pawsitive.Controllers
 
         [HttpPut]
         [Route("clientDetail/{clientId}")]
-        public async Task<ActionResult> UpdateClientDetail([FromRoute] string clientId, [FromBody] ClientUpdateReqBody req)
+        public async Task<IActionResult> UpdateClientDetail([FromRoute] string clientId, [FromBody] ClientUpdateReqBody req)
         {
-            
+            var updatedUser = await dm.updateClientInfo(clientId, req);
 
-            return Ok();
+            if(updatedUser != null)
+            {
+                return Ok(new { 
+                    message = "User updated successfully",
+                    updatedUser = updatedUser
+                });
+            }
+
+            return StatusCode(StatusCodes.Status400BadRequest, new { error = "Could not find any user with id: " + clientId});
         }
 
 
