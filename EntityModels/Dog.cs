@@ -32,5 +32,6 @@ namespace pawsitive.EntityModels
         public string AboutDog { get; set; }
 
         public string ImageUrl { get; set; }
+ 
     }
 }
