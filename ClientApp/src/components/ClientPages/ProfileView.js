@@ -18,6 +18,8 @@ import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
 import MUIRichTextEditor from "mui-rte";
 import { convertToRaw, convertFromRaw } from "draft-js";
+import { convertToHTML } from "draft-convert";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   imgContainer: {
@@ -71,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
     width: "70%",
     margin: "50px auto",
-    height: "70vh",
+    height: "90vh",
   },
 }));
 
@@ -79,6 +81,7 @@ export default function ProfileView() {
   const classes = useStyles();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [isAuthorized, setAuthorized] = useState(false);
+  const [clientProfile, setClientProfile] = useState(null);
   const [openClientProfileModal, setOpenClientProfileModal] = useState(false);
   const [openAddDogModal, setOpenAddDogModal] = useState(false);
   const [openEditDogModal, setOpenEditDogModal] = useState(false);
@@ -86,12 +89,26 @@ export default function ProfileView() {
   const history = useHistory();
 
   useEffect(() => {
-    console.log(routeId);
-    console.log(user.id);
-    if (isAuthenticated && user.id === routeId) {
+    if (isAuthenticated) {
       setAuthorized(true);
+      getClientInfo(user.id);
     }
   }, [user]);
+
+  const getClientInfo = (clientId) => {
+    // get current client information based on client id
+    axios.get(`/api/Client/clientDetail/${clientId}`).then((res) => {
+      console.log(res.data);
+      setClientProfile(res.data.clientProfile);
+    });
+  };
+
+  const getAboutMeHTML = () => {
+    let contentState = convertFromRaw(JSON.parse(clientProfile.aboutMe)); // convert json string to content state object
+    let html = convertToHTML(contentState); // convert content state object to html
+
+    return html;
+  };
 
   let clientInfo = {
     img: `http://writestylesonline.com/wp-content/uploads/2016/08/Follow-These-Steps-for-a-Flawless-Professional-Profile-Picture-1024x1024.jpg`,
@@ -110,117 +127,155 @@ export default function ProfileView() {
     ],
   };
 
-  return (
-    <Container>
-      <Box
-        width="100%"
-        display="flex"
-        flexDirection="row"
-        justifyContent="flex-start"
-      >
-        {/* Client Info */}
-        <div className={classes.imgContainer}>
-          <img className={classes.clientImg} src={clientInfo.img} />
-        </div>
+  if (clientProfile) {
+    const { imageUrl, firstName, lastName, address } = clientProfile.client;
+    const { aboutMe, dogs } = clientProfile;
+
+    return (
+      <Container>
         <Box
+          width="100%"
           display="flex"
-          flexDirection="column"
+          flexDirection="row"
           justifyContent="flex-start"
-          alignItems="flex-start"
         >
-          <div className={classes.clientName}>{clientInfo.name} </div>
-          <div className={classes.clientAddress}>{clientInfo.address}</div>
-          <div className={classes.clientBio}>{clientInfo.description}</div>
-        </Box>
-        {isAuthorized && (
-          <Button
-            className={classes.editButton}
-            size="small"
-            variant="outlined"
-            color="primary"
-            onClick={() => setOpenClientProfileModal(true)}
+          {/* Client Info */}
+          <div className={classes.imgContainer}>
+            <img
+              className={classes.clientImg}
+              src={imageUrl}
+              alt="Client Image"
+            />
+          </div>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="flex-start"
+            alignItems="flex-start"
           >
-            Edit
-          </Button>
-        )}
-        <Modal
-          open={openClientProfileModal}
-          onClose={() => setOpenClientProfileModal(false)}
-        >
-          <EditClientModal
-            firstName="viet"
-            cancelClick={() => setOpenClientProfileModal(false)}
-          />
-        </Modal>
-      </Box>
-
-      {/* Pet Info */}
-      <Grid className={classes.petSection} container spacing={3}>
-        <Grid item xs={12}>
-          <h3>
-            My Pets{" "}
-            {isAuthorized && (
-              <Button
-                className={classes.editButton}
-                size="small"
-                variant="outlined"
-                color="primary"
-                onClick={() => setOpenAddDogModal(true)}
-              >
-                Add
-              </Button>
-            )}
-            <Modal
-              open={openAddDogModal}
-              onClose={() => setOpenAddDogModal(false)}
+            <div
+              className={classes.clientName}
+            >{`${firstName} ${lastName}`}</div>
+            <div
+              className={classes.clientAddress}
+            >{`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`}</div>
+            <div
+              dangerouslySetInnerHTML={{ __html: getAboutMeHTML() }}
+              className={classes.clientBio}
+            ></div>
+          </Box>
+          {isAuthorized && (
+            <Button
+              className={classes.editButton}
+              size="small"
+              variant="outlined"
+              color="primary"
+              onClick={() => setOpenClientProfileModal(true)}
             >
-              <AddDogModal cancelClick={() => setOpenAddDogModal(false)} />
-            </Modal>
-          </h3>
-        </Grid>
+              Edit
+            </Button>
+          )}
+          <Modal
+            open={openClientProfileModal}
+            onClose={() => setOpenClientProfileModal(false)}
+          >
+            <EditClientModal
+              clientProfile={clientProfile}
+              cancelClick={() => setOpenClientProfileModal(false)}
+            />
+          </Modal>
+        </Box>
 
-        {/* Each pet detail */}
-        {clientInfo.dogs.map((dog, index) => (
-          <Grid key={index} className={classes.dogItem} item xs={6}>
-            <img className={classes.dogImg} src={dog.img} />
-            <div className={classes.dogInfo}>{dog.name}</div>
-            {isAuthorized && (
-              <Button
-                className={classes.editButton}
-                size="small"
-                variant="outlined"
-                color="primary"
-                onClick={() => setOpenEditDogModal(true)}
+        {/* Pet Info */}
+        <Grid className={classes.petSection} container spacing={3}>
+          <Grid item xs={12}>
+            <h3>
+              My Pets{" "}
+              {isAuthorized && (
+                <Button
+                  className={classes.editButton}
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenAddDogModal(true)}
+                >
+                  Add
+                </Button>
+              )}
+              <Modal
+                open={openAddDogModal}
+                onClose={() => setOpenAddDogModal(false)}
               >
-                Edit
-              </Button>
-            )}
-
-            <Modal
-              open={openEditDogModal}
-              onClose={() => setOpenEditDogModal(false)}
-            >
-              <EditDogModal cancelClick={() => setOpenEditDogModal(false)} />
-            </Modal>
+                <AddDogModal
+                  clientId={user.id}
+                  cancelClick={() => setOpenAddDogModal(false)}
+                />
+              </Modal>
+            </h3>
           </Grid>
-        ))}
-      </Grid>
-    </Container>
-  );
+
+          {/* Each pet detail */}
+          {dogs.map((dog, index) => (
+            <Grid key={index} className={classes.dogItem} item xs={6}>
+              <img className={classes.dogImg} src={dog.imageUrl} />
+              <div className={classes.dogInfo}>{dog.dogName}</div>
+              {isAuthorized && (
+                <Button
+                  className={classes.editButton}
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenEditDogModal(true)}
+                >
+                  Edit
+                </Button>
+              )}
+
+              <Modal
+                open={openEditDogModal}
+                onClose={() => setOpenEditDogModal(false)}
+              >
+                <EditDogModal
+                  dog={dog}
+                  cancelClick={() => setOpenEditDogModal(false)}
+                />
+              </Modal>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    );
+  } else {
+    // Show loading component
+    return <h1>Loading...</h1>;
+  }
 }
 
-const EditClientModal = ({ cancelClick }) => {
+const EditClientModal = ({ cancelClick, clientProfile }) => {
+  const { firstName, lastName, phoneNumber, email, imageUrl, id } =
+    clientProfile.client;
+  const { country, city, streetAddress, province, postalCode } =
+    clientProfile.client.address;
+  const { aboutMe } = clientProfile;
+
   const classes = useStyles();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [aboutMe, setAboutMe] = useState("");
+  const [clientObj, setClientObj] = useState({
+    firstName: firstName,
+    lastName: lastName,
+    phoneNumber: phoneNumber,
+    email: email,
+    imageUrl: imageUrl,
+    country: country,
+    city: city,
+    street: streetAddress,
+    province: province,
+    postalCode: postalCode,
+    aboutMe: aboutMe,
+  });
 
   const getAboutMe = (state) => {
     const rteContent = convertToRaw(state.getCurrentContent());
-    // setAboutMe(rteContent);
+    setClientObj({ ...clientObj, aboutMe: JSON.stringify(rteContent) });
 
     // How to convert state to HTML, for future display purpose
     // let contentState = convertFromRaw(JSON.parse(jsonRte)); // convert json string to content state object
@@ -229,16 +284,16 @@ const EditClientModal = ({ cancelClick }) => {
   };
 
   const updateClientInfo = () => {
-    const clientInfo = {
-      firstName: firstName,
-      lastName: lastName,
-      address: address,
-      phoneNumber: phoneNumber,
-      email: email,
-      aboutMe: aboutMe,
-    };
+    console.log(clientObj);
 
-    console.log(clientInfo);
+    // make api call to update client information
+    axios
+      .put(`/api/Client/clientDetail/${id}`, clientObj)
+      .then((res) => {
+        alert("Information updated successfully! Reloading...");
+        window.location.reload();
+      })
+      .catch((e) => console.error(e));
   };
 
   return (
@@ -265,51 +320,147 @@ const EditClientModal = ({ cancelClick }) => {
           <TextField
             fullWidth={true}
             label="First Name"
-            defaultValue=""
+            defaultValue={firstName}
             variant="outlined"
-            onChange={(e) => setFirstName(e.target.value)}
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                firstName: e.target.value,
+              })
+            }
           />
         </Grid>
         <Grid item xs={6}>
           <TextField
             fullWidth={true}
             label="Last Name"
-            defaultValue=""
+            defaultValue={lastName}
             variant="outlined"
-            onChange={(e) => setLastName(e.target.value)}
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                lastName: e.target.value,
+              })
+            }
           />
         </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Full Address"
-            defaultValue=""
-            variant="outlined"
-            onChange={(e) => setAddress(address)}
-          />
-        </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <TextField
             fullWidth={true}
             label="Phone Number"
-            defaultValue=""
+            defaultValue={phoneNumber}
             variant="outlined"
-            onChange={(e) => setPhoneNumber(phoneNumber)}
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                phoneNumber: e.target.value,
+              })
+            }
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <TextField
             fullWidth={true}
             label="Email"
-            defaultValue=""
+            defaultValue={email}
             variant="outlined"
-            onChange={(e) => setEmail(email)}
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                email: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            fullWidth={true}
+            label="Image URL"
+            defaultValue={imageUrl}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                imageUrl: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            fullWidth={true}
+            label="Country"
+            defaultValue={country}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                country: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            fullWidth={true}
+            label="City"
+            defaultValue={city}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                city: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            fullWidth={true}
+            label="Street Address"
+            defaultValue={streetAddress}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                street: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            fullWidth={true}
+            label="Province"
+            defaultValue={province}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                province: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            fullWidth={true}
+            label="Postal Code"
+            defaultValue={postalCode}
+            variant="outlined"
+            onChange={(e) =>
+              setClientObj({
+                ...clientObj,
+                postalCode: e.target.value,
+              })
+            }
           />
         </Grid>
 
         <Grid item xs={12}>
           <h3>About Me</h3>
           <MUIRichTextEditor
+            defaultValue={aboutMe}
             label="Tell us about yourself!"
             onChange={getAboutMe}
           />
@@ -319,7 +470,7 @@ const EditClientModal = ({ cancelClick }) => {
   );
 };
 
-const AddDogModal = ({ cancelClick }) => {
+const AddDogModal = ({ cancelClick, clientId }) => {
   const classes = useStyles();
   const [dogName, setDogName] = useState("");
   const [dogAge, setDogAge] = useState(0);
@@ -329,6 +480,7 @@ const AddDogModal = ({ cancelClick }) => {
   const [dogBirthDate, setDogBirthDate] = useState(Date.now());
   const [dogBiteHistory, setDogBiteHistory] = useState(false);
   const [dogIsVaccinated, setDogIsVaccinated] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
   const [aboutDog, setAboutDog] = useState("");
 
   const getAboutDog = (state) => {
@@ -351,9 +503,17 @@ const AddDogModal = ({ cancelClick }) => {
       birthDate: dogBirthDate,
       hasBiteHistory: dogBiteHistory,
       isVaccinated: dogIsVaccinated,
-      aboutDog: aboutDog,
+      imageUrl: imageUrl,
+      aboutDog: JSON.stringify(aboutDog),
     };
-    console.log(dogObj);
+
+    axios
+      .post(`/api/Client/clientDetail/${clientId}/addDog`, dogObj)
+      .then((res) => {
+        alert("Dog added successfully");
+        window.location.reload();
+      })
+      .catch((e) => console.log(e));
   };
 
   return (
@@ -423,18 +583,6 @@ const AddDogModal = ({ cancelClick }) => {
         <Grid item xs={6}>
           <TextField
             fullWidth={true}
-            label="Age (years, months)"
-            defaultValue=""
-            variant="outlined"
-            type="number"
-            onChange={(e) => {
-              setDogAge(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
             label="Sex"
             defaultValue=""
             variant="outlined"
@@ -443,8 +591,20 @@ const AddDogModal = ({ cancelClick }) => {
             }}
           />
         </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Image URL"
+            defaultValue=""
+            variant="outlined"
+            onChange={(e) => {
+              setImageUrl(e.target.value);
+            }}
+          />
+        </Grid>
 
         <Grid item xs={6}>
+          <h4>Is Vaccinated</h4>
           <RadioGroup
             aria-label="isVaccinated"
             name="isVaccinated"
@@ -459,6 +619,7 @@ const AddDogModal = ({ cancelClick }) => {
         </Grid>
 
         <Grid item xs={6}>
+          <h4>Has bite history</h4>
           <RadioGroup
             aria-label="biteHistory"
             name="biteHistory"
@@ -484,21 +645,22 @@ const AddDogModal = ({ cancelClick }) => {
   );
 };
 
-const EditDogModal = ({ cancelClick }) => {
+const EditDogModal = ({ cancelClick, dog }) => {
+  console.log(dog);
   const classes = useStyles();
-  const [dogName, setDogName] = useState("");
-  const [dogAge, setDogAge] = useState(0);
-  const [dogSex, setDogSex] = useState("");
-  const [dogBreed, setDogBreed] = useState("");
-  const [dogWeight, setDogWeight] = useState(0);
-  const [dogBirthDate, setDogBirthDate] = useState(Date.now());
-  const [dogBiteHistory, setDogBiteHistory] = useState(false);
-  const [dogIsVaccinated, setDogIsVaccinated] = useState(false);
-  const [aboutDog, setAboutDog] = useState("");
+  const [dogName, setDogName] = useState(dog.dogName);
+  const [dogSex, setDogSex] = useState(dog.dogSex);
+  const [dogBreed, setDogBreed] = useState(dog.dogBreed);
+  const [dogWeight, setDogWeight] = useState(dog.dogWeight);
+  const [dogBirthDate, setDogBirthDate] = useState(dog.birthDate);
+  const [dogBiteHistory, setDogBiteHistory] = useState(dog.hasBiteHistory);
+  const [dogIsVaccinated, setDogIsVaccinated] = useState(dog.isVaccinated);
+  const [imageUrl, setImageUrl] = useState(dog.imageUrl);
+  const [aboutDog, setAboutDog] = useState(dog.aboutDog ? dog.aboutDog : "");
 
   const getAboutDog = (state) => {
     const rteContent = convertToRaw(state.getCurrentContent());
-    setAboutDog(rteContent);
+    setAboutDog(JSON.stringify(rteContent));
 
     // How to convert state to HTML, for future display purpose
     // let contentState = convertFromRaw(JSON.parse(jsonRte)); // convert json string to content state object
@@ -506,10 +668,9 @@ const EditDogModal = ({ cancelClick }) => {
     // console.log(html); // display the html
   };
 
-  const addNewDog = () => {
+  const editDog = () => {
     const dogObj = {
       dogName: dogName,
-      dogAge: dogAge,
       dogSex: dogSex,
       dogBreed: dogBreed,
       dogWeight: dogWeight,
@@ -517,23 +678,32 @@ const EditDogModal = ({ cancelClick }) => {
       hasBiteHistory: dogBiteHistory,
       isVaccinated: dogIsVaccinated,
       aboutDog: aboutDog,
+      imageUrl: imageUrl,
+      dogId: dog.id,
     };
-    console.log(dogObj);
+
+    axios
+      .put(`/api/Client/clientDetail/editDog`, dogObj)
+      .then((res) => {
+        alert("Dog updated successfully");
+        window.location.reload();
+      })
+      .catch((e) => console.log(e));
   };
 
   return (
     <div className={classes.paper}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <h1>Add new dog: </h1>
+          <h1>Edit dog: </h1>
           <div>
             <Button
               style={{ marginRight: "20px" }}
               variant="contained"
               color="primary"
-              onClick={addNewDog}
+              onClick={editDog}
             >
-              Add dog
+              Edit dog
             </Button>
             <Button onClick={cancelClick} variant="contained">
               Cancel
@@ -545,7 +715,7 @@ const EditDogModal = ({ cancelClick }) => {
           <TextField
             fullWidth={true}
             label="Name"
-            defaultValue=""
+            defaultValue={dogName}
             variant="outlined"
             onChange={(e) => {
               setDogName(e.target.value);
@@ -556,7 +726,7 @@ const EditDogModal = ({ cancelClick }) => {
           <TextField
             fullWidth={true}
             label="Weight"
-            defaultValue=""
+            defaultValue={dogWeight}
             variant="outlined"
             onChange={(e) => {
               setDogWeight(e.target.value);
@@ -578,7 +748,7 @@ const EditDogModal = ({ cancelClick }) => {
           <TextField
             fullWidth={true}
             label="Breed"
-            defaultValue=""
+            defaultValue={dogBreed}
             variant="outlined"
             onChange={(e) => {
               setDogBreed(e.target.value);
@@ -588,32 +758,32 @@ const EditDogModal = ({ cancelClick }) => {
         <Grid item xs={6}>
           <TextField
             fullWidth={true}
-            label="Age (years, months)"
-            defaultValue=""
-            variant="outlined"
-            type="number"
-            onChange={(e) => {
-              setDogAge(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
             label="Sex"
-            defaultValue=""
+            defaultValue={dogSex}
             variant="outlined"
             onChange={(e) => {
               setDogSex(e.target.value);
             }}
           />
         </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Image URL"
+            defaultValue={imageUrl}
+            variant="outlined"
+            onChange={(e) => {
+              setImageUrl(e.target.value);
+            }}
+          />
+        </Grid>
 
         <Grid item xs={6}>
+          <h4>Is Vaccinated</h4>
           <RadioGroup
             aria-label="isVaccinated"
             name="isVaccinated"
-            value={dogIsVaccinated}
+            value={dogIsVaccinated.toString()}
             onChange={(e) => {
               setDogIsVaccinated(e.target.value);
             }}
@@ -624,10 +794,11 @@ const EditDogModal = ({ cancelClick }) => {
         </Grid>
 
         <Grid item xs={6}>
+          <h4>Has bite history</h4>
           <RadioGroup
             aria-label="biteHistory"
             name="biteHistory"
-            value={dogBiteHistory}
+            value={dogBiteHistory.toString()}
             onChange={(e) => {
               setDogBiteHistory(e.target.value);
             }}

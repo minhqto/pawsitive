@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using pawsitive.EntityModels;
+using pawsitive.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -152,5 +153,123 @@ namespace pawsitive.Data
 
             return true;
         }
+    
+        
+        /**
+         * Get client information by user id
+         */
+        public ClientDetailVM getClientDetail(string clientId)
+        {
+            var clientDetail = new ClientDetailVM();
+
+            try
+            {
+                // var user = userManager.Users.Include("Address").Include("ClientProfile").SingleOrDefault(u => u.Id.Equals(clientId));
+                var clientProfile = dtx.ClientProfile.Include("Dogs").Include("Client.Address").SingleOrDefault(cp => cp.Client.Id.Equals(clientId));
+
+                clientDetail.clientProfile = clientProfile;
+                return clientDetail;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        // Update client by user id
+        public async Task<User> updateClientInfo(string clientId, ClientUpdateReqBody req)
+        {
+
+            try
+            {
+                var user = userManager.Users.Include("Address").Include("ClientProfile").SingleOrDefault(u => u.Id.Equals(clientId));
+
+                if (user == null) return null;
+
+                // Update user information with new information from request body
+                user.FirstName = req.firstName;
+                user.LastName = req.lastName;
+
+                user.Address.Country = req.country;
+                user.Address.City = req.city;
+                user.Address.StreetAddress = req.street;
+                user.Address.Province = req.province;
+                user.Address.PostalCode = req.postalCode;
+
+                user.PhoneNumber = req.phoneNumber;
+                user.Email = req.email;
+                user.ClientProfile.AboutMe = req.aboutMe;
+
+                user.ImageUrl = req.imageUrl;
+
+                await userManager.UpdateAsync(user);
+
+                return user;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        // Add dog to client with clientId
+        public void addDogToClient(string clientId, AddDogReqBody req)
+        {
+            var clientProfile = dtx.ClientProfile.Include("Dogs").SingleOrDefault(cp => cp.Client.Id.Equals(clientId));
+
+            var newDog = new Dog()
+            {
+                DogName = req.dogName,
+                DogBreed = req.dogBreed,
+                DogSex = req.dogSex,
+                DogWeight = req.dogWeight,
+                AboutDog = req.aboutDog,
+                ImageUrl = req.imageUrl,
+                BirthDate = req.birthDate,
+                HasBiteHistory = req.hasBiteHistory,
+                IsVaccinated = req.isVaccinated,
+            };
+
+            try
+            {
+                clientProfile.Dogs.Add(newDog);
+
+                dtx.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+        // Add dog to client with clientId
+        public Dog editDog(EditDogReqBody req)
+        {
+            var dog = dtx.Dog.SingleOrDefault(d => d.Id.Equals(req.dogId));
+
+            if(dog != null)
+            {
+                dog.DogName = req.dogName; 
+                dog.DogBreed = req.dogBreed;                 
+                dog.DogSex = req.dogSex;
+                dog.DogWeight = req.dogWeight;
+                dog.AboutDog = req.aboutDog;
+                dog.ImageUrl = req.imageUrl;
+                dog.BirthDate = req.birthDate;
+                dog.HasBiteHistory = req.hasBiteHistory;
+                dog.IsVaccinated = req.isVaccinated;
+
+                dtx.SaveChanges();
+
+                return dog;
+            }
+
+            return null;
+
+        }
+
+
+
     }
 }

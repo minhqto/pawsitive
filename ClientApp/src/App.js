@@ -81,7 +81,7 @@ function App() {
         <PublicRoute
           restricted={false}
           component={ProfileView}
-          path="/client/profile/:routeId"
+          path="/client/myprofile"
           exact
         />
 
