@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Button from "../components/Button";
 import Typography from "../components/Typography";
 import ProductHeroLayout from "./BigBannerLayout";
+import Button from "../components/Button";
+import Grid from "@material-ui/core/Grid";
+import TextField from "../components/TextField";
 
 const backgroundImage = "https://i.imgur.com/KVXc7xQ.jpeg";
 
@@ -26,6 +28,16 @@ const styles = (theme) => ({
   more: {
     marginTop: theme.spacing(2),
   },
+  buttonRow: {
+    display: "flex",
+    alignItems: "center",
+  },
+  searchBarGrid: {
+    marginTop: theme.spacing(10),
+  },
+  searchBarTextField: {
+    width: "50%",
+  },
 });
 
 const BigBanner = (props) => {
@@ -34,7 +46,7 @@ const BigBanner = (props) => {
   return (
     <ProductHeroLayout backgroundClassName={classes.background}>
       <Typography color="inherit" align="center" variant="h2" marked="center">
-        Only the best for your furry bestfriend
+        Only the best for your furry family member
       </Typography>
       <Typography
         color="inherit"
@@ -45,9 +57,46 @@ const BigBanner = (props) => {
         Find the right services to keep your fur friend happy! Connect with
         trainers, dog food suppliers and more!
       </Typography>
-      {/* <Typography variant="body2" color="inherit" className={classes.more}>
-        Discover the experience
-      </Typography> */}
+      <Grid container spacing={3} className={classes.buttonRow}>
+        {/* This is a hack to get it to be in the center */}
+        <Grid item xs={3}></Grid>
+        <Grid item xs={3}>
+          <Button
+            variant="contained"
+            className={classes.button}
+            component="a"
+            href="/signupClient"
+          >
+            Find services
+          </Button>
+        </Grid>
+        <Grid item xs={3}>
+          <Button
+            variant="contained"
+            className={classes.button}
+            component="a"
+            href="/signupSpecialist"
+          >
+            Be a service provider
+          </Button>
+        </Grid>
+      </Grid>
+      {/* <Grid container>
+        <Grid item xl={12} className={classes.searchBarGrid}>
+          <TextField
+            className={classes.searchBarTextField}
+            placeholder="Enter your city or postal code"
+          />
+          <Button
+            variant="contained"
+            className={classes.button}
+            component="a"
+            href="/signupSpecialist"
+          >
+            Find services near you!
+          </Button>
+        </Grid>
+      </Grid> */}
     </ProductHeroLayout>
   );
 };

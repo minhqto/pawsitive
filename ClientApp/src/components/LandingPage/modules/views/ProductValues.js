@@ -55,7 +55,7 @@ function ProductValues(props) {
                 Specialized Training
               </Typography>
               <Typography variant="h5">
-                {"Every pet learns differently. Optimize their training by"}
+                {"Every pet learns differently. Optimize their training by "}
                 {
                   "finding the trainer that best fits your pet, not the other way around"
                 }
@@ -66,17 +66,17 @@ function ProductValues(props) {
             <div className={classes.item}>
               <img
                 className={classes.image}
-                src="/static/themes/onepirate/productValues2.svg"
-                alt="graph"
+                src="https://i.imgur.com/pEtOYVB.png"
+                alt="heart"
               />
               <Typography variant="h6" className={classes.title}>
-                New experiences
+                More intimate relationships
               </Typography>
               <Typography variant="h5">
+                {"Pawsitive connects pet owners with small businesses "}
                 {
-                  "Privatize a pool, take a Japanese bath or wake up in 900m2 of garden… "
+                  "that care about your pet. No more overcrowded, generic pet stores that offer mediocre services"
                 }
-                {"your Sundays will not be alike."}
               </Typography>
             </div>
           </Grid>
@@ -84,15 +84,15 @@ function ProductValues(props) {
             <div className={classes.item}>
               <img
                 className={classes.image}
-                src="/static/themes/onepirate/productValues3.svg"
-                alt="clock"
+                src="https://i.imgur.com/hOqE2jm.png"
+                alt="food"
               />
               <Typography variant="h6" className={classes.title}>
-                Exclusive rates
+                Hungry?
               </Typography>
               <Typography variant="h5">
-                {"By registering, you will access specially negotiated rates "}
-                {"that you will not find anywhere else."}
+                {"Pet food that suits the unique tastes and "}
+                {"picky requirements for your furry friend"}
               </Typography>
             </div>
           </Grid>
