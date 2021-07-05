@@ -11,7 +11,6 @@ const Home = () => {
     <React.Fragment>
       <BigBanner />
       <ProductValues />
-      <AppFooter />
     </React.Fragment>
   );
 };
