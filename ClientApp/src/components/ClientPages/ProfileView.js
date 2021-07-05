@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
     width: "70%",
     margin: "50px auto",
-    height: "70vh",
+    height: "90vh",
   },
 }));
 
@@ -206,7 +206,10 @@ export default function ProfileView() {
                 open={openAddDogModal}
                 onClose={() => setOpenAddDogModal(false)}
               >
-                <AddDogModal cancelClick={() => setOpenAddDogModal(false)} />
+                <AddDogModal
+                  clientId={user.id}
+                  cancelClick={() => setOpenAddDogModal(false)}
+                />
               </Modal>
             </h3>
           </Grid>
@@ -232,7 +235,10 @@ export default function ProfileView() {
                 open={openEditDogModal}
                 onClose={() => setOpenEditDogModal(false)}
               >
-                <EditDogModal cancelClick={() => setOpenEditDogModal(false)} />
+                <EditDogModal
+                  dog={dog}
+                  cancelClick={() => setOpenEditDogModal(false)}
+                />
               </Modal>
             </Grid>
           ))}
@@ -464,7 +470,7 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
   );
 };
 
-const AddDogModal = ({ cancelClick }) => {
+const AddDogModal = ({ cancelClick, clientId }) => {
   const classes = useStyles();
   const [dogName, setDogName] = useState("");
   const [dogAge, setDogAge] = useState(0);
@@ -474,6 +480,7 @@ const AddDogModal = ({ cancelClick }) => {
   const [dogBirthDate, setDogBirthDate] = useState(Date.now());
   const [dogBiteHistory, setDogBiteHistory] = useState(false);
   const [dogIsVaccinated, setDogIsVaccinated] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
   const [aboutDog, setAboutDog] = useState("");
 
   const getAboutDog = (state) => {
@@ -496,9 +503,17 @@ const AddDogModal = ({ cancelClick }) => {
       birthDate: dogBirthDate,
       hasBiteHistory: dogBiteHistory,
       isVaccinated: dogIsVaccinated,
-      aboutDog: aboutDog,
+      imageUrl: imageUrl,
+      aboutDog: JSON.stringify(aboutDog),
     };
-    console.log(dogObj);
+
+    axios
+      .post(`/api/Client/clientDetail/${clientId}/addDog`, dogObj)
+      .then((res) => {
+        alert("Dog added successfully");
+        window.location.reload();
+      })
+      .catch((e) => console.log(e));
   };
 
   return (
@@ -568,18 +583,6 @@ const AddDogModal = ({ cancelClick }) => {
         <Grid item xs={6}>
           <TextField
             fullWidth={true}
-            label="Age (years, months)"
-            defaultValue=""
-            variant="outlined"
-            type="number"
-            onChange={(e) => {
-              setDogAge(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
             label="Sex"
             defaultValue=""
             variant="outlined"
@@ -588,8 +591,20 @@ const AddDogModal = ({ cancelClick }) => {
             }}
           />
         </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Image URL"
+            defaultValue=""
+            variant="outlined"
+            onChange={(e) => {
+              setImageUrl(e.target.value);
+            }}
+          />
+        </Grid>
 
         <Grid item xs={6}>
+          <h4>Is Vaccinated</h4>
           <RadioGroup
             aria-label="isVaccinated"
             name="isVaccinated"
@@ -604,6 +619,7 @@ const AddDogModal = ({ cancelClick }) => {
         </Grid>
 
         <Grid item xs={6}>
+          <h4>Has bite history</h4>
           <RadioGroup
             aria-label="biteHistory"
             name="biteHistory"
@@ -629,21 +645,22 @@ const AddDogModal = ({ cancelClick }) => {
   );
 };
 
-const EditDogModal = ({ cancelClick }) => {
+const EditDogModal = ({ cancelClick, dog }) => {
+  console.log(dog);
   const classes = useStyles();
-  const [dogName, setDogName] = useState("");
-  const [dogAge, setDogAge] = useState(0);
-  const [dogSex, setDogSex] = useState("");
-  const [dogBreed, setDogBreed] = useState("");
-  const [dogWeight, setDogWeight] = useState(0);
-  const [dogBirthDate, setDogBirthDate] = useState(Date.now());
-  const [dogBiteHistory, setDogBiteHistory] = useState(false);
-  const [dogIsVaccinated, setDogIsVaccinated] = useState(false);
-  const [aboutDog, setAboutDog] = useState("");
+  const [dogName, setDogName] = useState(dog.dogName);
+  const [dogSex, setDogSex] = useState(dog.dogSex);
+  const [dogBreed, setDogBreed] = useState(dog.dogBreed);
+  const [dogWeight, setDogWeight] = useState(dog.dogWeight);
+  const [dogBirthDate, setDogBirthDate] = useState(dog.birthDate);
+  const [dogBiteHistory, setDogBiteHistory] = useState(dog.hasBiteHistory);
+  const [dogIsVaccinated, setDogIsVaccinated] = useState(dog.isVaccinated);
+  const [imageUrl, setImageUrl] = useState(dog.imageUrl);
+  const [aboutDog, setAboutDog] = useState(dog.aboutDog ? dog.aboutDog : "");
 
   const getAboutDog = (state) => {
     const rteContent = convertToRaw(state.getCurrentContent());
-    setAboutDog(rteContent);
+    setAboutDog(JSON.stringify(rteContent));
 
     // How to convert state to HTML, for future display purpose
     // let contentState = convertFromRaw(JSON.parse(jsonRte)); // convert json string to content state object
@@ -651,10 +668,9 @@ const EditDogModal = ({ cancelClick }) => {
     // console.log(html); // display the html
   };
 
-  const addNewDog = () => {
+  const editDog = () => {
     const dogObj = {
       dogName: dogName,
-      dogAge: dogAge,
       dogSex: dogSex,
       dogBreed: dogBreed,
       dogWeight: dogWeight,
@@ -662,23 +678,32 @@ const EditDogModal = ({ cancelClick }) => {
       hasBiteHistory: dogBiteHistory,
       isVaccinated: dogIsVaccinated,
       aboutDog: aboutDog,
+      imageUrl: imageUrl,
+      dogId: dog.id,
     };
-    console.log(dogObj);
+
+    axios
+      .put(`/api/Client/clientDetail/editDog`, dogObj)
+      .then((res) => {
+        alert("Dog updated successfully");
+        window.location.reload();
+      })
+      .catch((e) => console.log(e));
   };
 
   return (
     <div className={classes.paper}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <h1>Add new dog: </h1>
+          <h1>Edit dog: </h1>
           <div>
             <Button
               style={{ marginRight: "20px" }}
               variant="contained"
               color="primary"
-              onClick={addNewDog}
+              onClick={editDog}
             >
-              Add dog
+              Edit dog
             </Button>
             <Button onClick={cancelClick} variant="contained">
               Cancel
@@ -690,7 +715,7 @@ const EditDogModal = ({ cancelClick }) => {
           <TextField
             fullWidth={true}
             label="Name"
-            defaultValue=""
+            defaultValue={dogName}
             variant="outlined"
             onChange={(e) => {
               setDogName(e.target.value);
@@ -701,7 +726,7 @@ const EditDogModal = ({ cancelClick }) => {
           <TextField
             fullWidth={true}
             label="Weight"
-            defaultValue=""
+            defaultValue={dogWeight}
             variant="outlined"
             onChange={(e) => {
               setDogWeight(e.target.value);
@@ -723,7 +748,7 @@ const EditDogModal = ({ cancelClick }) => {
           <TextField
             fullWidth={true}
             label="Breed"
-            defaultValue=""
+            defaultValue={dogBreed}
             variant="outlined"
             onChange={(e) => {
               setDogBreed(e.target.value);
@@ -733,32 +758,32 @@ const EditDogModal = ({ cancelClick }) => {
         <Grid item xs={6}>
           <TextField
             fullWidth={true}
-            label="Age (years, months)"
-            defaultValue=""
-            variant="outlined"
-            type="number"
-            onChange={(e) => {
-              setDogAge(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
             label="Sex"
-            defaultValue=""
+            defaultValue={dogSex}
             variant="outlined"
             onChange={(e) => {
               setDogSex(e.target.value);
             }}
           />
         </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Image URL"
+            defaultValue={imageUrl}
+            variant="outlined"
+            onChange={(e) => {
+              setImageUrl(e.target.value);
+            }}
+          />
+        </Grid>
 
         <Grid item xs={6}>
+          <h4>Is Vaccinated</h4>
           <RadioGroup
             aria-label="isVaccinated"
             name="isVaccinated"
-            value={dogIsVaccinated}
+            value={dogIsVaccinated.toString()}
             onChange={(e) => {
               setDogIsVaccinated(e.target.value);
             }}
@@ -769,10 +794,11 @@ const EditDogModal = ({ cancelClick }) => {
         </Grid>
 
         <Grid item xs={6}>
+          <h4>Has bite history</h4>
           <RadioGroup
             aria-label="biteHistory"
             name="biteHistory"
-            value={dogBiteHistory}
+            value={dogBiteHistory.toString()}
             onChange={(e) => {
               setDogBiteHistory(e.target.value);
             }}
