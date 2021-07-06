@@ -1,21 +1,9 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  Collapse,
-  Container,
-  Navbar,
-  NavbarBrand,
-  NavbarToggler,
-  NavItem,
-  NavLink,
-  NavbarText,
-} from "reactstrap";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import "./NavMenu.css";
-import { setCurrentUser } from "../redux/auth";
-import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import PetsIcon from "@material-ui/icons/Pets";
+
+import { makeStyles } from "@material-ui/core/styles";
+
 import Paper from "@material-ui/core/Paper";
 import Popper from "@material-ui/core/Popper";
 import Grow from "@material-ui/core/Grow";
@@ -23,8 +11,6 @@ import Button from "@material-ui/core/Button";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
-import Typography from "@material-ui/core/Typography";
-import { classicNameResolver } from "typescript";
 
 const useStyles = makeStyles((theme) => ({
   root: {
