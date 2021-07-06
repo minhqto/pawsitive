@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     marginLeft: theme.spacing(2),
   },
-
 }));
 
 export const NavMenu = () => {
@@ -55,7 +54,6 @@ export const NavMenu = () => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-
     setOpen(false);
   };
 
@@ -85,14 +83,18 @@ export const NavMenu = () => {
 
   const myProfile = () => {
     history.push("/specialist/myprofile");
-  };
-
-  const search = () => {
-    history.push("/search");
+    setOpen(false);
   };
 
   const signin = () => {
     history.push("/login");
+    setOpen(false);
+  };
+
+  // In case we need this later
+  const search = () => {
+    history.push("/search");
+    setOpen(false);
   };
 
   return (

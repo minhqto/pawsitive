@@ -57,13 +57,6 @@ export const TestMenu = () => {
         }
     }
 
-    function handleListKeyDown(event) {
-        if (event.key === 'Tab') {
-            event.preventDefault();
-            setOpen(false);
-        }
-    }
-
     // return focus to the button when we transitioned from !open -> open
     const prevOpen = React.useRef(open);
 
@@ -75,17 +68,25 @@ export const TestMenu = () => {
     }, [open]);
     const specialist = () => {
         history.push("/specialistServicePage");
+        setOpen(false);
     };
     const myProfile = () => {
         history.push("/specialist/myprofile");
+        setOpen(false);
+    };
+    const clientMyProfile = () => {
+        history.push("/client/myprofile");
+        setOpen(false);
     };
 
     const editService = () => {
         history.push("/specialist/myprofile/editservice");
+        setOpen(false);
     };
 
     const search = () => {
         history.push("/search");
+        setOpen(false);
     };
 
     return (
@@ -108,8 +109,9 @@ export const TestMenu = () => {
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
                                     <MenuItem onClick={specialist}>A Specialist</MenuItem>
-                                    <MenuItem onClick={myProfile}>My Profile</MenuItem>
-                                    <MenuItem onClick={editService}>Edit Service</MenuItem>
+                                    <MenuItem onClick={myProfile}>My Profile(Sp)</MenuItem>
+                                    <MenuItem onClick={editService}>Edit Service(Sp)</MenuItem>
+                                    <MenuItem onClick={clientMyProfile}>My Profile(Cl)</MenuItem>
                                     <MenuItem onClick={search}>Search</MenuItem>
                                 </MenuList>
                             </ClickAwayListener>

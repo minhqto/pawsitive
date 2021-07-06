@@ -64,14 +64,14 @@ function App() {
           path="/signupSpecialist"
           exact
         />
+
+        {/* Public for now to test, need to move to PrivateRoute later */}
         <PublicRoute
           restricted={false}
           component={ProfilePage}
           path="/specialist/myprofile"
           exact
         />
-
-        {/* Public for now to test, need to move to PrivateRoute later */}
         <PublicRoute
           restricted={false}
           component={EditService}
