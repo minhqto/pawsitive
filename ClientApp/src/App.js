@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Route, Redirect, Switch } from "react-router";
 import { useHistory } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import { Home } from "./components/Home";
+import Home from "./components/LandingPage/Home";
 import Main from "./components/Main";
 import { FetchData } from "./components/Examples/FetchData";
 import { Counter } from "./components/Examples/Counter";
