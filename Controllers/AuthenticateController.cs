@@ -130,7 +130,7 @@ namespace pawsitive.Controllers
                 City = model.City,
                 Province = model.Province,
                 PostalCode = model.PostalCode,
-                Country = model.Country
+                Country = "Canada"
             };
 
             dx.Address.Add(address);

@@ -77,7 +77,6 @@ const RegisterSpecialist = () => {
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
   const [province, setProvince] = useState("");
-  const [country, setCountry] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -150,7 +149,6 @@ const RegisterSpecialist = () => {
         streetAddress: streetAddress,
         city: city,
         province: province,
-        country: country,
         postalCode: postalCode,
         businessName: businessName,
         phoneNumber: phoneNumber,
@@ -256,14 +254,6 @@ const RegisterSpecialist = () => {
       setProvinceError("");
     }
 
-    //Province
-    if (country === "") {
-      setCountryError("Country is required");
-      return false;
-    } else {
-      setCountryError("");
-    }
-
     //PostalCode
     if (postalCode === "") {
       setPostalCodeError("Postal Code is required");
@@ -301,7 +291,11 @@ const RegisterSpecialist = () => {
           <Typography component="h1" variant="h5">
             Register as Specialist
           </Typography>
-          <form className={classes.form} noValidate>
+          <form
+            onSubmit={handleRegisterOnClick}
+            className={classes.form}
+            noValidate
+          >
             <Grid container spacing={3}>
               <Grid item xs={3} />
               <Grid item xs={6}>
@@ -565,9 +559,6 @@ const RegisterSpecialist = () => {
                   variant="contained"
                   color="primary"
                   className={classes.submit}
-                  onClick={(event) => {
-                    handleRegisterOnClick(event);
-                  }}
                 >
                   Register
                 </Button>
