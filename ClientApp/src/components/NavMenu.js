@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Collapse,
   Container,
   Navbar,
   NavbarBrand,
-  NavbarToggler,
-  NavItem,
-  NavLink,
-  NavbarText,
 } from "reactstrap";
 import { Link, useHistory } from "react-router-dom";
 import "./NavMenu.css";
@@ -25,7 +20,6 @@ import Button from "@material-ui/core/Button";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
-import Typography from "@material-ui/core/Typography";
 import { TestMenu } from "./TestMenu";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,19 +29,23 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     marginLeft: theme.spacing(2),
   },
+
   popper: {
     zIndex: 1,
   },
+
 }));
 
 export const NavMenu = () => {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  //const [isAuthorized, setAuthorized] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
   const [collapsed, setCollapsed] = useState(true);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
+
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -57,7 +55,6 @@ export const NavMenu = () => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-
     setOpen(false);
   };
 
@@ -87,14 +84,18 @@ export const NavMenu = () => {
 
   const myProfile = () => {
     history.push("/specialist/myprofile");
-  };
-
-  const search = () => {
-    history.push("/search");
+    setOpen(false);
   };
 
   const signin = () => {
     history.push("/login");
+    setOpen(false);
+  };
+
+  // In case we need this later
+  const search = () => {
+    history.push("/search");
+    setOpen(false);
   };
 
   return (
@@ -124,7 +125,9 @@ export const NavMenu = () => {
               direction="row"
               justify="center"
               alignItems="center"
-            ></Grid>
+            ><TestMenu />
+              &nbsp;&nbsp;
+            </Grid>
             <Grid
               item
               xs
@@ -133,8 +136,6 @@ export const NavMenu = () => {
               justify="flex-end"
               alignItems="center"
             >
-              <TestMenu />
-              &nbsp;&nbsp;
               {!isAuthenticated ? (
                 <MenuItem onClick={signin} id="navimenu">
                   <ExitToAppIcon />
@@ -149,7 +150,7 @@ export const NavMenu = () => {
                     onClick={handleToggle}
                     id="navimenubtn"
                   >
-                    Hello, Bread!
+                    Hello, {user.email}!
                   </Button>
                   <Popper
                     open={open}
@@ -199,86 +200,3 @@ export const NavMenu = () => {
     </header>
   );
 };
-
-// previous navi
-//   const toggleNavbar = () => {
-//     setCollapsed(!collapsed);
-//   };
-
-//   const logout = () => {
-//     dispatch(setCurrentUser({}));
-//     localStorage.removeItem("jwtToken");
-//     history.push("/");
-//     window.location.reload();
-//   };
-
-//   return (
-//     <header>
-//       <Navbar
-//         className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3"
-//         light
-//       >
-//         <Container>
-//           <NavbarBrand tag={Link} to="/">
-//             pawsitive
-//           </NavbarBrand>
-//           <NavbarToggler onClick={toggleNavbar} className="mr-2" />
-//           <Collapse
-//             className="d-sm-inline-flex flex-sm-row-reverse"
-//             isOpen={!collapsed}
-//             navbar
-//           >
-//             <ul className="navbar-nav flex-grow">
-//               <NavItem>
-//                 <NavLink tag={Link} className="text-dark" to="/">
-//                   Home
-//                 </NavLink>
-//               </NavItem>
-//               <NavItem>
-//                 <NavLink
-//                   tag={Link}
-//                   className="text-dark"
-//                   to="/specialistServicePage"
-//                 >
-//                   Specialist Service
-//                 </NavLink>
-//               </NavItem>
-//               <NavItem>
-//                 <NavLink
-//                   tag={Link}
-//                   className="text-dark"
-//                   to="/specialist/myprofile"
-//                 >
-//                   Specialist Profile
-//                 </NavLink>
-//               </NavItem>
-//               <NavItem>
-//                 <NavLink
-//                   tag={Link}
-//                   className="text-dark"
-//                   to="/specialist/myprofile/editservice"
-//                 >
-//                   Edit Service
-//                 </NavLink>
-//               </NavItem>
-
-//               {!isAuthenticated ? (
-//                 <NavItem>
-//                   <NavLink tag={Link} className="text-dark" to="/login">
-//                     Sign In
-//                   </NavLink>
-//                 </NavItem>
-//               ) : (
-//                 <NavItem>
-//                   <NavbarText onClick={logout} className="log-out">
-//                     Log out
-//                   </NavbarText>
-//                 </NavItem>
-//               )}
-//             </ul>
-//           </Collapse>
-//         </Container>
-//       </Navbar>
-//     </header>
-//   );
-// };

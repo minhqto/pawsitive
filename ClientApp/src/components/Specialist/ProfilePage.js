@@ -48,7 +48,8 @@ function a11yProps(index) {
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 150,
+    maxWidth: 300,
+    maxHeight: 300,
   },
   media: {
     height: 250,
@@ -83,6 +84,7 @@ const rowsService = [
   createDataService("5 Days Packages", 180),
 ];
 
+
 export const ProfilePage = function (specialistData) {
   const [valueProduct, setValueProduct] = React.useState(0);
   const classes = useStyles();
@@ -92,13 +94,18 @@ export const ProfilePage = function (specialistData) {
 
   return (
     <div>
+      <Grid >
+        <Typography component="h1" variant="h5" mb={3}>
+          My Profile
+        </Typography>
+      </Grid>
       <div>
         <Grid container spacing={2}>
-          <Grid item xs={4} direction="row" justifyContent="flex-start">
+          <Grid item xs={4} direction="row" justifyContent="center">
             <img
               className={classes.root}
-              src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
-            />
+              src="https://images.pexels.com/photos/5749784/pexels-photo-5749784.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+            /><br />
             <Button className={classes.button} color="primary">
               Edit Picture
             </Button>
