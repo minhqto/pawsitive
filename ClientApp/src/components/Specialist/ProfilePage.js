@@ -94,6 +94,11 @@ export const ProfilePage = function (specialistData) {
 
   return (
     <div>
+      <Grid >
+        <Typography component="h1" variant="h5" mb={3}>
+          My Profile
+        </Typography>
+      </Grid>
       <div>
         <Grid container spacing={2}>
           <Grid item xs={4} direction="row" justifyContent="center">
