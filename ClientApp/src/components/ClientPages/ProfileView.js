@@ -97,18 +97,21 @@ export default function ProfileView() {
 
   const getClientInfo = (clientId) => {
     // get current client information based on client id
-    axios.get(`/api/Client/clientDetail/${clientId}`).then((res) => {
-      console.log(res.data);
-      setClientProfile(res.data.clientProfile);
-    });
+    axios
+      .get(`/api/Client/clientDetail/${clientId}`)
+      .then((res) => {
+        console.log(res.data);
+        setClientProfile(res.data.clientProfile);
+      })
+      .catch((e) => console.log(e));
   };
 
-  const getAboutMeHTML = () => {
-    let contentState = convertFromRaw(JSON.parse(clientProfile.aboutMe)); // convert json string to content state object
-    let html = convertToHTML(contentState); // convert content state object to html
+  // const getAboutMeHTML = () => {
+  //   let contentState = convertFromRaw(JSON.parse(clientProfile.aboutMe)); // convert json string to content state object
+  //   let html = convertToHTML(contentState); // convert content state object to html
 
-    return html;
-  };
+  //   return html;
+  // };
 
   let clientInfo = {
     img: `http://writestylesonline.com/wp-content/uploads/2016/08/Follow-These-Steps-for-a-Flawless-Professional-Profile-Picture-1024x1024.jpg`,
@@ -159,10 +162,10 @@ export default function ProfileView() {
             <div
               className={classes.clientAddress}
             >{`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`}</div>
-            <div
+            {/* <div
               dangerouslySetInnerHTML={{ __html: getAboutMeHTML() }}
               className={classes.clientBio}
-            ></div>
+            ></div> */}
           </Box>
           {isAuthorized && (
             <Button
@@ -460,7 +463,7 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
         <Grid item xs={12}>
           <h3>About Me</h3>
           <MUIRichTextEditor
-            defaultValue={aboutMe}
+            // defaultValue={aboutMe}
             label="Tell us about yourself!"
             onChange={getAboutMe}
           />
