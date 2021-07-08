@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Collapse,
   Container,
   Navbar,
   NavbarBrand,
@@ -21,7 +20,6 @@ import Button from "@material-ui/core/Button";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
-import Typography from "@material-ui/core/Typography";
 import { TestMenu } from "./TestMenu";
 
 const useStyles = makeStyles((theme) => ({
@@ -39,13 +37,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const NavMenu = () => {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  //const [isAuthorized, setAuthorized] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
   const [collapsed, setCollapsed] = useState(true);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
+
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -125,7 +125,9 @@ export const NavMenu = () => {
               direction="row"
               justify="center"
               alignItems="center"
-            ></Grid>
+            ><TestMenu />
+              &nbsp;&nbsp;
+            </Grid>
             <Grid
               item
               xs
@@ -134,8 +136,6 @@ export const NavMenu = () => {
               justify="flex-end"
               alignItems="center"
             >
-              <TestMenu />
-              &nbsp;&nbsp;
               {!isAuthenticated ? (
                 <MenuItem onClick={signin} id="navimenu">
                   <ExitToAppIcon />
@@ -150,7 +150,7 @@ export const NavMenu = () => {
                     onClick={handleToggle}
                     id="navimenubtn"
                   >
-                    Hello, Bread!
+                    Hello, {user.email}!
                   </Button>
                   <Popper
                     open={open}
