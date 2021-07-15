@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Container,
@@ -38,14 +38,23 @@ const useStyles = makeStyles((theme) => ({
 
 export const NavMenu = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  //const [isAuthorized, setAuthorized] = useState(false);
+  const [isSpecialist, setIsSpecialist] = useState(false);
+  const [role, setRole] = useState("");
   const dispatch = useDispatch();
   const history = useHistory();
-  const [collapsed, setCollapsed] = useState(true);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
 
+  useEffect(() => {
+    console.log("user.role: " + user.role);
+    setRole(user.role);
+    console.log("setRole result: " + role);
+    if (role === 'Specialist') {
+      setIsSpecialist(true);
+    }
+    console.log("IsSpecialist?: " + isSpecialist);
+  }, [user]);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -83,7 +92,14 @@ export const NavMenu = () => {
   };
 
   const myProfile = () => {
-    history.push("/specialist/myprofile");
+    console.log("setRole result: " + role);
+    console.log("IsSpecialist?: " + isSpecialist);
+    if (role === 'Specialist') {
+      history.push("/specialist/myprofile");
+    }
+    else {
+      history.push("/client/myprofile");
+    }
     setOpen(false);
   };
 
