@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using pawsitive.Data;
 
 namespace pawsitive.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210715013801_modified_specialistProfile_and_service")]
+    partial class modified_specialistProfile_and_service
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -378,14 +380,14 @@ namespace pawsitive.Migrations
                     b.Property<int>("ServiceTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SpecialistId")
+                    b.Property<int?>("SpecialistProfileId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ServiceTypeId");
 
-                    b.HasIndex("SpecialistId");
+                    b.HasIndex("SpecialistProfileId");
 
                     b.ToTable("Service");
                 });
@@ -686,15 +688,11 @@ namespace pawsitive.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("pawsitive.EntityModels.SpecialistProfile", "Specialist")
+                    b.HasOne("pawsitive.EntityModels.SpecialistProfile", null)
                         .WithMany("Services")
-                        .HasForeignKey("SpecialistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SpecialistProfileId");
 
                     b.Navigation("ServiceType");
-
-                    b.Navigation("Specialist");
                 });
 
             modelBuilder.Entity("pawsitive.EntityModels.User", b =>

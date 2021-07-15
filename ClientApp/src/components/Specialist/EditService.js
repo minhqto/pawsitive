@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Avatar from "@material-ui/core/Avatar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { DataGrid, gridRowsLookupSelector } from '@material-ui/data-grid';
 import FilledInput from '@material-ui/core/FilledInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { Container, Box, Grid, Button } from "@material-ui/core";
@@ -15,7 +13,6 @@ import { useParams } from "react-router";
 import { ThemeProvider } from "@material-ui/core/styles";
 import PawsitiveTheme from "../../Theme";
 import { useHistory } from "react-router-dom";
-
 
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -77,11 +74,25 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+let specialistInfo = {
+    serviceTypes: [
+        { id: 1, ServiceTypeName: 'TTraining' },
+        { id: 2, ServiceTypeName: 'GGrooming' },
+        { id: 3, ServiceTypeName: 'DDog Food' },
+    ],
+    services: [
+        { id: 1, name: 'BBehaviour Training 1 day(Big dogs)', servicePrice: 70 },
+        { id: 2, name: 'BBehaviour Training 1 day(Small dogs)', servicePrice: 50 },
+        { id: 3, name: '3 Days Packages', servicePrice: 130 },
+        { id: 4, name: '5 Days Packages', servicePrice: 180 },
+    ],
+};
+
 const rows = [
-    { id: 1, name: 'Behaviour Training 1 day(Big dogs)', servicePrice: 70 },
-    { id: 2, name: 'Behaviour Training 1 day(Small dogs)', servicePrice: 50 },
-    { id: 3, name: '3 Days Packages', servicePrice: 130 },
-    { id: 4, name: '5 Days Packages', servicePrice: 180 },
+    { name: 'Behaviour Training 1 day(Big dogs)', servicePrice: 70 },
+    { name: 'Behaviour Training 1 day(Small dogs)', servicePrice: 50 },
+    { name: '3 Days Packages', servicePrice: 130 },
+    { name: '5 Days Packages', servicePrice: 180 },
 ];
 
 
@@ -113,7 +124,7 @@ function stableSort(array, comparator) {
 
 const headCells = [
     { id: 'name', numeric: false, disablePadding: true, label: 'Service Name' },
-    { id: 'price', numeric: true, disablePadding: false, label: 'Price ($)' },
+    { id: 'price', numeric: true, disablePadding: false, label: 'Fee ($)' },
 ];
 
 function EnhancedTableHead(props) {
@@ -192,37 +203,40 @@ const useToolbarStyles = makeStyles((theme) => ({
 const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
     const { numSelected } = props;
+    const pawTheme = PawsitiveTheme;
 
     return (
-        <Toolbar
-            className={clsx(classes.root, {
-                [classes.highlight]: numSelected > 0,
-            })}
-        >
-            {numSelected > 0 ? (
-                <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-                    Service List
-                </Typography>
-            )}
+        <ThemeProvider theme={pawTheme}>
+            <Toolbar
+                className={clsx(classes.root, {
+                    [classes.highlight]: numSelected > 0,
+                })}
+            >
+                {numSelected > 0 ? (
+                    <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+                        {numSelected} selected
+                    </Typography>
+                ) : (
+                    <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+                        Select items to delete
+                    </Typography>
+                )}
 
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton aria-label="filter list">
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
+                {numSelected > 0 ? (
+                    <Tooltip title="Delete">
+                        <IconButton aria-label="delete">
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                ) : (
+                    <Tooltip title="Filter list">
+                        <IconButton aria-label="filter list">
+                            <FilterListIcon />
+                        </IconButton>
+                    </Tooltip>
+                )}
+            </Toolbar>
+        </ThemeProvider>
     );
 };
 
@@ -230,13 +244,13 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
 
-
 const EditService = () => {
     const classes = useStyles();
     const pawTheme = PawsitiveTheme;
     const { user, isAuthenticated } = useSelector((state) => state.auth);
     const [isAuthorized, setAuthorized] = useState(false);
     let { routeId } = useParams();
+    const [clientProfile, setClientProfile] = useState(null);
 
     const [serviceList, setServiceList] = useState("");
     const [serviceTypes, setServiceTypes] = useState("");
@@ -246,7 +260,6 @@ const EditService = () => {
     const [serviceNameError, setServiceNameError] = useState("");
     const [servicePriceError, setServicePriceError] = useState("");
     const [serverError, setServerError] = useState("");
-
 
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
@@ -258,21 +271,23 @@ const EditService = () => {
         if (isAuthenticated) {
             setAuthorized(true);
             getService(user.id);
-            console.log(user.id);
-            console.log(routeId);
+            console.log("UserID: " + user.id);
         }
     }, [user]);
 
-
     const getService = (specialistId) => {
+        //console.log("in getService: " + specialistId);
         // get current client information based on client id
-        axios.get(`/api/specialist/${specialistId}`).then((res) => {
+        axios.get(`/api/specialist/specialistDetail/${specialistId}`).then((res) => {
             console.log("getService Result: " + res.data);
-            setServiceList(res.data.ServiceList);
-            setServiceTypes(res.data.ServiceTypes);
+            setClientProfile(res.data.specialistProfile);
+            setServiceList(res.data.specialistProfile.ServiceList);
+            setServiceTypes(res.data.specialistProfile.ServiceTypes);
+            console.log("ClientProfile: " + clientProfile);
+            console.log("ServiceList: " + serviceList);
+            console.log("ServiceTypes: " + serviceTypes);
         });
     };
-
 
     const [value, setValue] = React.useState(2);
 
@@ -393,14 +408,14 @@ const EditService = () => {
 
     // Mine
 
-    const validateDeleteRequest = () => {
-        if (serviceName === "") {
-            setServiceNameError("Service Name is required");
-            return false;
-        } else {
-        }
-        return true;
-    }
+    // const validateDeleteRequest = () => {
+    //     if (serviceName === "") {
+    //         setServiceNameError("Service Name is required");
+    //         return false;
+    //     } else {
+    //     }
+    //     return true;
+    // }
 
     const deleteOnClick = (event) => {
         event.preventDefault();
@@ -464,7 +479,7 @@ const EditService = () => {
                         </Paper>
 
                         <Paper className={classes.paper}>
-                            <EnhancedTableToolbar numSelected={selected.length} />
+
                             <TableContainer>
                                 <Table
                                     className={classes.table}
@@ -528,6 +543,7 @@ const EditService = () => {
                                 onPageChange={handleChangePage}
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                             />
+                            <EnhancedTableToolbar numSelected={selected.length} />
                         </Paper>
                         <Typography component="h1" variant="h6">
                             Add a new Service
