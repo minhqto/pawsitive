@@ -277,7 +277,7 @@ namespace pawsitive.Data
 
             try
             {
-                var specialistProfile = dtx.SpecialistProfile.Include("ServiceTypes").Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
+                var specialistProfile = dtx.SpecialistProfile.SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
 
                 //var specialistProfile = dtx.SpecialistProfile.Include("ServiceTypes").Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
                 //specialistProfile = dtx.SpecialistProfile.SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));

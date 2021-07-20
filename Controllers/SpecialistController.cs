@@ -26,17 +26,17 @@ namespace pawsitive.Controllers
 
         // Get the specialist
         [HttpGet]
-        [Route("/specialistDetail/{specialistId}")]
+        [Route("specialistDetail/{specialistId}")]
         public SpecialistDetailVM GetSpecialist([FromRoute] string specialistId)
         {
             // Get the current specialist's info
-            var specialist = dm.getSpecialist(specialistId);
-            return specialist;
+            var specialistDetail = dm.getSpecialist(specialistId);
+            return specialistDetail;
         }
 
 
         [HttpPost]
-        [Route("/specialistDetail/{specialistId}/addservice")]
+        [Route("specialistDetail/{specialistId}/addservice")]
         public IActionResult AddService([FromRoute] string specialistId, [FromBody] ServiceVM req)
         {
             try
@@ -57,7 +57,7 @@ namespace pawsitive.Controllers
         }
 
         [HttpDelete]
-        [Route("/specialistDetail/{specialistId}/deleteservices")]
+        [Route("specialistDetail/{specialistId}/deleteservices")]
         public IActionResult DeleteServices([FromRoute] string specialistId, [FromBody] ServiceVM req)
         {
             try

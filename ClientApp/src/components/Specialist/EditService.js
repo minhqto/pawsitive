@@ -270,6 +270,7 @@ const EditService = () => {
     useEffect(() => {
         if (isAuthenticated) {
             setAuthorized(true);
+            console.log("UserID: " + user.id);
             getService(user.id);
             console.log("UserID: " + user.id);
         }
