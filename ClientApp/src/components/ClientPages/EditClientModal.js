@@ -13,50 +13,6 @@ import {
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
-  imgContainer: {
-    marginRight: "20px",
-  },
-  clientImg: {
-    width: "200px",
-  },
-  clientName: {
-    fontSize: "1.3em",
-    fontWeight: "500",
-  },
-  clientAddress: {
-    fontSize: "1.1em",
-    color: "grey",
-  },
-  clientBio: {
-    fontSize: "1em",
-    fontStyle: "italic",
-  },
-  petSection: {
-    marginTop: "20px",
-  },
-  dogItem: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-start",
-  },
-  dogImg: {
-    width: "150px",
-    marginRight: "20px",
-  },
-  dogInfo: {
-    fontSize: "1.2em",
-    fontWeight: "500",
-  },
-  editButton: {
-    height: "30px",
-    marginLeft: "20px",
-  },
-
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   paper: {
     backgroundColor: theme.palette.background.paper,
     border: "1px solid #000",
