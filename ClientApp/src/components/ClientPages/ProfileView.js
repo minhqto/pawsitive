@@ -13,6 +13,8 @@ import {
   RadioGroup,
   FormControlLabel,
 } from "@material-ui/core";
+import EditClientModal from "./EditClientModal";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
@@ -85,7 +87,6 @@ export default function ProfileView() {
   const [openClientProfileModal, setOpenClientProfileModal] = useState(false);
   const [openAddDogModal, setOpenAddDogModal] = useState(false);
   const [openEditDogModal, setOpenEditDogModal] = useState(false);
-  let { routeId } = useParams();
   const history = useHistory();
 
   useEffect(() => {
@@ -112,23 +113,6 @@ export default function ProfileView() {
 
   //   return html;
   // };
-
-  let clientInfo = {
-    img: `http://writestylesonline.com/wp-content/uploads/2016/08/Follow-These-Steps-for-a-Flawless-Professional-Profile-Picture-1024x1024.jpg`,
-    name: `Angolina Jolie`,
-    address: `123, Toronto, ON`,
-    description: `Hi, I am a dog lover`,
-    dogs: [
-      {
-        img: `http://cdn.akc.org/content/article-body-image/samoyed_puppy_dog_pictures.jpg`,
-        name: `Fluffy`,
-      },
-      {
-        img: `https://ggsc.s3.amazonaws.com/images/uploads/The_Science-Backed_Benefits_of_Being_a_Dog_Owner.jpg`,
-        name: `Bella`,
-      },
-    ],
-  };
 
   if (clientProfile) {
     const { imageUrl, firstName, lastName, address } = clientProfile.client;
@@ -166,6 +150,7 @@ export default function ProfileView() {
               dangerouslySetInnerHTML={{ __html: getAboutMeHTML() }}
               className={classes.clientBio}
             ></div> */}
+            <p>{aboutMe}</p>
           </Box>
           {isAuthorized && (
             <Button
@@ -253,225 +238,6 @@ export default function ProfileView() {
     return <h1>Loading...</h1>;
   }
 }
-
-const EditClientModal = ({ cancelClick, clientProfile }) => {
-  const { firstName, lastName, phoneNumber, email, imageUrl, id } =
-    clientProfile.client;
-  const { country, city, streetAddress, province, postalCode } =
-    clientProfile.client.address;
-  const { aboutMe } = clientProfile;
-
-  const classes = useStyles();
-  const [clientObj, setClientObj] = useState({
-    firstName: firstName,
-    lastName: lastName,
-    phoneNumber: phoneNumber,
-    email: email,
-    imageUrl: imageUrl,
-    country: country,
-    city: city,
-    street: streetAddress,
-    province: province,
-    postalCode: postalCode,
-    aboutMe: aboutMe,
-  });
-
-  const getAboutMe = (state) => {
-    const rteContent = convertToRaw(state.getCurrentContent());
-    setClientObj({ ...clientObj, aboutMe: JSON.stringify(rteContent) });
-
-    // How to convert state to HTML, for future display purpose
-    // let contentState = convertFromRaw(JSON.parse(jsonRte)); // convert json string to content state object
-    // let html = convertToHTML(contentState); // convert content state object to html
-    // console.log(html); // display the html
-  };
-
-  const updateClientInfo = () => {
-    console.log(clientObj);
-
-    // make api call to update client information
-    axios
-      .put(`/api/Client/clientDetail/${id}`, clientObj)
-      .then((res) => {
-        alert("Information updated successfully! Reloading...");
-        window.location.reload();
-      })
-      .catch((e) => console.error(e));
-  };
-
-  return (
-    <div className={classes.paper}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <h1>Edit your profile: </h1>
-          <div>
-            <Button
-              style={{ marginRight: "20px" }}
-              variant="contained"
-              color="primary"
-              onClick={updateClientInfo}
-            >
-              Save changes
-            </Button>
-            <Button onClick={cancelClick} variant="contained">
-              Cancel
-            </Button>
-          </div>
-        </Grid>
-        <hr></hr>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="First Name"
-            defaultValue={firstName}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                firstName: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Last Name"
-            defaultValue={lastName}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                lastName: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            fullWidth={true}
-            label="Phone Number"
-            defaultValue={phoneNumber}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                phoneNumber: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            fullWidth={true}
-            label="Email"
-            defaultValue={email}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                email: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            fullWidth={true}
-            label="Image URL"
-            defaultValue={imageUrl}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                imageUrl: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="Country"
-            defaultValue={country}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                country: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="City"
-            defaultValue={city}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                city: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="Street Address"
-            defaultValue={streetAddress}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                street: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="Province"
-            defaultValue={province}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                province: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="Postal Code"
-            defaultValue={postalCode}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                postalCode: e.target.value,
-              })
-            }
-          />
-        </Grid>
-
-        <Grid item xs={12}>
-          <h3>About Me</h3>
-          <MUIRichTextEditor
-            // defaultValue={aboutMe}
-            label="Tell us about yourself!"
-            onChange={getAboutMe}
-          />
-        </Grid>
-      </Grid>
-    </div>
-  );
-};
 
 const AddDogModal = ({ cancelClick, clientId }) => {
   const classes = useStyles();
