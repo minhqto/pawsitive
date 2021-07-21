@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import EditClientModal from "./EditClientModal";
 import AddDogModal from "./AddDogModal";
+import EditDogModal from "./EditDogModal";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -213,17 +214,15 @@ export default function ProfileView() {
                 <p>{dog.aboutDog}</p>
               </div>
 
-              {isAuthorized && (
-                <Button
-                  className={classes.editButton}
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => setOpenEditDogModal(true)}
-                >
-                  Edit
-                </Button>
-              )}
+              <Button
+                className={classes.editButton}
+                size="small"
+                variant="outlined"
+                color="primary"
+                onClick={() => setOpenEditDogModal(true)}
+              >
+                Edit
+              </Button>
 
               <Modal
                 open={openEditDogModal}
@@ -244,178 +243,3 @@ export default function ProfileView() {
     return <h1>Loading...</h1>;
   }
 }
-
-const EditDogModal = ({ cancelClick, dog }) => {
-  console.log(dog);
-  const classes = useStyles();
-  const [dogName, setDogName] = useState(dog.dogName);
-  const [dogSex, setDogSex] = useState(dog.dogSex);
-  const [dogBreed, setDogBreed] = useState(dog.dogBreed);
-  const [dogWeight, setDogWeight] = useState(dog.dogWeight);
-  const [dogBirthDate, setDogBirthDate] = useState(dog.birthDate);
-  const [dogBiteHistory, setDogBiteHistory] = useState(dog.hasBiteHistory);
-  const [dogIsVaccinated, setDogIsVaccinated] = useState(dog.isVaccinated);
-  const [imageUrl, setImageUrl] = useState(dog.imageUrl);
-  const [aboutDog, setAboutDog] = useState(dog.aboutDog ? dog.aboutDog : "");
-
-  const getAboutDog = (state) => {
-    const rteContent = convertToRaw(state.getCurrentContent());
-    setAboutDog(JSON.stringify(rteContent));
-
-    // How to convert state to HTML, for future display purpose
-    // let contentState = convertFromRaw(JSON.parse(jsonRte)); // convert json string to content state object
-    // let html = convertToHTML(contentState); // convert content state object to html
-    // console.log(html); // display the html
-  };
-
-  const editDog = () => {
-    const dogObj = {
-      dogName: dogName,
-      dogSex: dogSex,
-      dogBreed: dogBreed,
-      dogWeight: dogWeight,
-      birthDate: dogBirthDate,
-      hasBiteHistory: dogBiteHistory,
-      isVaccinated: dogIsVaccinated,
-      aboutDog: aboutDog,
-      imageUrl: imageUrl,
-      dogId: dog.id,
-    };
-
-    axios
-      .put(`/api/Client/clientDetail/editDog`, dogObj)
-      .then((res) => {
-        alert("Dog updated successfully");
-        window.location.reload();
-      })
-      .catch((e) => console.log(e));
-  };
-
-  return (
-    <div className={classes.paper}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <h1>Edit dog: </h1>
-          <div>
-            <Button
-              style={{ marginRight: "20px" }}
-              variant="contained"
-              color="primary"
-              onClick={editDog}
-            >
-              Edit dog
-            </Button>
-            <Button onClick={cancelClick} variant="contained">
-              Cancel
-            </Button>
-          </div>
-        </Grid>
-        <hr></hr>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Name"
-            defaultValue={dogName}
-            variant="outlined"
-            onChange={(e) => {
-              setDogName(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Weight"
-            defaultValue={dogWeight}
-            variant="outlined"
-            onChange={(e) => {
-              setDogWeight(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Birth Date"
-            type="date"
-            variant="outlined"
-            onChange={(e) => {
-              setDogBirthDate(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Breed"
-            defaultValue={dogBreed}
-            variant="outlined"
-            onChange={(e) => {
-              setDogBreed(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Sex"
-            defaultValue={dogSex}
-            variant="outlined"
-            onChange={(e) => {
-              setDogSex(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Image URL"
-            defaultValue={imageUrl}
-            variant="outlined"
-            onChange={(e) => {
-              setImageUrl(e.target.value);
-            }}
-          />
-        </Grid>
-
-        <Grid item xs={6}>
-          <h4>Is Vaccinated</h4>
-          <RadioGroup
-            aria-label="isVaccinated"
-            name="isVaccinated"
-            value={dogIsVaccinated.toString()}
-            onChange={(e) => {
-              setDogIsVaccinated(e.target.value);
-            }}
-          >
-            <FormControlLabel value="true" control={<Radio />} label="Yes" />
-            <FormControlLabel value="false" control={<Radio />} label="No" />
-          </RadioGroup>
-        </Grid>
-
-        <Grid item xs={6}>
-          <h4>Has bite history</h4>
-          <RadioGroup
-            aria-label="biteHistory"
-            name="biteHistory"
-            value={dogBiteHistory.toString()}
-            onChange={(e) => {
-              setDogBiteHistory(e.target.value);
-            }}
-          >
-            <FormControlLabel value="true" control={<Radio />} label="Yes" />
-            <FormControlLabel value="false" control={<Radio />} label="No" />
-          </RadioGroup>
-        </Grid>
-
-        <Grid item xs={12}>
-          <h3>About your dog</h3>
-          <MUIRichTextEditor
-            label="Tell us about your dog!"
-            onChange={getAboutDog}
-          />
-        </Grid>
-      </Grid>
-    </div>
-  );
-};
