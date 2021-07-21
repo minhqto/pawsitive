@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Container,
-  Navbar,
-  NavbarBrand,
-} from "reactstrap";
+import { Container, Navbar, NavbarBrand } from "reactstrap";
 import { Link, useHistory } from "react-router-dom";
 import "./NavMenu.css";
 import { setCurrentUser } from "../redux/auth";
@@ -33,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
   popper: {
     zIndex: 1,
   },
-
 }));
 
 export const NavMenu = () => {
@@ -50,7 +45,7 @@ export const NavMenu = () => {
     console.log("user.role: " + user.role);
     setRole(user.role);
     console.log("setRole result: " + role);
-    if (role === 'Specialist') {
+    if (role === "Specialist") {
       setIsSpecialist(true);
     }
     console.log("IsSpecialist?: " + isSpecialist);
@@ -94,11 +89,10 @@ export const NavMenu = () => {
   const myProfile = () => {
     console.log("setRole result: " + role);
     console.log("IsSpecialist?: " + isSpecialist);
-    if (role === 'Specialist') {
-      history.push("/specialist/myprofile");
-    }
-    else {
-      history.push("/client/myprofile");
+    if (role === "Specialist") {
+      history.push(`/specialist/myprofile/${user.id}`);
+    } else {
+      history.push(`/client/myprofile/${user.id}`);
     }
     setOpen(false);
   };
@@ -141,7 +135,8 @@ export const NavMenu = () => {
               direction="row"
               justify="center"
               alignItems="center"
-            ><TestMenu />
+            >
+              <TestMenu />
               &nbsp;&nbsp;
             </Grid>
             <Grid

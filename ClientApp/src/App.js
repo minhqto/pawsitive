@@ -69,7 +69,7 @@ function App() {
         <PublicRoute
           restricted={false}
           component={ProfilePage}
-          path="/specialist/myprofile"
+          path="/specialist/myprofile/:userId"
           exact
         />
         <PublicRoute
@@ -81,8 +81,7 @@ function App() {
         <PublicRoute
           restricted={false}
           component={ProfileView}
-          path="/client/myprofile"
-          exact
+          path="/client/myprofile/:userId"
         />
 
         <PublicRoute restricted={false} component={Main} path="/search" exact />
