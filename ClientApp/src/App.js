@@ -49,7 +49,7 @@ function App() {
         <Route
           restricted={false}
           component={ServicePage}
-          path="/specialistServicePage/:serviceId"
+          path="/specialistServicePage/:specialistId"
         />
         <PublicRoute
           restricted={true}
@@ -74,7 +74,7 @@ function App() {
         <PublicRoute
           restricted={false}
           component={EditService}
-          path="/specialist/myprofile/editservice/:serviceId"
+          path="/specialist/myprofile/editservice"
         />
 
         <PublicRoute

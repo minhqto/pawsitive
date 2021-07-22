@@ -19,6 +19,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -92,147 +93,166 @@ const rowsFood = [
 const ServicePage = (specialistData) => {
   const [valueRating, setValueRating] = React.useState(3);
   const [valueProduct, setValueProduct] = React.useState(0);
-  const [service, getService] = React.useState({});
-  const { serviceId } = useParams();
+  const [specialist, setSpecialist] = React.useState({});
+  const [specialistAddress, setSpecialistAddress] = React.useState({});
+  const { specialistId } = useParams();
   const classes = useStyles();
   const handleChange = (event, newValue) => {
     setValueProduct(newValue);
   };
 
   React.useEffect(() => {
-    //todo, use API route to get service.
-    //pass in the serviceId into the API route
-  });
+    axios(`https://jsonplaceholder.typicode.com/users/${specialistId}`)
+      .then((res) => {
+        setSpecialist(res.data);
+        setSpecialistAddress(res.data.address);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
-  return (
-    <div>
+  if (specialist != null) {
+    return (
       <div>
-        <Grid container spacing={2}>
-          <Grid item xs={8} direction="column">
-            <Typography variant="h5">Bread Pitt</Typography>
-            <Typography variant="subtitle1">Professional Trainer</Typography>
-            <Typography variant="subtitle2" paragraph>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Pellentesque elementum nibh semper ante euismod, sit amet
-              tincidunt metus cursus. Nunc sagittis vestibulum leo, at molestie
-              metus mollis nec. Donec ornare, lectus at volutpat commodo, diam
-              diam lobortis felis, id facilisis orci quam a nunc. Vestibulum nec
-              sollicitudin tortor, eu pretium nibh. Nulla lobortis a dui id
-              fringilla. Sed sed urna sed ante accumsan egestas. Maecenas neque
-              tellus, tristique ac laoreet eu, sollicitudin ac est.
-            </Typography>
-          </Grid>
+        <div>
+          <Grid container spacing={2}>
+            <Grid item xs={8} direction="column">
+              <Typography variant="h5">{specialist.name}</Typography>
+              <Typography variant="subtitle1">Professional Trainer</Typography>
+              <Typography variant="subtitle2" paragraph>
+                {/* {/* {specialist.email}
+                <br></br> */}
+                {specialistAddress.street}
+                <br></br>
+                {specialistAddress.city}
+                <br></br>
+                {specialist.phone}
+                <br></br>
+                {specialist.website}
+              </Typography>
+            </Grid>
 
-          <Grid item xs={4} direction="row" justifyContent="flex-end">
-            <Card className={classes.root}>
-              <CardMedia
-                className={classes.media}
-                image="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
-                title="Contemplative Reptile"
-              />
-              <CardContent>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-
-        <div className={classes.rootProduct}>
-          <AppBar position="static" color="default">
-            <Tabs
-              value={valueProduct}
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="scrollable"
-              scrollButtons="auto"
-              aria-label="scrollable auto tabs example"
-              centered
-            >
-              <Tab label="Training" {...a11yProps(0)} />
-              <Tab label="Pet Food" {...a11yProps(1)} />
-            </Tabs>
-          </AppBar>
-          <TabPanel value={valueProduct} index={0}>
-            {
-              <div>
-                {/* Training List */}
-                <div className={classes.marginTop}>
-                  <TableContainer
-                    component={Paper}
-                    className={classes.marginTop}
+            <Grid item xs={4} direction="row" justifyContent="flex-end">
+              <Card className={classes.root}>
+                <CardMedia
+                  className={classes.media}
+                  image="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+                  title="Contemplative Reptile"
+                />
+                <CardContent>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
                   >
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Service Name</TableCell>
-                          <TableCell align="right">Fee</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {rowsTraining.map((row) => (
-                          <TableRow
-                            key={row.name}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell component="th" scope="row">
-                              {row.name}
-                            </TableCell>
-                            <TableCell align="right">{row.fee}</TableCell>
+                    Lizards are a widespread group of squamate reptiles, with
+                    over 6,000 species, ranging across all continents except
+                    Antarctica
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+
+          <div className={classes.rootProduct}>
+            <AppBar position="static" color="default">
+              <Tabs
+                value={valueProduct}
+                onChange={handleChange}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="scrollable"
+                scrollButtons="auto"
+                aria-label="scrollable auto tabs example"
+                centered
+              >
+                <Tab label="Training" {...a11yProps(0)} />
+                <Tab label="Pet Food" {...a11yProps(1)} />
+              </Tabs>
+            </AppBar>
+            <TabPanel value={valueProduct} index={0}>
+              {
+                <div>
+                  {/* Training List */}
+                  <div className={classes.marginTop}>
+                    <TableContainer
+                      component={Paper}
+                      className={classes.marginTop}
+                    >
+                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Service Name</TableCell>
+                            <TableCell align="right">Fee</TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                          {rowsTraining.map((row) => (
+                            <TableRow
+                              key={row.name}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                {row.name}
+                              </TableCell>
+                              <TableCell align="right">{row.fee}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </div>
                 </div>
-              </div>
-            }
-          </TabPanel>
-          <TabPanel value={valueProduct} index={1}>
-            {/* Training List */}
-            <div className={classes.marginTop}>
-              <TableContainer component={Paper} className={classes.marginTop}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Service Name</TableCell>
-                      <TableCell align="right">Fee</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rowsFood.map((row) => (
-                      <TableRow
-                        key={row.name}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="right">{row.fee}</TableCell>
+              }
+            </TabPanel>
+            <TabPanel value={valueProduct} index={1}>
+              {/* Training List */}
+              <div className={classes.marginTop}>
+                <TableContainer component={Paper} className={classes.marginTop}>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Service Name</TableCell>
+                        <TableCell align="right">Fee</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </TabPanel>
+                    </TableHead>
+                    <TableBody>
+                      {rowsFood.map((row) => (
+                        <TableRow
+                          key={row.name}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {row.name}
+                          </TableCell>
+                          <TableCell align="right">{row.fee}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+            </TabPanel>
+          </div>
+
+          <br />
+
+          <Button variant="contained" color="primary">
+            Book a Service
+          </Button>
         </div>
-
-        <br />
-
-        <Button variant="contained" color="primary">
-          Book a Service
-        </Button>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <div>Loading...</div>;
+  }
 };
 
 export default ServicePage;
