@@ -9,37 +9,33 @@ namespace pawsitive.ViewModels
 {
     public class SpecialistProfileVM
     {
-
         public SpecialistProfileVM()
         {
             ServiceTypes = new List<ServiceType>();
+            Services = new List<Service>();
         }
 
-
-        [DataType(DataType.Upload)]
-        public string ProfileImageUpload { get; set; }
-
+        public int Id { get; set; }
 
         public User Specialist { get; set; }
         //public string SpecialistId { get; set; }
 
-        // Address Entity
-        public Address address { get; set; }
-
-        // optional
         public string BusinessName { get; set; }
 
-        //default value is False
         public bool ProvideHomeVisitService { get; set; }
 
-        //Only if 'ProvideHomeVisitService' is True
-        public float Radius { get; set; }
+        public int? Radius { get; set; }
 
-        //Business hour (optional)
+        //Business hour
         public string Availability { get; set; }
 
         public string AboutMe { get; set; }
 
+        // Whether the specialist was approved or not
+        public bool Status { get; set; }
+
         public IEnumerable<ServiceType> ServiceTypes { get; set; }
+
+        public IEnumerable<Service> Services { get; set; }
     }
 }

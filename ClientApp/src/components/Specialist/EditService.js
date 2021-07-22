@@ -250,7 +250,7 @@ const EditService = () => {
     const { user, isAuthenticated } = useSelector((state) => state.auth);
     const [isAuthorized, setAuthorized] = useState(false);
     let { routeId } = useParams();
-    const [clientProfile, setClientProfile] = useState(null);
+    const [specialistProfile, setSpecialistProfile] = useState(null);
 
     const [serviceList, setServiceList] = useState("");
     const [serviceTypes, setServiceTypes] = useState("");
@@ -281,12 +281,19 @@ const EditService = () => {
         // get current client information based on client id
         axios.get(`/api/specialist/specialistDetail/${specialistId}`).then((res) => {
             console.log("getService Result: " + res.data);
-            setClientProfile(res.data.specialistProfile);
+            setSpecialistProfile(res.data.specialistProfile);
             setServiceList(res.data.specialistProfile.ServiceList);
             setServiceTypes(res.data.specialistProfile.ServiceTypes);
-            console.log("ClientProfile: " + clientProfile);
-            console.log("ServiceList: " + serviceList);
-            console.log("ServiceTypes: " + serviceTypes);
+            console.log("specialistProfile: " + specialistProfile);
+
+            if (specialistProfile) {
+                const { serviceTypes, services } = specialistProfile;
+                console.log("I'm here ");
+            }
+            //console.log("ServiceList: " + services);
+            //console.log("ServiceTypes: " + serviceTypes);
+
+
         });
     };
 
