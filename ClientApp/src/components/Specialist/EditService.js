@@ -250,10 +250,10 @@ const EditService = () => {
     const { user, isAuthenticated } = useSelector((state) => state.auth);
     const [isAuthorized, setAuthorized] = useState(false);
     let { routeId } = useParams();
-    const [specialistProfile, setSpecialistProfile] = useState(null);
+    const [specialistProfile, setSpecialistProfile] = useState("");
 
     const [serviceList, setServiceList] = useState("");
-    const [serviceTypes, setServiceTypes] = useState("");
+    //const [serviceTypes, setServiceTypes] = useState("");
     const [serviceType, setServiceType] = useState("");
     const [serviceName, setServiceName] = useState("");
     const [servicePrice, setServicePrice] = useState(0.00);
@@ -280,27 +280,37 @@ const EditService = () => {
         //console.log("in getService: " + specialistId);
         // get current client information based on client id
         axios.get(`/api/specialist/specialistDetail/${specialistId}`).then((res) => {
-            console.log("getService Result: " + res.data);
+            console.log(res.data);
             setSpecialistProfile(res.data.specialistProfile);
-            setServiceList(res.data.specialistProfile.ServiceList);
-            setServiceTypes(res.data.specialistProfile.ServiceTypes);
-            console.log("specialistProfile: " + specialistProfile);
+            //setServiceList(res.data.specialistProfile.ServiceList);
+            //setServiceTypes(res.data.specialistProfile.ServiceTypes);
+            console.log(res.data.specialistProfile);
+            console.log(specialistProfile);
+            //const { serviceTypes, services } = specialistProfile;
 
-            if (specialistProfile) {
-                const { serviceTypes, services } = specialistProfile;
-                console.log("I'm here ");
-            }
             //console.log("ServiceList: " + services);
             //console.log("ServiceTypes: " + serviceTypes);
-
 
         });
     };
 
-    const [value, setValue] = React.useState(2);
 
-    const handleChange = (event, newValue) => {
+    const { serviceTypes, services } = specialistProfile;
+    console.log(serviceTypes);
+    console.log(services);
+    console.log(": serviceTypes, services  ");
+
+
+    const [value, setValue] = React.useState(0);
+
+    const handleChangeTabs = (event, newValue) => {
         setValue(newValue);
+        setServiceType();
+        console.log("ServiceType Tab was clicked " + newValue);
+        // const selectedServiceType = [{
+        //     serviceTypeName: serviceTypeName,
+        // }];
+
     };
 
     const columns = [
@@ -322,7 +332,7 @@ const EditService = () => {
     //     servicePrice: 0,
     // }]
 
-    const addOnClick = (event) => {
+    const addOnClick = (event, specialistId) => {
         event.preventDefault();
         console.log("Add Button Clicked");
         if (validateAddRequest()) {
@@ -332,7 +342,7 @@ const EditService = () => {
                 servicePrice: servicePrice,
             }];
             axios
-                .post("/api/specialist/addservice", reqBody)
+                .post(`/api/specialist/specialistDetail/${specialistId}/addservice`, reqBody)
                 .then((res) => {
                     if (res.status === 200) {
                         //TODO - reload Service List  with the added item
@@ -476,13 +486,19 @@ const EditService = () => {
                                 value={value}
                                 indicatorColor="primary"
                                 textColor="primary"
-                                onChange={handleChange}
+                                onChange={handleChangeTabs}
                                 aria-label="tabs for service type"
                                 mb={1}
                             >
-                                <Tab label="Training" />
-                                <Tab label="Grooming" />
-                                <Tab label="Dog Food" />
+                                {serviceTypes ? (
+                                    serviceTypes.map((serviceType, index) => (
+                                        <Tab key={index} label={serviceType.serviceTypeName} />
+                                    ))
+                                ) :
+                                    (
+                                        <Tab label="Training" />
+                                    )
+                                }
                             </Tabs>
                         </Paper>
 
