@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Button from "reactstrap/lib/Button";
@@ -91,45 +91,53 @@ const rowsFood = [
 ];
 
 const ServicePage = (specialistData) => {
-  const [valueRating, setValueRating] = React.useState(3);
-  const [valueProduct, setValueProduct] = React.useState(0);
-  const [specialist, setSpecialist] = React.useState({});
-  const [specialistAddress, setSpecialistAddress] = React.useState({});
+  const [valueRating, setValueRating] = useState(3);
+  const [valueProduct, setValueProduct] = useState(0);
+  const [specialistProfile, setSpecialistProfile] = useState(null);
+
+  const [specialistAddress, setSpecialistAddress] = useState(null);
   const { specialistId } = useParams();
   const classes = useStyles();
   const handleChange = (event, newValue) => {
     setValueProduct(newValue);
   };
 
-  React.useEffect(() => {
-    axios(`https://jsonplaceholder.typicode.com/users/${specialistId}`)
+  useEffect(() => {
+    console.log(specialistId);
+
+    axios
+      .get(`/api/Specialist/specialistDetail/${specialistId}`)
       .then((res) => {
-        setSpecialist(res.data);
-        setSpecialistAddress(res.data.address);
+        setSpecialistProfile(res.data.specialistProfile);
+        console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  if (specialist != null) {
+  if (specialistProfile != null) {
+    const { specialist } = specialistProfile;
+    // const { address } = specialist;
     return (
       <div>
         <div>
           <Grid container spacing={2}>
             <Grid item xs={8} direction="column">
-              <Typography variant="h5">{specialist.name}</Typography>
-              <Typography variant="subtitle1">Professional Trainer</Typography>
+              <Typography variant="h5">
+                {specialist.firstName} {specialist.lastName}
+              </Typography>
+              <Typography variant="subtitle1">
+                {specialistProfile.businessName}
+              </Typography>
               <Typography variant="subtitle2" paragraph>
                 {specialist.email}
                 <br></br>
-                {specialistAddress.street}
+                {specialist.address.streetAddress}
                 <br></br>
-                {specialistAddress.city}
+                {specialist.address.city}
                 <br></br>
-                {specialist.phone}
-                <br></br>
-                {specialist.website}
+                {specialist.phoneNumber}
               </Typography>
             </Grid>
 
@@ -137,7 +145,7 @@ const ServicePage = (specialistData) => {
               <Card className={classes.root}>
                 <CardMedia
                   className={classes.media}
-                  image="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+                  image={specialist.imageUrl}
                   title="Contemplative Reptile"
                 />
                 <CardContent>
@@ -146,9 +154,7 @@ const ServicePage = (specialistData) => {
                     color="textSecondary"
                     component="p"
                   >
-                    Lizards are a widespread group of squamate reptiles, with
-                    over 6,000 species, ranging across all continents except
-                    Antarctica
+                    {specialistProfile.aboutMe}
                   </Typography>
                 </CardContent>
               </Card>
