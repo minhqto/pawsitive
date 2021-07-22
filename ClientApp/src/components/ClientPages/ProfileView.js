@@ -86,6 +86,7 @@ export default function ProfileView() {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [isAuthorized, setAuthorized] = useState(false);
   const [clientProfile, setClientProfile] = useState(null);
+  const [selectedDogForEdit, setSelectedDogForEdit] = useState(null);
   const [openClientProfileModal, setOpenClientProfileModal] = useState(false);
   const [openAddDogModal, setOpenAddDogModal] = useState(false);
   const [openEditDogModal, setOpenEditDogModal] = useState(false);
@@ -219,7 +220,10 @@ export default function ProfileView() {
                 size="small"
                 variant="outlined"
                 color="primary"
-                onClick={() => setOpenEditDogModal(true)}
+                onClick={() => {
+                  setOpenEditDogModal(true);
+                  setSelectedDogForEdit(dog);
+                }}
               >
                 Edit
               </Button>
@@ -229,7 +233,7 @@ export default function ProfileView() {
                 onClose={() => setOpenEditDogModal(false)}
               >
                 <EditDogModal
-                  dog={dog}
+                  dog={selectedDogForEdit}
                   cancelClick={() => setOpenEditDogModal(false)}
                 />
               </Modal>
