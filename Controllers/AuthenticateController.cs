@@ -89,6 +89,19 @@ namespace pawsitive.Controllers
                 //TODO(Jihyun) - didn't decide yet to have names or not. If we do, need to change the page design
                 //FirstName = model.FirstName,
                 //LastName = model.LastName,
+                ClientProfile = new ClientProfile
+                {
+                    AboutMe = "",
+                    Dogs = new List<Dog>()
+                },
+                Address = new Address()
+                {
+                    StreetAddress = "",
+                    City = "",
+                    Province = "",
+                    PostalCode = "",
+                    Country = "Canada"
+                }
             };
 
             var result = await userManager.CreateAsync(user, model.Password);

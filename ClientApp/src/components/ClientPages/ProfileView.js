@@ -137,24 +137,32 @@ export default function ProfileView() {
               alt="Client Image"
             />
           </div>
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="flex-start"
-            alignItems="flex-start"
-          >
-            <div
-              className={classes.clientName}
-            >{`${firstName} ${lastName}`}</div>
-            <div
-              className={classes.clientAddress}
-            >{`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`}</div>
-            {/* <div
+          {firstName != null ? (
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="flex-start"
+              alignItems="flex-start"
+            >
+              <div
+                className={classes.clientName}
+              >{`${firstName} ${lastName}`}</div>
+              <div
+                className={classes.clientAddress}
+              >{`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`}</div>
+              {/* <div
               dangerouslySetInnerHTML={{ __html: getAboutMeHTML() }}
               className={classes.clientBio}
             ></div> */}
-            <p>{aboutMe}</p>
-          </Box>
+              <p>{aboutMe}</p>
+            </Box>
+          ) : (
+            <h3>
+              You don't have any profile to display, please click edit to add
+              your information
+            </h3>
+          )}
+
           {isAuthorized && (
             <Button
               className={classes.editButton}
