@@ -90,9 +90,9 @@ export const NavMenu = () => {
     console.log("setRole result: " + role);
     console.log("IsSpecialist?: " + isSpecialist);
     if (role === "Specialist") {
-      history.push(`/specialist/myprofile/${user.id}`);
+      history.push(`/specialist/myprofile`);
     } else {
-      history.push(`/client/myprofile/${user.id}`);
+      history.push(`/client/myprofile`);
     }
     setOpen(false);
   };

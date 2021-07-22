@@ -18,6 +18,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { useParams } from "react-router-dom";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -88,13 +89,20 @@ const rowsFood = [
   createDataFood("Rotal Canin Large Adult (13.6Kg)", 94.99),
 ];
 
-export const ServicePage = function (specialistData) {
+const ServicePage = (specialistData) => {
   const [valueRating, setValueRating] = React.useState(3);
   const [valueProduct, setValueProduct] = React.useState(0);
+  const [service, getService] = React.useState({});
+  const { serviceId } = useParams();
   const classes = useStyles();
   const handleChange = (event, newValue) => {
     setValueProduct(newValue);
   };
+
+  React.useEffect(() => {
+    //todo, use API route to get service.
+    //pass in the serviceId into the API route
+  });
 
   return (
     <div>
@@ -226,3 +234,5 @@ export const ServicePage = function (specialistData) {
     </div>
   );
 };
+
+export default ServicePage;

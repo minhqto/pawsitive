@@ -16,7 +16,7 @@ import { isJwtTokenExist, isJwtTokenExpire } from "./utils/auth";
 import { setCurrentUser } from "./redux/auth";
 import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
-import { ServicePage } from "./components/Specialist/ServicePage";
+import ServicePage from "./components/Specialist/ServicePage";
 import { ProfilePage } from "./components/Specialist/ProfilePage";
 import ProfileView from "./components/ClientPages/ProfileView";
 import Map from "./components/Map";
@@ -46,11 +46,10 @@ function App() {
       <Switch>
         <PublicRoute restricted={false} component={Home} path="/" exact />
         <PublicRoute restricted={true} component={Login} path="/login" exact />
-        <PublicRoute
+        <Route
           restricted={false}
           component={ServicePage}
-          path="/specialistServicePage"
-          exact
+          path="/specialistServicePage/:serviceId"
         />
         <PublicRoute
           restricted={true}
@@ -69,19 +68,20 @@ function App() {
         <PublicRoute
           restricted={false}
           component={ProfilePage}
-          path="/specialist/myprofile/:userId"
+          path="/specialist/myprofile"
           exact
         />
         <PublicRoute
           restricted={false}
           component={EditService}
-          path="/specialist/myprofile/editservice"
+          path="/specialist/myprofile/editservice/:serviceId"
         />
 
         <PublicRoute
           restricted={false}
           component={ProfileView}
-          path="/client/myprofile/:userId"
+          path="/client/myprofile"
+          exact
         />
 
         <PublicRoute restricted={false} component={Main} path="/search" exact />
