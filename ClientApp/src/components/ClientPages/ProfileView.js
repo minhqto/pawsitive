@@ -13,6 +13,10 @@ import {
   RadioGroup,
   FormControlLabel,
 } from "@material-ui/core";
+import EditClientModal from "./EditClientModal";
+import AddDogModal from "./AddDogModal";
+import EditDogModal from "./EditDogModal";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
@@ -82,10 +86,10 @@ export default function ProfileView() {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [isAuthorized, setAuthorized] = useState(false);
   const [clientProfile, setClientProfile] = useState(null);
+  const [selectedDogForEdit, setSelectedDogForEdit] = useState(null);
   const [openClientProfileModal, setOpenClientProfileModal] = useState(false);
   const [openAddDogModal, setOpenAddDogModal] = useState(false);
   const [openEditDogModal, setOpenEditDogModal] = useState(false);
-  let { routeId } = useParams();
   const history = useHistory();
 
   useEffect(() => {
@@ -113,23 +117,6 @@ export default function ProfileView() {
   //   return html;
   // };
 
-  let clientInfo = {
-    img: `http://writestylesonline.com/wp-content/uploads/2016/08/Follow-These-Steps-for-a-Flawless-Professional-Profile-Picture-1024x1024.jpg`,
-    name: `Angolina Jolie`,
-    address: `123, Toronto, ON`,
-    description: `Hi, I am a dog lover`,
-    dogs: [
-      {
-        img: `http://cdn.akc.org/content/article-body-image/samoyed_puppy_dog_pictures.jpg`,
-        name: `Fluffy`,
-      },
-      {
-        img: `https://ggsc.s3.amazonaws.com/images/uploads/The_Science-Backed_Benefits_of_Being_a_Dog_Owner.jpg`,
-        name: `Bella`,
-      },
-    ],
-  };
-
   if (clientProfile) {
     const { imageUrl, firstName, lastName, address } = clientProfile.client;
     const { aboutMe, dogs } = clientProfile;
@@ -150,23 +137,32 @@ export default function ProfileView() {
               alt="Client Image"
             />
           </div>
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="flex-start"
-            alignItems="flex-start"
-          >
-            <div
-              className={classes.clientName}
-            >{`${firstName} ${lastName}`}</div>
-            <div
-              className={classes.clientAddress}
-            >{`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`}</div>
-            {/* <div
+          {firstName != null ? (
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="flex-start"
+              alignItems="flex-start"
+            >
+              <div
+                className={classes.clientName}
+              >{`${firstName} ${lastName}`}</div>
+              <div
+                className={classes.clientAddress}
+              >{`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`}</div>
+              {/* <div
               dangerouslySetInnerHTML={{ __html: getAboutMeHTML() }}
               className={classes.clientBio}
             ></div> */}
-          </Box>
+              <p>{aboutMe}</p>
+            </Box>
+          ) : (
+            <h3>
+              You don't have any profile to display, please click edit to add
+              your information
+            </h3>
+          )}
+
           {isAuthorized && (
             <Button
               className={classes.editButton}
@@ -221,25 +217,31 @@ export default function ProfileView() {
           {dogs.map((dog, index) => (
             <Grid key={index} className={classes.dogItem} item xs={6}>
               <img className={classes.dogImg} src={dog.imageUrl} />
-              <div className={classes.dogInfo}>{dog.dogName}</div>
-              {isAuthorized && (
-                <Button
-                  className={classes.editButton}
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => setOpenEditDogModal(true)}
-                >
-                  Edit
-                </Button>
-              )}
+              <div>
+                <h4>{dog.dogName}</h4>
+                <br></br>
+                <p>{dog.aboutDog}</p>
+              </div>
+
+              <Button
+                className={classes.editButton}
+                size="small"
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  setOpenEditDogModal(true);
+                  setSelectedDogForEdit(dog);
+                }}
+              >
+                Edit
+              </Button>
 
               <Modal
                 open={openEditDogModal}
                 onClose={() => setOpenEditDogModal(false)}
               >
                 <EditDogModal
-                  dog={dog}
+                  dog={selectedDogForEdit}
                   cancelClick={() => setOpenEditDogModal(false)}
                 />
               </Modal>
@@ -253,572 +255,3 @@ export default function ProfileView() {
     return <h1>Loading...</h1>;
   }
 }
-
-const EditClientModal = ({ cancelClick, clientProfile }) => {
-  const { firstName, lastName, phoneNumber, email, imageUrl, id } =
-    clientProfile.client;
-  const { country, city, streetAddress, province, postalCode } =
-    clientProfile.client.address;
-  const { aboutMe } = clientProfile;
-
-  const classes = useStyles();
-  const [clientObj, setClientObj] = useState({
-    firstName: firstName,
-    lastName: lastName,
-    phoneNumber: phoneNumber,
-    email: email,
-    imageUrl: imageUrl,
-    country: country,
-    city: city,
-    street: streetAddress,
-    province: province,
-    postalCode: postalCode,
-    aboutMe: aboutMe,
-  });
-
-  const getAboutMe = (state) => {
-    const rteContent = convertToRaw(state.getCurrentContent());
-    setClientObj({ ...clientObj, aboutMe: JSON.stringify(rteContent) });
-
-    // How to convert state to HTML, for future display purpose
-    // let contentState = convertFromRaw(JSON.parse(jsonRte)); // convert json string to content state object
-    // let html = convertToHTML(contentState); // convert content state object to html
-    // console.log(html); // display the html
-  };
-
-  const updateClientInfo = () => {
-    console.log(clientObj);
-
-    // make api call to update client information
-    axios
-      .put(`/api/Client/clientDetail/${id}`, clientObj)
-      .then((res) => {
-        alert("Information updated successfully! Reloading...");
-        window.location.reload();
-      })
-      .catch((e) => console.error(e));
-  };
-
-  return (
-    <div className={classes.paper}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <h1>Edit your profile: </h1>
-          <div>
-            <Button
-              style={{ marginRight: "20px" }}
-              variant="contained"
-              color="primary"
-              onClick={updateClientInfo}
-            >
-              Save changes
-            </Button>
-            <Button onClick={cancelClick} variant="contained">
-              Cancel
-            </Button>
-          </div>
-        </Grid>
-        <hr></hr>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="First Name"
-            defaultValue={firstName}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                firstName: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Last Name"
-            defaultValue={lastName}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                lastName: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            fullWidth={true}
-            label="Phone Number"
-            defaultValue={phoneNumber}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                phoneNumber: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            fullWidth={true}
-            label="Email"
-            defaultValue={email}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                email: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            fullWidth={true}
-            label="Image URL"
-            defaultValue={imageUrl}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                imageUrl: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="Country"
-            defaultValue={country}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                country: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="City"
-            defaultValue={city}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                city: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="Street Address"
-            defaultValue={streetAddress}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                street: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="Province"
-            defaultValue={province}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                province: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="Postal Code"
-            defaultValue={postalCode}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                postalCode: e.target.value,
-              })
-            }
-          />
-        </Grid>
-
-        <Grid item xs={12}>
-          <h3>About Me</h3>
-          <MUIRichTextEditor
-            // defaultValue={aboutMe}
-            label="Tell us about yourself!"
-            onChange={getAboutMe}
-          />
-        </Grid>
-      </Grid>
-    </div>
-  );
-};
-
-const AddDogModal = ({ cancelClick, clientId }) => {
-  const classes = useStyles();
-  const [dogName, setDogName] = useState("");
-  const [dogAge, setDogAge] = useState(0);
-  const [dogSex, setDogSex] = useState("");
-  const [dogBreed, setDogBreed] = useState("");
-  const [dogWeight, setDogWeight] = useState(0);
-  const [dogBirthDate, setDogBirthDate] = useState(Date.now());
-  const [dogBiteHistory, setDogBiteHistory] = useState(false);
-  const [dogIsVaccinated, setDogIsVaccinated] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
-  const [aboutDog, setAboutDog] = useState("");
-
-  const getAboutDog = (state) => {
-    const rteContent = convertToRaw(state.getCurrentContent());
-    setAboutDog(rteContent);
-
-    // How to convert state to HTML, for future display purpose
-    // let contentState = convertFromRaw(JSON.parse(jsonRte)); // convert json string to content state object
-    // let html = convertToHTML(contentState); // convert content state object to html
-    // console.log(html); // display the html
-  };
-
-  const addNewDog = () => {
-    const dogObj = {
-      dogName: dogName,
-      dogAge: dogAge,
-      dogSex: dogSex,
-      dogBreed: dogBreed,
-      dogWeight: dogWeight,
-      birthDate: dogBirthDate,
-      hasBiteHistory: dogBiteHistory,
-      isVaccinated: dogIsVaccinated,
-      imageUrl: imageUrl,
-      aboutDog: JSON.stringify(aboutDog),
-    };
-
-    axios
-      .post(`/api/Client/clientDetail/${clientId}/addDog`, dogObj)
-      .then((res) => {
-        alert("Dog added successfully");
-        window.location.reload();
-      })
-      .catch((e) => console.log(e));
-  };
-
-  return (
-    <div className={classes.paper}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <h1>Add new dog: </h1>
-          <div>
-            <Button
-              style={{ marginRight: "20px" }}
-              variant="contained"
-              color="primary"
-              onClick={addNewDog}
-            >
-              Add dog
-            </Button>
-            <Button onClick={cancelClick} variant="contained">
-              Cancel
-            </Button>
-          </div>
-        </Grid>
-        <hr></hr>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Name"
-            defaultValue=""
-            variant="outlined"
-            onChange={(e) => {
-              setDogName(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Weight"
-            defaultValue=""
-            variant="outlined"
-            onChange={(e) => {
-              setDogWeight(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Birth Date"
-            type="date"
-            variant="outlined"
-            onChange={(e) => {
-              setDogBirthDate(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Breed"
-            defaultValue=""
-            variant="outlined"
-            onChange={(e) => {
-              setDogBreed(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Sex"
-            defaultValue=""
-            variant="outlined"
-            onChange={(e) => {
-              setDogSex(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Image URL"
-            defaultValue=""
-            variant="outlined"
-            onChange={(e) => {
-              setImageUrl(e.target.value);
-            }}
-          />
-        </Grid>
-
-        <Grid item xs={6}>
-          <h4>Is Vaccinated</h4>
-          <RadioGroup
-            aria-label="isVaccinated"
-            name="isVaccinated"
-            value={dogIsVaccinated}
-            onChange={(e) => {
-              setDogIsVaccinated(e.target.value);
-            }}
-          >
-            <FormControlLabel value="true" control={<Radio />} label="Yes" />
-            <FormControlLabel value="false" control={<Radio />} label="No" />
-          </RadioGroup>
-        </Grid>
-
-        <Grid item xs={6}>
-          <h4>Has bite history</h4>
-          <RadioGroup
-            aria-label="biteHistory"
-            name="biteHistory"
-            value={dogBiteHistory}
-            onChange={(e) => {
-              setDogBiteHistory(e.target.value);
-            }}
-          >
-            <FormControlLabel value="true" control={<Radio />} label="Yes" />
-            <FormControlLabel value="false" control={<Radio />} label="No" />
-          </RadioGroup>
-        </Grid>
-
-        <Grid item xs={12}>
-          <h3>About your dog</h3>
-          <MUIRichTextEditor
-            label="Tell us about your dog!"
-            onChange={getAboutDog}
-          />
-        </Grid>
-      </Grid>
-    </div>
-  );
-};
-
-const EditDogModal = ({ cancelClick, dog }) => {
-  console.log(dog);
-  const classes = useStyles();
-  const [dogName, setDogName] = useState(dog.dogName);
-  const [dogSex, setDogSex] = useState(dog.dogSex);
-  const [dogBreed, setDogBreed] = useState(dog.dogBreed);
-  const [dogWeight, setDogWeight] = useState(dog.dogWeight);
-  const [dogBirthDate, setDogBirthDate] = useState(dog.birthDate);
-  const [dogBiteHistory, setDogBiteHistory] = useState(dog.hasBiteHistory);
-  const [dogIsVaccinated, setDogIsVaccinated] = useState(dog.isVaccinated);
-  const [imageUrl, setImageUrl] = useState(dog.imageUrl);
-  const [aboutDog, setAboutDog] = useState(dog.aboutDog ? dog.aboutDog : "");
-
-  const getAboutDog = (state) => {
-    const rteContent = convertToRaw(state.getCurrentContent());
-    setAboutDog(JSON.stringify(rteContent));
-
-    // How to convert state to HTML, for future display purpose
-    // let contentState = convertFromRaw(JSON.parse(jsonRte)); // convert json string to content state object
-    // let html = convertToHTML(contentState); // convert content state object to html
-    // console.log(html); // display the html
-  };
-
-  const editDog = () => {
-    const dogObj = {
-      dogName: dogName,
-      dogSex: dogSex,
-      dogBreed: dogBreed,
-      dogWeight: dogWeight,
-      birthDate: dogBirthDate,
-      hasBiteHistory: dogBiteHistory,
-      isVaccinated: dogIsVaccinated,
-      aboutDog: aboutDog,
-      imageUrl: imageUrl,
-      dogId: dog.id,
-    };
-
-    axios
-      .put(`/api/Client/clientDetail/editDog`, dogObj)
-      .then((res) => {
-        alert("Dog updated successfully");
-        window.location.reload();
-      })
-      .catch((e) => console.log(e));
-  };
-
-  return (
-    <div className={classes.paper}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <h1>Edit dog: </h1>
-          <div>
-            <Button
-              style={{ marginRight: "20px" }}
-              variant="contained"
-              color="primary"
-              onClick={editDog}
-            >
-              Edit dog
-            </Button>
-            <Button onClick={cancelClick} variant="contained">
-              Cancel
-            </Button>
-          </div>
-        </Grid>
-        <hr></hr>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Name"
-            defaultValue={dogName}
-            variant="outlined"
-            onChange={(e) => {
-              setDogName(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Weight"
-            defaultValue={dogWeight}
-            variant="outlined"
-            onChange={(e) => {
-              setDogWeight(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Birth Date"
-            type="date"
-            variant="outlined"
-            onChange={(e) => {
-              setDogBirthDate(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Breed"
-            defaultValue={dogBreed}
-            variant="outlined"
-            onChange={(e) => {
-              setDogBreed(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Sex"
-            defaultValue={dogSex}
-            variant="outlined"
-            onChange={(e) => {
-              setDogSex(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Image URL"
-            defaultValue={imageUrl}
-            variant="outlined"
-            onChange={(e) => {
-              setImageUrl(e.target.value);
-            }}
-          />
-        </Grid>
-
-        <Grid item xs={6}>
-          <h4>Is Vaccinated</h4>
-          <RadioGroup
-            aria-label="isVaccinated"
-            name="isVaccinated"
-            value={dogIsVaccinated.toString()}
-            onChange={(e) => {
-              setDogIsVaccinated(e.target.value);
-            }}
-          >
-            <FormControlLabel value="true" control={<Radio />} label="Yes" />
-            <FormControlLabel value="false" control={<Radio />} label="No" />
-          </RadioGroup>
-        </Grid>
-
-        <Grid item xs={6}>
-          <h4>Has bite history</h4>
-          <RadioGroup
-            aria-label="biteHistory"
-            name="biteHistory"
-            value={dogBiteHistory.toString()}
-            onChange={(e) => {
-              setDogBiteHistory(e.target.value);
-            }}
-          >
-            <FormControlLabel value="true" control={<Radio />} label="Yes" />
-            <FormControlLabel value="false" control={<Radio />} label="No" />
-          </RadioGroup>
-        </Grid>
-
-        <Grid item xs={12}>
-          <h3>About your dog</h3>
-          <MUIRichTextEditor
-            label="Tell us about your dog!"
-            onChange={getAboutDog}
-          />
-        </Grid>
-      </Grid>
-    </div>
-  );
-};
