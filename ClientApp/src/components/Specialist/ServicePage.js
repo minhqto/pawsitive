@@ -121,8 +121,8 @@ const ServicePage = (specialistData) => {
               <Typography variant="h5">{specialist.name}</Typography>
               <Typography variant="subtitle1">Professional Trainer</Typography>
               <Typography variant="subtitle2" paragraph>
-                {/* {/* {specialist.email}
-                <br></br> */}
+                {specialist.email}
+                <br></br>
                 {specialistAddress.street}
                 <br></br>
                 {specialistAddress.city}
