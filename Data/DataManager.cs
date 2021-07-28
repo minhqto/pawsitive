@@ -289,5 +289,12 @@ namespace pawsitive.Data
         }
 
 
+        public IEnumerable<User> getAllSpecialists()
+        {
+            var allSpecialists = userManager.Users.Where(u => u.SpecialistProfileId != null).Include("Address");
+
+            return allSpecialists;
+        }
+
     }
 }
