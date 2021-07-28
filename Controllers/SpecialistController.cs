@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using pawsitive.Data;
+using pawsitive.EntityModels;
 using pawsitive.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,15 @@ namespace pawsitive.Controllers
             return specialistDetail;
         }
 
+
+        [HttpGet]
+        [Route("allSpecialists")]
+        public IEnumerable<User> Get()
+        {
+            var allSpecialists = dm.getAllSpecialists();
+
+            return allSpecialists;
+        }
 
     }
 }
