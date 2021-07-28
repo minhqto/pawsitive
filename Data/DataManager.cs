@@ -269,7 +269,32 @@ namespace pawsitive.Data
 
         }
 
+        // Get a specialist detail by id
+        public SpecialistDetailVM getSpecialistDetail(string specialistId)
+        {
+            var specialistDetail = new SpecialistDetailVM();
 
+            try
+            {
+                // var user = userManager.Users.Include("Address").Include("ClientProfile").SingleOrDefault(u => u.Id.Equals(clientId));
+                var specProfile = dtx.SpecialistProfile.Include("ServiceTypes").Include("Specialist.Address").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
+
+                specialistDetail.specialistProfile = specProfile;
+                return specialistDetail;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        public IEnumerable<User> getAllSpecialists()
+        {
+            var allSpecialists = userManager.Users.Where(u => u.SpecialistProfileId != null).Include("Address");
+
+            return allSpecialists;
+        }
 
     }
 }
