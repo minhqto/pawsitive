@@ -235,9 +235,9 @@ const ServicePage = (specialistData) => {
 
           <br />
 
-          <Button variant="contained" color="primary">
+          {/* <Button variant="contained" color="primary">
             Book a Service
-          </Button>
+          </Button> */}
         </div>
       </div>
     );
