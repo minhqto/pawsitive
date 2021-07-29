@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Button from "reactstrap/lib/Button";
@@ -91,45 +91,51 @@ const rowsFood = [
 ];
 
 const ServicePage = (specialistData) => {
-  const [valueRating, setValueRating] = React.useState(3);
-  const [valueProduct, setValueProduct] = React.useState(0);
-  const [specialist, setSpecialist] = React.useState({});
-  const [specialistAddress, setSpecialistAddress] = React.useState({});
+  const [valueProduct, setValueProduct] = useState(0);
+  const [specialistProfile, setSpecialistProfile] = useState(null);
+  const [services, setServices] = useState([]);
+  const [serviceTypes, setServiceTypes] = useState([]);
+
   const { specialistId } = useParams();
   const classes = useStyles();
   const handleChange = (event, newValue) => {
     setValueProduct(newValue);
   };
 
-  React.useEffect(() => {
-    axios(`https://jsonplaceholder.typicode.com/users/${specialistId}`)
+  useEffect(() => {
+    axios
+      .get(`/api/Specialist/specialistDetail/${specialistId}`)
       .then((res) => {
-        setSpecialist(res.data);
-        setSpecialistAddress(res.data.address);
+        setSpecialistProfile(res.data.specialistProfile);
+        setServices(res.data.specialistProfile.services);
+        setServiceTypes(res.data.specialistProfile.serviceTypes);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  if (specialist != null) {
+  if (specialistProfile != null) {
+    const { specialist } = specialistProfile;
     return (
       <div>
         <div>
           <Grid container spacing={2}>
             <Grid item xs={8} direction="column">
-              <Typography variant="h5">{specialist.name}</Typography>
-              <Typography variant="subtitle1">Professional Trainer</Typography>
+              <Typography variant="h5">
+                {specialist.firstName} {specialist.lastName}
+              </Typography>
+              <Typography variant="subtitle1">
+                {specialistProfile.businessName}
+              </Typography>
               <Typography variant="subtitle2" paragraph>
                 {specialist.email}
                 <br></br>
-                {specialistAddress.street}
+                {specialist.address.streetAddress}
                 <br></br>
-                {specialistAddress.city}
+                {specialist.address.city}
                 <br></br>
-                {specialist.phone}
-                <br></br>
-                {specialist.website}
+                {specialist.phoneNumber}
               </Typography>
             </Grid>
 
@@ -137,8 +143,8 @@ const ServicePage = (specialistData) => {
               <Card className={classes.root}>
                 <CardMedia
                   className={classes.media}
-                  image="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
-                  title="Contemplative Reptile"
+                  image={specialist.imageUrl}
+                  title="Specialist Profile"
                 />
                 <CardContent>
                   <Typography
@@ -146,16 +152,16 @@ const ServicePage = (specialistData) => {
                     color="textSecondary"
                     component="p"
                   >
-                    Lizards are a widespread group of squamate reptiles, with
-                    over 6,000 species, ranging across all continents except
-                    Antarctica
+                    {specialistProfile.aboutMe}
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
 
+          {/* Services offered section */}
           <div className={classes.rootProduct}>
+            {/* Navigation bar among service types */}
             <AppBar position="static" color="default">
               <Tabs
                 value={valueProduct}
@@ -167,86 +173,71 @@ const ServicePage = (specialistData) => {
                 aria-label="scrollable auto tabs example"
                 centered
               >
-                <Tab label="Training" {...a11yProps(0)} />
-                <Tab label="Pet Food" {...a11yProps(1)} />
+                {serviceTypes.map((serviceType, index) => (
+                  <Tab
+                    key={index}
+                    label={serviceType.serviceTypeName}
+                    {...a11yProps(0)}
+                  />
+                ))}
               </Tabs>
             </AppBar>
-            <TabPanel value={valueProduct} index={0}>
-              {
-                <div>
-                  {/* Training List */}
-                  <div className={classes.marginTop}>
-                    <TableContainer
-                      component={Paper}
-                      className={classes.marginTop}
-                    >
-                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Service Name</TableCell>
-                            <TableCell align="right">Fee</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {rowsTraining.map((row) => (
-                            <TableRow
-                              key={row.name}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  border: 0,
-                                },
-                              }}
-                            >
-                              <TableCell component="th" scope="row">
-                                {row.name}
-                              </TableCell>
-                              <TableCell align="right">{row.fee}</TableCell>
+            {serviceTypes.map((serviceType, index) => (
+              <TabPanel value={valueProduct} index={index}>
+                {
+                  <div>
+                    {/* Training List */}
+                    <div className={classes.marginTop}>
+                      <TableContainer
+                        component={Paper}
+                        className={classes.marginTop}
+                      >
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Service Name</TableCell>
+                              <TableCell align="right">Fee</TableCell>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                          </TableHead>
+                          <TableBody>
+                            {services
+                              .filter(
+                                (service) =>
+                                  service.serviceType.serviceTypeName ==
+                                  serviceType.serviceTypeName
+                              )
+                              .map((row, index) => (
+                                <TableRow
+                                  key={index}
+                                  sx={{
+                                    "&:last-child td, &:last-child th": {
+                                      border: 0,
+                                    },
+                                  }}
+                                >
+                                  <TableCell component="th" scope="row">
+                                    {row.serviceName}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {row.price}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </div>
                   </div>
-                </div>
-              }
-            </TabPanel>
-            <TabPanel value={valueProduct} index={1}>
-              {/* Training List */}
-              <div className={classes.marginTop}>
-                <TableContainer component={Paper} className={classes.marginTop}>
-                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Service Name</TableCell>
-                        <TableCell align="right">Fee</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rowsFood.map((row) => (
-                        <TableRow
-                          key={row.name}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            {row.name}
-                          </TableCell>
-                          <TableCell align="right">{row.fee}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
-            </TabPanel>
+                }
+              </TabPanel>
+            ))}
           </div>
 
           <br />
 
-          <Button variant="contained" color="primary">
+          {/* <Button variant="contained" color="primary">
             Book a Service
-          </Button>
+          </Button> */}
         </div>
       </div>
     );
