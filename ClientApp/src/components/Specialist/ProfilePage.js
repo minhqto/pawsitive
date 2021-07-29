@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+
 import { useSelector } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -13,8 +15,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import Modal from "@material-ui/core/Modal";
 
 import axios from "axios";
+import EditSpecialistProfileModal from "./EditSpecialistProfileModal";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -92,6 +96,7 @@ export const ProfilePage = function (specialistData) {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [specialistProfile, setSpecialistProfile] = useState(null);
   const [services, setServices] = useState([]);
+  const [openEditSpecialistModal, setOpenEditSpecialistModal] = useState(false);
 
   const classes = useStyles();
   const handleChange = (event, newValue) => {
@@ -116,6 +121,14 @@ export const ProfilePage = function (specialistData) {
     const { specialist } = specialistProfile;
     return (
       <div>
+        <Modal
+          open={openEditSpecialistModal}
+          onClose={() => setOpenEditSpecialistModal(false)}
+        >
+          <EditSpecialistProfileModal
+            cancelClick={() => setOpenEditSpecialistModal(false)}
+          />
+        </Modal>
         <Grid>
           <Typography component="h1" variant="h5" mb={3}>
             My Profile
@@ -131,7 +144,12 @@ export const ProfilePage = function (specialistData) {
             <Grid item xs={8} direction="column">
               <Typography variant="h5">
                 {specialist.firstName} {specialist.lastName}{" "}
-                <Button color="primary">Edit</Button>
+                <Button
+                  color="primary"
+                  onClick={() => setOpenEditSpecialistModal(true)}
+                >
+                  Edit
+                </Button>
               </Typography>
               <br />
               <Typography variant="subtitle1">
@@ -158,7 +176,10 @@ export const ProfilePage = function (specialistData) {
           {/* My Service List */}
           <div className={classes.table}>
             <Typography variant="h6">
-              My Service List <Button color="primary">Edit</Button>
+              My Service List{" "}
+              <Link to="/specialist/myprofile/editservice" class>
+                <Button color="primary">Edit</Button>
+              </Link>
             </Typography>
             <TableContainer component={Paper} className={classes.marginTop}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
