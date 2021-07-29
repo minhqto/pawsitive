@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace pawsitive.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class SpecialistController : ControllerBase
@@ -31,30 +31,30 @@ namespace pawsitive.Controllers
 
             return specialistDetail;
         }
-        
 
-    [HttpPost]
-    [Route("specialistDetail/{specialistId}/addservice")]
-    public IActionResult AddService([FromRoute] string specialistId, [FromBody] ServiceVM req)
-    {
-        try
+
+        [HttpPost]
+        [Route("specialistDetail/{specialistId}/addservice")]
+        public IActionResult AddService([FromRoute] string specialistId, [FromBody] ServiceVM req)
         {
-            dm.addServiceToSpecialist(specialistId, req);
-
-            return Ok(new
+            try
             {
-                message = "The Service added successfully",
-            });
+                dm.addServiceToSpecialist(specialistId, req);
+
+                return Ok(new
+                {
+                    message = "The Service added successfully",
+                });
+
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = e.Message });
+            }
 
         }
-        catch (Exception e)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new { error = e.Message });
-        }
 
-    }
-
-    [HttpDelete]
+        [HttpDelete]
         [Route("specialistDetail/{specialistId}/deleteservices")]
         public IActionResult DeleteServices([FromRoute] string specialistId, [FromBody] ServiceVM req)
         {
