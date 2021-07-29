@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Button from "reactstrap/lib/Button";
@@ -12,6 +13,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+
+import axios from "axios";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -84,92 +87,107 @@ const rowsService = [
   createDataService("5 Days Packages", 180),
 ];
 
-
 export const ProfilePage = function (specialistData) {
-  const [valueProduct, setValueProduct] = React.useState(0);
+  const [valueProduct, setValueProduct] = useState(0);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const [specialistProfile, setSpecialistProfile] = useState(null);
+  const [services, setServices] = useState([]);
+
   const classes = useStyles();
   const handleChange = (event, newValue) => {
     setValueProduct(newValue);
   };
 
-  return (
-    <div>
-      <Grid >
-        <Typography component="h1" variant="h5" mb={3}>
-          My Profile
-        </Typography>
-      </Grid>
+  useEffect(() => {
+    if (isAuthenticated) {
+      axios
+        .get(`/api/Specialist/specialistDetail/${user.id}`)
+        .then((res) => {
+          setSpecialistProfile(res.data.specialistProfile);
+          setServices(res.data.specialistProfile.services);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [user]);
+
+  if (specialistProfile != null) {
+    const { specialist } = specialistProfile;
+    return (
       <div>
-        <Grid container spacing={2}>
-          <Grid item xs={4} direction="row" justifyContent="center">
-            <img
-              className={classes.root}
-              src="https://images.pexels.com/photos/5749784/pexels-photo-5749784.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-            /><br />
-            <Button className={classes.button} color="primary">
-              Edit Picture
-            </Button>
-          </Grid>
-
-          <Grid item xs={8} direction="column">
-            <Typography variant="h5">
-              Bread Pitt <Button color="primary">Edit</Button>
-            </Typography>
-            <br />
-            <Typography variant="subtitle1">
-              Address: 444, Queen St W, Toronto, Ontario, J5J 5J5
-            </Typography>
-            <Typography variant="subtitle1">Phone#: (999) 999-9999</Typography>
-            <Typography variant="subtitle1">
-              Email: breadpitt@example.com
-            </Typography>
-            <Typography variant="subtitle1">
-              Business Name: *Not informed
-            </Typography>
-            <Typography variant="subtitle1">About Me: </Typography>
-            <Typography variant="subtitle2" paragraph>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Pellentesque elementum nibh semper ante euismod, sit amet
-              tincidunt metus cursus. Nunc sagittis vestibulum leo, at molestie
-              metus mollis nec. Donec ornare, lectus at volutpat commodo, diam
-              diam lobortis felis, id facilisis orci quam a nunc. Vestibulum nec
-              sollicitudin tortor, eu pretium nibh. Nulla lobortis a dui id
-              fringilla. Sed sed urna sed ante accumsan egestas. Maecenas neque
-              tellus, tristique ac laoreet eu, sollicitudin ac est.
-            </Typography>
-          </Grid>
-        </Grid>
-
-        {/* My Service List */}
-        <div className={classes.table}>
-          <Typography variant="h6">
-            My Service List <Button color="primary">Edit</Button>
+        <Grid>
+          <Typography component="h1" variant="h5" mb={3}>
+            My Profile
           </Typography>
-          <TableContainer component={Paper} className={classes.marginTop}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Service Name</TableCell>
-                  <TableCell align="right">Fee</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rowsService.map((row) => (
-                  <TableRow
-                    key={row.name}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.fee}</TableCell>
+        </Grid>
+        <div>
+          <Grid container spacing={2}>
+            <Grid item xs={4} direction="row" justifyContent="center">
+              <img className={classes.root} src={specialist.imageUrl} />
+              <br />
+            </Grid>
+
+            <Grid item xs={8} direction="column">
+              <Typography variant="h5">
+                {specialist.firstName} {specialist.lastName}{" "}
+                <Button color="primary">Edit</Button>
+              </Typography>
+              <br />
+              <Typography variant="subtitle1">
+                Address:
+                {specialist.address.streetAddress},{specialist.address.city},
+                {specialist.address.province}, {specialist.address.postalCode}
+              </Typography>
+              <Typography variant="subtitle1">
+                Phone#: {specialist.phoneNumber}
+              </Typography>
+              <Typography variant="subtitle1">
+                Email: {specialist.email}
+              </Typography>
+              <Typography variant="subtitle1">
+                Business Name: {specialistProfile.businessName}
+              </Typography>
+              <Typography variant="subtitle1">About Me: </Typography>
+              <Typography variant="subtitle2" paragraph>
+                {specialistProfile.aboutMe}
+              </Typography>
+            </Grid>
+          </Grid>
+
+          {/* My Service List */}
+          <div className={classes.table}>
+            <Typography variant="h6">
+              My Service List <Button color="primary">Edit</Button>
+            </Typography>
+            <TableContainer component={Paper} className={classes.marginTop}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Service Name</TableCell>
+                    <TableCell align="right">Fee</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {services.map((row, index) => (
+                    <TableRow
+                      key={index}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.serviceName}
+                      </TableCell>
+                      <TableCell align="right">{row.price}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <h1>Loading...</h1>;
+  }
 };
