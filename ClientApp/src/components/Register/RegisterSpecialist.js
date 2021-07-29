@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SERVICE_TYPES = [
   {
-    name: "traning",
+    name: "training",
     label: "Dog Training",
   },
   {

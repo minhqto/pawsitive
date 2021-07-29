@@ -124,7 +124,7 @@ namespace pawsitive.Data
                     // Delete dependent records that refer to this user as foreign key (ClientProfile, SpecialistProfile)
                     // There is a better way to make dependent records be deleted automatically by configuring OnCascadeDelete but we haven't figured out yet.
 
-                    if(tmp.SpecialistProfileId != null)
+                    if (tmp.SpecialistProfileId != null)
                     {
                         var specialistProfile = dtx.SpecialistProfile.Find(tmp.SpecialistProfileId);
                         dtx.SpecialistProfile.Remove(specialistProfile);
@@ -148,13 +148,13 @@ namespace pawsitive.Data
                 {
                     await userManager.AddToRoleAsync(curUser, UserRoles.Specialist);
                 }
-                
+
             }
 
             return true;
         }
-    
-        
+
+
         /**
          * Get client information by user id
          */
@@ -179,7 +179,6 @@ namespace pawsitive.Data
         // Update client by user id
         public async Task<User> updateClientInfo(string clientId, ClientUpdateReqBody req)
         {
-
             try
             {
                 var user = userManager.Users.Include("Address").Include("ClientProfile").SingleOrDefault(u => u.Id.Equals(clientId));
@@ -248,10 +247,10 @@ namespace pawsitive.Data
         {
             var dog = dtx.Dog.SingleOrDefault(d => d.Id.Equals(req.dogId));
 
-            if(dog != null)
+            if (dog != null)
             {
-                dog.DogName = req.dogName; 
-                dog.DogBreed = req.dogBreed;                 
+                dog.DogName = req.dogName;
+                dog.DogBreed = req.dogBreed;
                 dog.DogSex = req.dogSex;
                 dog.DogWeight = req.dogWeight;
                 dog.AboutDog = req.aboutDog;
@@ -269,17 +268,21 @@ namespace pawsitive.Data
 
         }
 
+
         // Get a specialist detail by id
         public SpecialistDetailVM getSpecialistDetail(string specialistId)
+
         {
             var specialistDetail = new SpecialistDetailVM();
 
             try
             {
+
                 // var user = userManager.Users.Include("Address").Include("ClientProfile").SingleOrDefault(u => u.Id.Equals(clientId));
-                var specProfile = dtx.SpecialistProfile.Include("ServiceTypes").Include("Specialist.Address").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
+                var specProfile = dtx.SpecialistProfile.Include("ServiceTypes").Include("Specialist.Address").Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
 
                 specialistDetail.specialistProfile = specProfile;
+
                 return specialistDetail;
             }
             catch (Exception)
@@ -287,6 +290,63 @@ namespace pawsitive.Data
                 throw;
             }
         }
+
+
+        // Add a new service to a Specialist with specialistId
+        public void addServiceToSpecialist(string specialistId, ServiceVM req)
+        {
+            var specialistProfile = dtx.SpecialistProfile.Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
+            var serviceType = dtx.ServiceType.SingleOrDefault(st => st.ServiceTypeName.Equals(req.ServiceType));
+
+
+            var newService = new Service()
+            {
+                ServiceType = serviceType,
+                //ServiceTypeId = req.ServiceTypeId,
+                ServiceName = req.ServiceName,
+                Price = req.Price,
+
+            };
+
+            try
+            {
+                specialistProfile.Services.Add(newService);
+
+                dtx.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        // Delete the selected services from the Specialist with specialistId
+        // TODO - need to fix
+        public void deleteServicesFromSpecialist(string specialistId, ServiceVM req)
+        {
+            var specialistProfile = dtx.SpecialistProfile.Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
+            var serviceType = dtx.ServiceType.SingleOrDefault(st => st.ServiceTypeName.Equals(req.ServiceType));
+
+            var newService = new Service()
+            {
+                ServiceType = serviceType,
+                //ServiceTypeId = req.ServiceTypeId,
+                ServiceName = req.ServiceName,
+                Price = req.Price,
+            };
+
+            try
+            {
+                specialistProfile.Services.Remove(newService);
+
+                dtx.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
 
 
         public IEnumerable<User> getAllSpecialists()

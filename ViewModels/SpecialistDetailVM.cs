@@ -9,5 +9,6 @@ namespace pawsitive.ViewModels
     public class SpecialistDetailVM
     {
         public SpecialistProfile specialistProfile { get; set; }
+
     }
 }

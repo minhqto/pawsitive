@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 
 namespace pawsitive.ViewModels
 {
+    // TODO - To be deleted
     public class ServiceVM
     {
 
-        public SpecialistProfile Specialist { get; set; }
-        //public string SpecialistId { get; set; }
+        //public ServiceType ServiceType { get; set; }
+        //public int ServiceTypeId { get; set; }
 
-        public ServiceType ServiceType { get; set; }
-        public int ServiceTypeId { get; set; }
+        public string ServiceType { get; set; }
+
+        
 
         public string ServiceName { get; set; }
 

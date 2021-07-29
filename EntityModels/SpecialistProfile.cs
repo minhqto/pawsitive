@@ -8,6 +8,7 @@ namespace pawsitive.EntityModels
         public SpecialistProfile()
         {
             ServiceTypes = new HashSet<ServiceType>();
+            Services = new HashSet<Service>();
         }
 
         public int Id { get; set; }
@@ -30,6 +31,8 @@ namespace pawsitive.EntityModels
         public bool Status { get; set; }
 
         public ICollection<ServiceType> ServiceTypes { get; set; }
+
+        public ICollection<Service> Services { get; set; }
 
     }
 }
