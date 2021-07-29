@@ -268,20 +268,21 @@ namespace pawsitive.Data
 
         }
 
-        /**
-        * Get specialist information by specialistId
-        */
-        public SpecialistDetailVM getSpecialist(string specialistId)
+
+        // Get a specialist detail by id
+        public SpecialistDetailVM getSpecialistDetail(string specialistId)
+
         {
             var specialistDetail = new SpecialistDetailVM();
 
             try
             {
-                //var specialistProfile = dtx.SpecialistProfile.SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
 
-                var specialistProfile = dtx.SpecialistProfile.Include("ServiceTypes").Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
-                //specialistProfile = dtx.SpecialistProfile.SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
-                specialistDetail.specialistProfile = specialistProfile;
+                // var user = userManager.Users.Include("Address").Include("ClientProfile").SingleOrDefault(u => u.Id.Equals(clientId));
+                var specProfile = dtx.SpecialistProfile.Include("ServiceTypes").Include("Specialist.Address").Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
+
+                specialistDetail.specialistProfile = specProfile;
+
                 return specialistDetail;
             }
             catch (Exception)
@@ -290,12 +291,13 @@ namespace pawsitive.Data
             }
         }
 
+
         // Add a new service to a Specialist with specialistId
         public void addServiceToSpecialist(string specialistId, ServiceVM req)
         {
             var specialistProfile = dtx.SpecialistProfile.Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
             var serviceType = dtx.ServiceType.SingleOrDefault(st => st.ServiceTypeName.Equals(req.ServiceType));
-            
+
 
             var newService = new Service()
             {
@@ -303,7 +305,7 @@ namespace pawsitive.Data
                 //ServiceTypeId = req.ServiceTypeId,
                 ServiceName = req.ServiceName,
                 Price = req.Price,
-                
+
             };
 
             try
@@ -345,6 +347,14 @@ namespace pawsitive.Data
             }
         }
 
+
+
+        public IEnumerable<User> getAllSpecialists()
+        {
+            var allSpecialists = userManager.Users.Where(u => u.SpecialistProfileId != null).Include("Address");
+
+            return allSpecialists;
+        }
 
     }
 }

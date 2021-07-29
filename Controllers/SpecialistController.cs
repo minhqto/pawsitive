@@ -16,7 +16,6 @@ namespace pawsitive.Controllers
     [ApiController]
     public class SpecialistController : ControllerBase
     {
-
         DataManager dm;
 
         public SpecialistController(DataManager dataManager)
@@ -24,39 +23,38 @@ namespace pawsitive.Controllers
             dm = dataManager;
         }
 
-        // Get the specialist
         [HttpGet]
         [Route("specialistDetail/{specialistId}")]
-        public SpecialistDetailVM GetSpecialist([FromRoute] string specialistId)
+        public SpecialistDetailVM Get([FromRoute] string specialistId)
         {
-            // Get the current specialist's info
-            var specialistDetail = dm.getSpecialist(specialistId);
+            var specialistDetail = dm.getSpecialistDetail(specialistId);
+
             return specialistDetail;
         }
+        
 
-
-        [HttpPost]
-        [Route("specialistDetail/{specialistId}/addservice")]
-        public IActionResult AddService([FromRoute] string specialistId, [FromBody] ServiceVM req)
+    [HttpPost]
+    [Route("specialistDetail/{specialistId}/addservice")]
+    public IActionResult AddService([FromRoute] string specialistId, [FromBody] ServiceVM req)
+    {
+        try
         {
-            try
-            {
-                dm.addServiceToSpecialist(specialistId, req);
+            dm.addServiceToSpecialist(specialistId, req);
 
-                return Ok(new
-                {
-                    message = "The Service added successfully",
-                });
-
-            }
-            catch (Exception e)
+            return Ok(new
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { error = e.Message });
-            }
+                message = "The Service added successfully",
+            });
 
         }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { error = e.Message });
+        }
 
-        [HttpDelete]
+    }
+
+    [HttpDelete]
         [Route("specialistDetail/{specialistId}/deleteservices")]
         public IActionResult DeleteServices([FromRoute] string specialistId, [FromBody] ServiceVM req)
         {
@@ -74,6 +72,15 @@ namespace pawsitive.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { error = e.Message });
             }
+        }
+
+        [HttpGet]
+        [Route("allSpecialists")]
+        public IEnumerable<User> Get()
+        {
+            var allSpecialists = dm.getAllSpecialists();
+
+            return allSpecialists;
         }
 
     }
