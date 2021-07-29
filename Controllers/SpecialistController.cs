@@ -16,23 +16,23 @@ namespace pawsitive.Controllers
     [ApiController]
     public class SpecialistController : ControllerBase
     {
-
         DataManager dm;
+
 
         public SpecialistController(DataManager dataManager)
         {
             dm = dataManager;
         }
 
-        // Get the specialist
         [HttpGet]
         [Route("specialistDetail/{specialistId}")]
-        public SpecialistDetailVM GetSpecialist([FromRoute] string specialistId)
+        public SpecialistDetailVM Get([FromRoute] string specialistId)
         {
-            // Get the current specialist's info
-            var specialistDetail = dm.getSpecialist(specialistId);
+            var specialistDetail = dm.getSpecialistDetail(specialistId);
+
             return specialistDetail;
         }
+
 
 
         [HttpPost]
@@ -74,6 +74,15 @@ namespace pawsitive.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { error = e.Message });
             }
+
+        [HttpGet]
+        [Route("allSpecialists")]
+        public IEnumerable<User> Get()
+        {
+            var allSpecialists = dm.getAllSpecialists();
+
+            return allSpecialists;
+
         }
 
     }
