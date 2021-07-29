@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { DataGrid, gridRowsLookupSelector } from '@material-ui/data-grid';
-import FilledInput from '@material-ui/core/FilledInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import Tabs from '@material-ui/core/Tabs';
@@ -13,7 +11,7 @@ import { useParams } from "react-router";
 import { ThemeProvider } from "@material-ui/core/styles";
 import PawsitiveTheme from "../../Theme";
 import { useHistory } from "react-router-dom";
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -31,14 +29,10 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-
 const useStyles = makeStyles((theme) => ({
-
     paper: {
         margin: theme.spacing(2, 0),
         display: "flex",
@@ -57,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     table: {
-        minWidth: 750,
+        minWidth: 400,
     },
 
     visuallyHidden: {
@@ -71,7 +65,6 @@ const useStyles = makeStyles((theme) => ({
         top: 20,
         width: 1,
     },
-
 }));
 
 let specialistInfo = {
@@ -88,12 +81,13 @@ let specialistInfo = {
     ],
 };
 
-const rows = [
-    { name: 'Behaviour Training 1 day(Big dogs)', servicePrice: 70 },
-    { name: 'Behaviour Training 1 day(Small dogs)', servicePrice: 50 },
-    { name: '3 Days Packages', servicePrice: 130 },
-    { name: '5 Days Packages', servicePrice: 180 },
-];
+
+// const rows = [
+//     { name: 'Behaviour Training 1 day(Big dogs)', servicePrice: 70 },
+//     { name: 'Behaviour Training 1 day(Small dogs)', servicePrice: 50 },
+//     { name: '3 Days Packages', servicePrice: 130 },
+//     { name: '5 Days Packages', servicePrice: 180 },
+// ];
 
 
 function descendingComparator(a, b, orderBy) {
@@ -252,8 +246,6 @@ const EditService = () => {
     let { routeId } = useParams();
     const [specialistProfile, setSpecialistProfile] = useState("");
 
-    const [serviceList, setServiceList] = useState("");
-    //const [serviceTypes, setServiceTypes] = useState("");
     const [serviceType, setServiceType] = useState("");
     const [serviceName, setServiceName] = useState("");
     const [servicePrice, setServicePrice] = useState(0.00);
@@ -262,10 +254,13 @@ const EditService = () => {
     const [serverError, setServerError] = useState("");
 
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('calories');
+    const [orderBy, setOrderBy] = React.useState('');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    let specialistId;
+
+
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -273,6 +268,7 @@ const EditService = () => {
             console.log("UserID: " + user.id);
             getService(user.id);
             console.log("UserID: " + user.id);
+            specialistId = user.id;
         }
     }, [user]);
 
@@ -282,50 +278,45 @@ const EditService = () => {
         axios.get(`/api/specialist/specialistDetail/${specialistId}`).then((res) => {
             console.log(res.data);
             setSpecialistProfile(res.data.specialistProfile);
-            //setServiceList(res.data.specialistProfile.ServiceList);
-            //setServiceTypes(res.data.specialistProfile.ServiceTypes);
             console.log(res.data.specialistProfile);
             console.log(specialistProfile);
-            //const { serviceTypes, services } = specialistProfile;
-
-            //console.log("ServiceList: " + services);
-            //console.log("ServiceTypes: " + serviceTypes);
-
         });
     };
 
-
     const { serviceTypes, services } = specialistProfile;
+    //setServiceType(serviceTypes[0]);
+    console.log("serviceTypes, services, serviceType: ");
     console.log(serviceTypes);
     console.log(services);
-    console.log(": serviceTypes, services  ");
+    console.log(serviceType);
 
+    //const rows = [services.ServiceName, services.Price]
 
     const [value, setValue] = React.useState(0);
 
     const handleChangeTabs = (event, newValue) => {
         setValue(newValue);
-        setServiceType();
+        setServiceType(serviceTypes[newValue]);
         console.log("ServiceType Tab was clicked " + newValue);
+        console.log(serviceTypes);
+        console.log(serviceType);
         // const selectedServiceType = [{
         //     serviceTypeName: serviceTypeName,
         // }];
-
     };
 
     const columns = [
         { field: 'serviceName', headerName: 'Service Name', width: 300 },
         {
             field: 'servicePrice',
-            headerName: 'Fee ($) ',
+            headerName: 'Feeeee ($) ',
             type: 'number',
             width: 130,
         },
     ];
 
-    // TODO - add the real data from server
-    // Test Data - TO BE deleted when back-end was emplmented
 
+    // Test Data - TO BE deleted when back-end was emplmented
 
     // const ServiceList = [{
     //     serviceName: "",
@@ -337,12 +328,15 @@ const EditService = () => {
         console.log("Add Button Clicked");
         if (validateAddRequest()) {
             console.log("Add Request is going..");
-            const reqBody = [{
+            const serviceObj = {
+                serviceType: serviceType.serviceTypeName,
                 serviceName: serviceName,
                 servicePrice: servicePrice,
-            }];
+            };
+            console.log(serviceObj);
+
             axios
-                .post(`/api/specialist/specialistDetail/${specialistId}/addservice`, reqBody)
+                .post(`/api/specialist/specialistDetail/${specialistId}/addservice`, serviceObj)
                 .then((res) => {
                     if (res.status === 200) {
                         //TODO - reload Service List  with the added item
@@ -384,7 +378,7 @@ const EditService = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.name);
+            const newSelecteds = services.map((n) => n.serviceName);
             setSelected(newSelecteds);
             return;
         }
@@ -422,7 +416,11 @@ const EditService = () => {
 
     const isSelected = (name) => selected.indexOf(name) !== -1;
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    let emptyRows = 0;
+
+    if (services) {
+        emptyRows = rowsPerPage - Math.min(rowsPerPage, services.length - page * rowsPerPage);
+    }
 
     // Mine
 
@@ -442,7 +440,6 @@ const EditService = () => {
         // TODO - set the toBeDeleted service list
 
         var toBeDeleted = {};
-
 
         if (toBeDeleted) {
             console.log("Delete Request is going..");
@@ -467,9 +464,6 @@ const EditService = () => {
         }
     }
 
-    // if (serviceList) {
-    //     const { aboutMe, dogs } = serviceList;
-
     return (
         <ThemeProvider theme={pawTheme}>
             <Grid mb={1} >
@@ -477,153 +471,163 @@ const EditService = () => {
                     My Profile &gt; Edit Service List
                 </Typography>
             </Grid>
-            <Container component="main" maxWidth="lg">
-                <CssBaseline />
-                <div className={classes.paper}>
-                    <div>
-                        <Paper square>
-                            <Tabs
-                                value={value}
-                                indicatorColor="primary"
-                                textColor="primary"
-                                onChange={handleChangeTabs}
-                                aria-label="tabs for service type"
-                                mb={1}
-                            >
-                                {serviceTypes ? (
-                                    serviceTypes.map((serviceType, index) => (
-                                        <Tab key={index} label={serviceType.serviceTypeName} />
-                                    ))
-                                ) :
-                                    (
-                                        <Tab label="Training" />
-                                    )
-                                }
-                            </Tabs>
-                        </Paper>
-
-                        <Paper className={classes.paper}>
-
-                            <TableContainer>
-                                <Table
-                                    className={classes.table}
-                                    aria-labelledby="tableTitle"
-                                    aria-label="enhanced table"
-                                >
-                                    <EnhancedTableHead
-                                        classes={classes}
-                                        numSelected={selected.length}
-                                        order={order}
-                                        orderBy={orderBy}
-                                        onSelectAllClick={handleSelectAllClick}
-                                        onRequestSort={handleRequestSort}
-                                        rowCount={rows.length}
-                                    />
-                                    <TableBody>
-                                        {stableSort(rows, getComparator(order, orderBy))
-                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            .map((row, index) => {
-                                                const isItemSelected = isSelected(row.name);
-                                                const labelId = `enhanced-table-checkbox-${index}`;
-
-                                                return (
-                                                    <TableRow
-                                                        hover
-                                                        onClick={(event) => handleClick(event, row.name)}
-                                                        role="checkbox"
-                                                        aria-checked={isItemSelected}
-                                                        tabIndex={-1}
-                                                        key={row.name}
-                                                        selected={isItemSelected}
-                                                    >
-                                                        <TableCell padding="checkbox">
-                                                            <Checkbox
-                                                                checked={isItemSelected}
-                                                                inputProps={{ 'aria-labelledby': labelId }}
-                                                            />
-                                                        </TableCell>
-                                                        <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                            {row.name}
-                                                        </TableCell>
-                                                        <TableCell align="right">{row.serviceName}</TableCell>
-                                                        <TableCell align="right">{row.servicePrice}</TableCell>
-                                                    </TableRow>
-                                                );
-                                            })}
-                                        {emptyRows > 0 && (
-                                            <TableRow style={{ height: 53 * emptyRows }}>
-                                                <TableCell colSpan={6} />
-                                            </TableRow>
-                                        )}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            <TablePagination
-                                rowsPerPageOptions={[5, 10, 25]}
-                                component="div"
-                                count={rows.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-                            />
-                            <EnhancedTableToolbar numSelected={selected.length} />
-                        </Paper>
-                        <Typography component="h1" variant="h6">
-                            Add a new Service
-                        </Typography>
+            <Grid>
+                <Container component="main" maxWidth="lg">
+                    <CssBaseline />
+                    <div className={classes.paper}>
                         <div>
-                            <Grid container spacing={0}>
-                                <Grid item xs={6} >
-                                    <TextField
-                                        label="Service Name"
-                                        id="new_service_name"
-                                        className={clsx(classes.margin)}
-                                        onChange={(e) => {
-                                            setServerError("");
-                                            setServiceNameError("");
-                                            setServiceName(e.target.value);
-                                        }}
-                                        error={serviceNameError !== ""}
-                                        helperText={serviceNameError}
+                            <Paper square>
+                                <Tabs
+                                    value={value}
+                                    indicatorColor="primary"
+                                    textColor="primary"
+                                    onChange={handleChangeTabs}
+                                    aria-label="tabs for service type"
+                                    mb={1}
+                                >
+                                    {serviceTypes ? (
+                                        serviceTypes.map((serviceType, index) => (
+                                            <Tab key={index} label={serviceType.serviceTypeName} id={serviceType.id} />
+                                        ))
+                                    ) :
+                                        (
+                                            <CircularProgress gravity="center" />
+                                        )
+                                    }
+                                </Tabs>
+                            </Paper>
+                            {services ? (
+                                <Paper className={classes.paper}>
+                                    <TableContainer>
+                                        <Table
+                                            className={classes.table}
+                                            aria-labelledby="tableTitle"
+                                            aria-label="enhanced table"
+                                        >
+                                            <EnhancedTableHead
+                                                classes={classes}
+                                                numSelected={selected.length}
+                                                order={order}
+                                                orderBy={orderBy}
+                                                onSelectAllClick={handleSelectAllClick}
+                                                onRequestSort={handleRequestSort}
+                                                rowCount={services.length}>
+                                            </EnhancedTableHead>
+
+                                            <TableBody>
+                                                {stableSort(services, getComparator(order, orderBy))
+                                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                    .map((row, index) => {
+                                                        const isItemSelected = isSelected(row.serviceName);
+                                                        const labelId = `enhanced-table-checkbox-${index}`;
+
+                                                        return (
+
+                                                            <TableRow
+                                                                hover
+                                                                onClick={(event) => handleClick(event, row.serviceName)}
+                                                                role="checkbox"
+                                                                aria-checked={isItemSelected}
+                                                                tabIndex={-1}
+                                                                key={row.serviceName}
+                                                                selected={isItemSelected}
+                                                            >
+
+                                                                <TableCell padding="checkbox">
+                                                                    <Checkbox
+                                                                        checked={isItemSelected}
+                                                                        inputProps={{ 'aria-labelledby': labelId }}
+                                                                    />
+                                                                </TableCell>
+                                                                <TableCell component="th" id={labelId} scope="row" padding="none">
+                                                                    {row.serviceName}
+                                                                </TableCell>
+                                                                <TableCell align="right">{row.price}</TableCell>
+                                                            </TableRow>
+                                                        );
+                                                    })}
+                                                {emptyRows > 0 && (
+                                                    <TableRow style={{ height: 53 * emptyRows }}>
+                                                        <TableCell colSpan={6} />
+                                                    </TableRow>
+                                                )}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+
+                                    <TablePagination
+                                        rowsPerPageOptions={[5, 10, 25]}
+                                        component="div"
+                                        count={services.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onPageChange={handleChangePage}
+                                        onRowsPerPageChange={handleChangeRowsPerPage}
                                     />
+                                    <EnhancedTableToolbar numSelected={selected.length} />
+                                </Paper>
+
+                            ) : (
+                                <Paper className={classes.paper}>
+                                    <CircularProgress />
+                                </Paper>
+                            )}
+                            <Typography component="h1" variant="h6">
+                                Add a new Service
+                            </Typography>
+                            <div>
+                                <Grid container spacing={0}>
+                                    <Grid item xs={6} >
+                                        <TextField
+                                            label="Service Name"
+                                            id="new_service_name"
+                                            className={clsx(classes.margin)}
+                                            onChange={(e) => {
+                                                setServerError("");
+                                                setServiceNameError("");
+                                                setServiceName(e.target.value);
+                                            }}
+                                            error={serviceNameError !== ""}
+                                            helperText={serviceNameError}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={3} >
+                                        <TextField
+                                            label="Service Fee"
+                                            id="new_service_price"
+                                            className={clsx(classes.margin)}
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                            }}
+                                            onChange={(e) => {
+                                                setServerError("");
+                                                setServicePriceError("");
+                                                setServicePrice(e.target.value);
+                                            }}
+                                            error={servicePriceError !== ""}
+                                            helperText={servicePriceError}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={3} >
+                                        <Button
+                                            type="submit"
+                                            fullWidth
+                                            variant="contained"
+                                            color="primary"
+                                            className={classes.submit}
+                                            onClick={(event) => {
+                                                addOnClick(event, specialistId);
+                                            }}
+                                        >
+                                            Add
+                                        </Button>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={3} >
-                                    <TextField
-                                        label="Service Fee"
-                                        id="new_service_price"
-                                        className={clsx(classes.margin)}
-                                        InputProps={{
-                                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                                        }}
-                                        onChange={(e) => {
-                                            setServerError("");
-                                            setServicePriceError("");
-                                            setServicePrice(e.target.value);
-                                        }}
-                                        error={servicePriceError !== ""}
-                                        helperText={servicePriceError}
-                                    />
-                                </Grid>
-                                <Grid item xs={3} >
-                                    <Button
-                                        type="submit"
-                                        fullWidth
-                                        variant="contained"
-                                        color="primary"
-                                        className={classes.submit}
-                                        onClick={(event) => {
-                                            addOnClick(event);
-                                        }}
-                                    >
-                                        Add
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </div>
-                    </div >
-                </div>
-            </Container>
+                            </div>
+                        </div >
+                    </div>
+                </Container>
+            </Grid>
         </ThemeProvider>
     );
 };

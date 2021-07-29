@@ -10,8 +10,12 @@ namespace pawsitive.ViewModels
     public class ServiceVM
     {
 
-        public ServiceType ServiceType { get; set; }
-        public int ServiceTypeId { get; set; }
+        //public ServiceType ServiceType { get; set; }
+        //public int ServiceTypeId { get; set; }
+
+        public string ServiceType { get; set; }
+
+        
 
         public string ServiceName { get; set; }
 

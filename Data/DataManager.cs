@@ -294,13 +294,16 @@ namespace pawsitive.Data
         public void addServiceToSpecialist(string specialistId, ServiceVM req)
         {
             var specialistProfile = dtx.SpecialistProfile.Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
+            var serviceType = dtx.ServiceType.SingleOrDefault(st => st.ServiceTypeName.Equals(req.ServiceType));
+            
 
             var newService = new Service()
             {
-                ServiceType = req.ServiceType,
-                ServiceTypeId = req.ServiceTypeId,
+                ServiceType = serviceType,
+                //ServiceTypeId = req.ServiceTypeId,
                 ServiceName = req.ServiceName,
                 Price = req.Price,
+                
             };
 
             try
@@ -320,11 +323,12 @@ namespace pawsitive.Data
         public void deleteServicesFromSpecialist(string specialistId, ServiceVM req)
         {
             var specialistProfile = dtx.SpecialistProfile.Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
+            var serviceType = dtx.ServiceType.SingleOrDefault(st => st.ServiceTypeName.Equals(req.ServiceType));
 
             var newService = new Service()
             {
-                ServiceType = req.ServiceType,
-                ServiceTypeId = req.ServiceTypeId,
+                ServiceType = serviceType,
+                //ServiceTypeId = req.ServiceTypeId,
                 ServiceName = req.ServiceName,
                 Price = req.Price,
             };
