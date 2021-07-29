@@ -182,46 +182,55 @@ const ServicePage = (specialistData) => {
                 ))}
               </Tabs>
             </AppBar>
-
-            <TabPanel value={valueProduct} index={0}>
-              {
-                <div>
-                  {/* Training List */}
-                  <div className={classes.marginTop}>
-                    <TableContainer
-                      component={Paper}
-                      className={classes.marginTop}
-                    >
-                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Service Name</TableCell>
-                            <TableCell align="right">Fee</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {rowsTraining.map((row) => (
-                            <TableRow
-                              key={row.name}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  border: 0,
-                                },
-                              }}
-                            >
-                              <TableCell component="th" scope="row">
-                                {row.name}
-                              </TableCell>
-                              <TableCell align="right">{row.fee}</TableCell>
+            {serviceTypes.map((serviceType, index) => (
+              <TabPanel value={valueProduct} index={index}>
+                {
+                  <div>
+                    {/* Training List */}
+                    <div className={classes.marginTop}>
+                      <TableContainer
+                        component={Paper}
+                        className={classes.marginTop}
+                      >
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Service Name</TableCell>
+                              <TableCell align="right">Fee</TableCell>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                          </TableHead>
+                          <TableBody>
+                            {services
+                              .filter(
+                                (service) =>
+                                  service.serviceType.serviceTypeName ==
+                                  serviceType.serviceTypeName
+                              )
+                              .map((row, index) => (
+                                <TableRow
+                                  key={index}
+                                  sx={{
+                                    "&:last-child td, &:last-child th": {
+                                      border: 0,
+                                    },
+                                  }}
+                                >
+                                  <TableCell component="th" scope="row">
+                                    {row.serviceName}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {row.price}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </div>
                   </div>
-                </div>
-              }
-            </TabPanel>
+                }
+              </TabPanel>
+            ))}
           </div>
 
           <br />
