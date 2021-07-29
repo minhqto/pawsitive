@@ -49,7 +49,7 @@ const SearchResults = (props) => {
   const [users, setUsers] = useState([]);
   //const [items, setItems] = useState([]);
   useEffect(() => {
-    axios.get("https://jsonplaceholder.typicode.com/users").then((result) => {
+    axios.get("/api/Specialist/allSpecialists").then((result) => {
       setUsers(result.data);
       props.parentCallback(result.data);
     });
@@ -88,7 +88,7 @@ const SearchResults = (props) => {
               <List className={classes.rootList}>
                 <ListItem alignItems="flex-start">
                   <ListItemAvatar>
-                    <Avatar className={classes.backColour}>{user.id}</Avatar>
+                    <Avatar className={classes.backColour}>{index + 1}</Avatar>
                   </ListItemAvatar>
                   <ListItemText
                     secondary={
@@ -99,7 +99,7 @@ const SearchResults = (props) => {
                           className={classes.inline}
                           color="textPrimary"
                         >
-                          {user.name}
+                          {user.firstName + " " + user.lastName}
                         </Typography>
                         {console.log(users)}
                       </React.Fragment>
