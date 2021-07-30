@@ -15,6 +15,15 @@ const PawsitiveTheme = createMuiTheme({
       contrastText: "#000000",
     },
   },
+  overrides: {
+    MuiExpansionPanelSummary: {
+      root: {
+        "&:hover:not(.Mui-disabled)": {
+          cursor: "default",
+        },
+      },
+    },
+  },
 });
 
 export default PawsitiveTheme;
