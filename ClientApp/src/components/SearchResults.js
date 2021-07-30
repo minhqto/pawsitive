@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles, ThemeProvider } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import axios from "axios";
 import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
@@ -12,7 +12,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
-import { red } from "@material-ui/core/colors";
 import { useHistory } from "react-router-dom";
 import Chip from "@material-ui/core/Chip";
 
