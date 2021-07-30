@@ -15,7 +15,6 @@ import Typography from "@material-ui/core/Typography";
 import { red } from "@material-ui/core/colors";
 import { useHistory } from "react-router-dom";
 import Chip from "@material-ui/core/Chip";
-import PawsitiveTheme from "../Theme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,7 +51,6 @@ const SearchResults = (props) => {
   const [users, setUsers] = useState([]);
   const classes = useStyles();
   const history = useHistory();
-  const pawTheme = PawsitiveTheme;
   //const [items, setItems] = useState([]);
   useEffect(() => {
     axios.get("/api/Specialist/allSpecialists").then((result) => {
@@ -86,89 +84,85 @@ const SearchResults = (props) => {
       {users.length != 0 ? (
         users.map(function (user, index) {
           return (
-            <ThemeProvider theme={pawTheme}>
-              <div>
-                <List className={classes.rootList}>
-                  <ListItem
-                    button
-                    alignItems="flex-start"
-                    onClick={() => {
-                      handleListItemClick(user.id);
-                    }}
-                  >
-                    <ListItemAvatar>
-                      <Avatar
-                        src={
-                          user.imageUrl == null
-                            ? "https://joeschmoe.io/api/v1/random"
-                            : user.imageUrl
-                        }
-                        className={classes.backColour}
-                      >
-                        {index + 1}
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      secondary={
-                        <React.Fragment>
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            className={classes.inline}
-                            color="textPrimary"
-                          >
-                            {user.firstName + " " + user.lastName}
-                          </Typography>
-                          <br></br>
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            className={classes.inline}
-                            color="textSecondary"
-                          >
-                            {user.address.streetAddress}
-                          </Typography>
-                          <br></br>
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            className={classes.inline}
-                            color="textSecondary"
-                          >
-                            {user.address.city}
-                          </Typography>
-                          <br></br>
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            className={classes.inline}
-                            color="textSecondary"
-                          >
-                            {user.email}
-                          </Typography>
-                          <br></br>
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            className={classes.inline}
-                            color="textSecondary"
-                          >
-                            {user.phoneNumber}
-                          </Typography>
-                          <br></br>
-                          {user.specialistProfile.services.forEach(
-                            (element) => {
-                              return <Chip label={element} />;
-                            }
-                          )}
-                        </React.Fragment>
+            <div>
+              <List className={classes.rootList}>
+                <ListItem
+                  button
+                  alignItems="flex-start"
+                  onClick={() => {
+                    handleListItemClick(user.id);
+                  }}
+                >
+                  <ListItemAvatar>
+                    <Avatar
+                      src={
+                        user.imageUrl == null
+                          ? "https://joeschmoe.io/api/v1/random"
+                          : user.imageUrl
                       }
-                    />
-                  </ListItem>
-                  <Divider variant="inset" component="li" />
-                </List>
-              </div>
-            </ThemeProvider>
+                      className={classes.backColour}
+                    >
+                      {index + 1}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textPrimary"
+                        >
+                          {user.firstName + " " + user.lastName}
+                        </Typography>
+                        <br></br>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textSecondary"
+                        >
+                          {user.address.streetAddress}
+                        </Typography>
+                        <br></br>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textSecondary"
+                        >
+                          {user.address.city}
+                        </Typography>
+                        <br></br>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textSecondary"
+                        >
+                          {user.email}
+                        </Typography>
+                        <br></br>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textSecondary"
+                        >
+                          {user.phoneNumber}
+                        </Typography>
+                        <br></br>
+                        {user.specialistProfile.services.forEach((element) => {
+                          return <Chip label={element} />;
+                        })}
+                      </React.Fragment>
+                    }
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+              </List>
+            </div>
           );
         })
       ) : (
