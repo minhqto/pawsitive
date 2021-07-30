@@ -351,7 +351,7 @@ namespace pawsitive.Data
 
         public IEnumerable<User> getAllSpecialists()
         {
-            var allSpecialists = userManager.Users.Where(u => u.SpecialistProfileId != null).Include("Address");
+            var allSpecialists = userManager.Users.Where(u => u.SpecialistProfileId != null).Include("Address").Include("SpecialistProfile");
 
             return allSpecialists;
         }

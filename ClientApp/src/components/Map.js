@@ -3,13 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 const Map = (props) => {
-  const tourStops = [
-    // [{ lat: 34.8791806, lng: -111.8265049 }, "Boynton Pass"],
-    // [{ lat: 34.8559195, lng: -111.7988186 }, "Airport Mesa"],
-    // [{ lat: 34.832149, lng: -111.7695277 }, "Chapel of the Holy Cross"],
-    // [{ lat: 34.823736, lng: -111.8001857 }, "Red Rock Crossing"],
-    // [{ lat: 34.800326, lng: -111.7665047 }, "Bell Rock"],
-  ];
+  const tourStops = [];
 
   const loader = new Loader({
     apiKey: process.env.REACT_APP_API_KEY,
@@ -44,8 +38,6 @@ const Map = (props) => {
       "x-rapidapi-host": "google-maps-geocoding.p.rapidapi.com",
     },
   };
-
-  console.log("test");
 
   useEffect(() => {
     if (props.user != null) {
@@ -83,7 +75,7 @@ const Map = (props) => {
                     document.getElementById("map"),
                     {
                       center: tourStops[0][0],
-                      zoom: 2,
+                      zoom: 10,
                     }
                   );
                   tourStops.forEach(([position, title], i) => {

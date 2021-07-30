@@ -12,7 +12,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
-import { red } from "@material-ui/core/colors";
+import { useHistory } from "react-router-dom";
+import Chip from "@material-ui/core/Chip";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,6 +48,8 @@ const useStyles = makeStyles((theme) => ({
 
 const SearchResults = (props) => {
   const [users, setUsers] = useState([]);
+  const classes = useStyles();
+  const history = useHistory();
   //const [items, setItems] = useState([]);
   useEffect(() => {
     axios.get("/api/Specialist/allSpecialists").then((result) => {
@@ -55,13 +58,9 @@ const SearchResults = (props) => {
     });
   }, []);
 
-  /*{
-    users.forEach((user, index) => {
-      items.push(<li key={index}>{user.name}</li>);
-    });
-  }*/
-
-  const classes = useStyles();
+  const handleListItemClick = (userId) => {
+    history.push(`/specialistServicePage/${userId}`);
+  };
 
   return (
     <div>
@@ -86,9 +85,24 @@ const SearchResults = (props) => {
           return (
             <div>
               <List className={classes.rootList}>
-                <ListItem alignItems="flex-start">
+                <ListItem
+                  button
+                  alignItems="flex-start"
+                  onClick={() => {
+                    handleListItemClick(user.id);
+                  }}
+                >
                   <ListItemAvatar>
-                    <Avatar className={classes.backColour}>{index + 1}</Avatar>
+                    <Avatar
+                      src={
+                        user.imageUrl == null
+                          ? "https://joeschmoe.io/api/v1/random"
+                          : user.imageUrl
+                      }
+                      className={classes.backColour}
+                    >
+                      {index + 1}
+                    </Avatar>
                   </ListItemAvatar>
                   <ListItemText
                     secondary={
@@ -101,7 +115,46 @@ const SearchResults = (props) => {
                         >
                           {user.firstName + " " + user.lastName}
                         </Typography>
-                        {console.log(users)}
+                        <br></br>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textSecondary"
+                        >
+                          {user.address.streetAddress}
+                        </Typography>
+                        <br></br>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textSecondary"
+                        >
+                          {user.address.city}
+                        </Typography>
+                        <br></br>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textSecondary"
+                        >
+                          {user.email}
+                        </Typography>
+                        <br></br>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textSecondary"
+                        >
+                          {user.phoneNumber}
+                        </Typography>
+                        <br></br>
+                        {user.specialistProfile.services.forEach((element) => {
+                          return <Chip label={element} />;
+                        })}
                       </React.Fragment>
                     }
                   />
