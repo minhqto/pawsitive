@@ -356,5 +356,29 @@ namespace pawsitive.Data
             return allSpecialists;
         }
 
+        public async Task<User> updateSpecialist(string specialistId, EditSpecialistBody reqBody)
+        {
+            var user = userManager.Users.Include("Address").Include("SpecialistProfile").SingleOrDefault(u => u.Id.Equals(specialistId));
+            if (user == null) return null;
+
+            // Update user information with new information from request body
+            user.FirstName = reqBody.firstName;
+            user.LastName = reqBody.lastName;
+
+            user.Address.City = reqBody.city;
+            user.Address.StreetAddress = reqBody.streetAddress;
+            user.Address.Province = reqBody.province;
+            user.Address.PostalCode = reqBody.postalCode;
+
+            user.PhoneNumber = reqBody.phoneNumber;
+            user.Email = reqBody.email;
+            user.SpecialistProfile.AboutMe = reqBody.aboutMe;
+
+            user.ImageUrl = reqBody.imageUrl;
+            user.SpecialistProfile.BusinessName = reqBody.businessName;
+
+            await userManager.UpdateAsync(user);
+            return user;
+        }
     }
 }

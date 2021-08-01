@@ -83,5 +83,25 @@ namespace pawsitive.Controllers
             return allSpecialists;
         }
 
+        [HttpPut]
+        [Route("editSpecialist/{specialistId}")]
+        public async Task<IActionResult> EditSpecialist([FromRoute] string specialistId, [FromBody] EditSpecialistBody req)
+        {
+            try
+            {
+                var updatedSpecialist = await dm.updateSpecialist(specialistId, req);
+
+                return Ok(new
+                {
+                    message = "The Services updated successfully",
+                });
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = e.Message });
+            }
+        }
+
     }
 }
