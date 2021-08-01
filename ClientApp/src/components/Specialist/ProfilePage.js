@@ -127,6 +127,20 @@ export const ProfilePage = function (specialistData) {
         >
           <EditSpecialistProfileModal
             cancelClick={() => setOpenEditSpecialistModal(false)}
+            specialistInfo={{
+              firstName: specialist.firstName,
+              lastName: specialist.lastName,
+              businessName: specialistProfile.businessName,
+              phoneNumber: specialist.phoneNumber,
+              email: specialist.email,
+              imageUrl: specialist.imageUrl,
+              city: specialist.address.city,
+              streetAddress: specialist.address.streetAddress,
+              province: specialist.address.province,
+              postalCode: specialist.address.postalCode,
+              aboutMe: specialistProfile.aboutMe,
+            }}
+            specialistId={user.id}
           />
         </Modal>
         <Grid>
@@ -177,7 +191,7 @@ export const ProfilePage = function (specialistData) {
           <div className={classes.table}>
             <Typography variant="h6">
               My Service List{" "}
-              <Link to="/specialist/myprofile/editservice" class>
+              <Link to="/specialist/myprofile/editservice">
                 <Button color="primary">Edit</Button>
               </Link>
             </Typography>

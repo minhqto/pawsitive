@@ -1,5 +1,5 @@
-import React from "react";
-
+import React, { useState } from "react";
+import axios from "axios";
 import {
   Grid,
   Button,
@@ -20,10 +20,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function EditSpecialistProfileModal({ cancelClick }) {
+function EditSpecialistProfileModal({
+  cancelClick,
+  specialistInfo,
+  specialistId,
+}) {
   const classes = useStyles();
+  const [specObj, setSpecObj] = useState(specialistInfo);
+  const updateSpecialistInfo = () => {
+    console.log(specObj);
 
-  const updateSpecialistInfo = () => {};
+    if (validateInput()) {
+      // make api call to update client information
+      axios
+        .put(`/api/Specialist/editSpecialist/${specialistId}`, specObj)
+        .then((res) => {
+          alert("Information updated successfully! Reloading...");
+          window.location.reload();
+        })
+        .catch((e) => console.error(e));
+    }
+  };
+
+  const validateInput = () => {
+    for (var key of Object.keys(specObj)) {
+      if (specObj[key] == "") {
+        alert("Invalid input, make sure all the fields are not empty!");
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const handleChange = (e) => {
+    setSpecObj({
+      ...specObj,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
     <div className={classes.paper}>
@@ -50,99 +84,100 @@ function EditSpecialistProfileModal({ cancelClick }) {
           <TextField
             fullWidth={true}
             label="First Name"
-            defaultValue={""}
+            defaultValue={specialistInfo.firstName}
             variant="outlined"
-            onChange={(e) => {}}
+            name="firstName"
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={4}>
           <TextField
             fullWidth={true}
             label="Last Name"
-            defaultValue={""}
+            defaultValue={specialistInfo.lastName}
             variant="outlined"
-            onChange={(e) => {}}
+            name="lastName"
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={4}>
           <TextField
             fullWidth={true}
             label="Business name"
-            defaultValue={""}
+            defaultValue={specialistInfo.businessName}
             variant="outlined"
-            onChange={(e) => {}}
+            name="businessName"
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={4}>
           <TextField
             fullWidth={true}
             label="Phone Number"
-            defaultValue={""}
+            defaultValue={specialistInfo.phoneNumber}
             variant="outlined"
-            onChange={(e) => {}}
+            name="phoneNumber"
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={4}>
           <TextField
             fullWidth={true}
             label="Email"
-            defaultValue={""}
+            defaultValue={specialistInfo.email}
             variant="outlined"
-            onChange={(e) => {}}
+            name="email"
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={4}>
           <TextField
             fullWidth={true}
             label="Image URL"
-            defaultValue={""}
+            defaultValue={specialistInfo.imageUrl}
             variant="outlined"
-            onChange={(e) => {}}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="Country"
-            defaultValue={""}
-            variant="outlined"
-            onChange={(e) => {}}
+            name="imageUrl"
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={2}>
           <TextField
             fullWidth={true}
             label="City"
-            defaultValue={""}
+            defaultValue={specialistInfo.city}
             variant="outlined"
-            onChange={(e) => {}}
+            name="city"
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={2}>
           <TextField
             fullWidth={true}
             label="Street Address"
-            defaultValue={""}
+            defaultValue={specialistInfo.streetAddress}
             variant="outlined"
-            onChange={(e) => {}}
+            name="streetAddress"
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={2}>
           <TextField
             fullWidth={true}
             label="Province"
-            defaultValue={""}
+            defaultValue={specialistInfo.province}
             variant="outlined"
-            onChange={(e) => {}}
+            name="province"
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={2}>
           <TextField
             fullWidth={true}
             label="Postal Code"
-            defaultValue={""}
+            defaultValue={specialistInfo.postalCode}
             variant="outlined"
-            onChange={(e) => {}}
+            name="postalCode"
+            onChange={handleChange}
           />
         </Grid>
 
@@ -153,8 +188,9 @@ function EditSpecialistProfileModal({ cancelClick }) {
             rowsMin={3}
             style={{ width: "100%" }}
             placeholder="About me"
-            defaultValue={""}
-            onChange={(e) => {}}
+            defaultValue={specialistInfo.aboutMe}
+            name="aboutMe"
+            onChange={handleChange}
           />
         </Grid>
       </Grid>
