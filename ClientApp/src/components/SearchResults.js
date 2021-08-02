@@ -44,6 +44,14 @@ const useStyles = makeStyles((theme) => ({
   backColour: {
     backgroundColor: "red",
   },
+  chip: {
+    display: "flex",
+    justifyContent: "left",
+    flexWrap: "wrap",
+    "& > *": {
+      margin: theme.spacing(0.2),
+    },
+  },
 }));
 
 const SearchResults = (props) => {
@@ -54,6 +62,7 @@ const SearchResults = (props) => {
   useEffect(() => {
     axios.get("/api/Specialist/allSpecialists").then((result) => {
       setUsers(result.data);
+      console.log(result.data);
       props.parentCallback(result.data);
     });
   }, []);
@@ -152,9 +161,24 @@ const SearchResults = (props) => {
                           {user.phoneNumber}
                         </Typography>
                         <br></br>
-                        {user.specialistProfile.services.forEach((element) => {
-                          return <Chip label={element} />;
-                        })}
+                        <div className={classes.chip}>
+                          {user.specialistProfile.serviceTypes.map(
+                            (element) => {
+                              return (
+                                <Chip
+                                  size="small"
+                                  color="primary"
+                                  label={
+                                    element.serviceTypeName
+                                      .charAt(0)
+                                      .toUpperCase() +
+                                    element.serviceTypeName.slice(1)
+                                  }
+                                />
+                              );
+                            }
+                          )}
+                        </div>
                       </React.Fragment>
                     }
                   />
