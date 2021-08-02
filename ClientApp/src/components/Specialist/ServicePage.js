@@ -20,6 +20,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import PageNotFound from "../PageNotFound";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -242,7 +243,7 @@ const ServicePage = (specialistData) => {
       </div>
     );
   } else {
-    return <div>Loading...</div>;
+    return <PageNotFound />;
   }
 };
 

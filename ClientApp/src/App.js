@@ -20,6 +20,7 @@ import ServicePage from "./components/Specialist/ServicePage";
 import { ProfilePage } from "./components/Specialist/ProfilePage";
 import ProfileView from "./components/ClientPages/ProfileView";
 import Map from "./components/Map";
+import PageNotFound from "./components/PageNotFound";
 
 function App() {
   const history = useHistory();
@@ -50,6 +51,7 @@ function App() {
           restricted={false}
           component={ServicePage}
           path="/specialistServicePage/:specialistId"
+          exact
         />
         <PublicRoute
           restricted={true}
@@ -75,6 +77,7 @@ function App() {
           restricted={false}
           component={EditService}
           path="/specialist/myprofile/editservice"
+          exact
         />
 
         <PublicRoute
@@ -86,10 +89,7 @@ function App() {
 
         <PublicRoute restricted={false} component={Main} path="/search" exact />
 
-        {/* Example routes, won't be used in the main app */}
-        <Route path="/counter" component={Counter} />
-        <Route path="/fetch-data" component={FetchData} />
-        <PrivateRoute component={Counter} path="/counter-private" exact />
+        <PublicRoute path="*" component={PageNotFound}></PublicRoute>
       </Switch>
     </Layout>
   );
