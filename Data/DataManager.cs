@@ -302,10 +302,10 @@ namespace pawsitive.Data
             var newService = new Service()
             {
                 ServiceType = serviceType,
-                //ServiceTypeId = req.ServiceTypeId,
+                ServiceTypeId = serviceType.Id,
                 ServiceName = req.ServiceName,
                 Price = req.Price,
-
+                Specialist = specialistProfile,
             };
 
             try
