@@ -56,7 +56,7 @@ namespace pawsitive.Controllers
 
         [HttpDelete]
         [Route("specialistDetail/{specialistId}/deleteservices")]
-        public IActionResult DeleteServices([FromRoute] string specialistId, [FromBody] ServiceVM req)
+        public IActionResult DeleteServices([FromRoute] string specialistId, [FromBody] DeleteServicesBody req)
         {
             try
             {
