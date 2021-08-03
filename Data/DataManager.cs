@@ -296,16 +296,16 @@ namespace pawsitive.Data
         public void addServiceToSpecialist(string specialistId, ServiceVM req)
         {
             var specialistProfile = dtx.SpecialistProfile.Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
-            var serviceType = dtx.ServiceType.SingleOrDefault(st => st.ServiceTypeName.Equals(req.ServiceType));
+            var serviceType = dtx.ServiceType.SingleOrDefault(st => st.ServiceTypeName.ToLower().Equals(req.ServiceType.ToLower()));
 
 
             var newService = new Service()
             {
                 ServiceType = serviceType,
-                //ServiceTypeId = req.ServiceTypeId,
+                ServiceTypeId = serviceType.Id,
                 ServiceName = req.ServiceName,
                 Price = req.Price,
-
+                Specialist = specialistProfile,
             };
 
             try
@@ -321,23 +321,17 @@ namespace pawsitive.Data
         }
 
         // Delete the selected services from the Specialist with specialistId
-        // TODO - need to fix
-        public void deleteServicesFromSpecialist(string specialistId, ServiceVM req)
+        public void deleteServicesFromSpecialist(string specialistId, DeleteServicesBody req)
         {
             var specialistProfile = dtx.SpecialistProfile.Include("Services").SingleOrDefault(cp => cp.Specialist.Id.Equals(specialistId));
-            var serviceType = dtx.ServiceType.SingleOrDefault(st => st.ServiceTypeName.Equals(req.ServiceType));
-
-            var newService = new Service()
-            {
-                ServiceType = serviceType,
-                //ServiceTypeId = req.ServiceTypeId,
-                ServiceName = req.ServiceName,
-                Price = req.Price,
-            };
 
             try
             {
-                specialistProfile.Services.Remove(newService);
+                foreach (int serviceId in req.serviceIds)
+                {
+                    var service = specialistProfile.Services.FirstOrDefault(s => s.Id.Equals(serviceId));
+                    specialistProfile.Services.Remove(service);
+                }
 
                 dtx.SaveChanges();
             }
