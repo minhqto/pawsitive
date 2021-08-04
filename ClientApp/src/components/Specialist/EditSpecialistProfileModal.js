@@ -6,7 +6,12 @@ import {
   makeStyles,
   TextField,
   TextareaAutosize,
+  FormLabel,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
+import SaveIcon from '@material-ui/icons/Save';
+import DistanceSlider from "../DistanceSlider";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,7 +40,7 @@ function EditSpecialistProfileModal({
       axios
         .put(`/api/Specialist/editSpecialist/${specialistId}`, specObj)
         .then((res) => {
-          alert("Information updated successfully! Reloading...");
+          alert("Information updated successfully!");
           window.location.reload();
         })
         .catch((e) => console.error(e));
@@ -45,7 +50,7 @@ function EditSpecialistProfileModal({
   const validateInput = () => {
     for (var key of Object.keys(specObj)) {
       if (specObj[key] == "") {
-        alert("Invalid input, make sure all the fields are not empty!");
+        alert("Invalid input, make sure all the required fields are not empty!");
         return false;
       }
     }
@@ -64,20 +69,7 @@ function EditSpecialistProfileModal({
       {" "}
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <h1>Edit your profile: </h1>
-          <div>
-            <Button
-              style={{ marginRight: "20px" }}
-              variant="contained"
-              color="primary"
-              onClick={updateSpecialistInfo}
-            >
-              Save changes
-            </Button>
-            <Button onClick={cancelClick} variant="contained">
-              Cancel
-            </Button>
-          </div>
+          <h1>Edit your profile</h1>
         </Grid>
         <hr></hr>
         <Grid item xs={4}>
@@ -87,6 +79,7 @@ function EditSpecialistProfileModal({
             defaultValue={specialistInfo.firstName}
             variant="outlined"
             name="firstName"
+            InputLabelProps={{ required: true }}
             onChange={handleChange}
           />
         </Grid>
@@ -97,26 +90,7 @@ function EditSpecialistProfileModal({
             defaultValue={specialistInfo.lastName}
             variant="outlined"
             name="lastName"
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            fullWidth={true}
-            label="Business name"
-            defaultValue={specialistInfo.businessName}
-            variant="outlined"
-            name="businessName"
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            fullWidth={true}
-            label="Phone Number"
-            defaultValue={specialistInfo.phoneNumber}
-            variant="outlined"
-            name="phoneNumber"
+            InputLabelProps={{ required: true }}
             onChange={handleChange}
           />
         </Grid>
@@ -127,16 +101,39 @@ function EditSpecialistProfileModal({
             defaultValue={specialistInfo.email}
             variant="outlined"
             name="email"
+            InputLabelProps={{ required: true }}
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <TextField
             fullWidth={true}
-            label="Image URL"
+            label="Business name"
+            defaultValue={specialistInfo.businessName}
+            variant="outlined"
+            name="businessName"
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Profile Image URL"
             defaultValue={specialistInfo.imageUrl}
             variant="outlined"
             name="imageUrl"
+            InputLabelProps={{ required: true }}
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <TextField
+            fullWidth={true}
+            label="Street Address"
+            defaultValue={specialistInfo.streetAddress}
+            variant="outlined"
+            name="streetAddress"
+            InputLabelProps={{ required: true }}
             onChange={handleChange}
           />
         </Grid>
@@ -147,16 +144,7 @@ function EditSpecialistProfileModal({
             defaultValue={specialistInfo.city}
             variant="outlined"
             name="city"
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="Street Address"
-            defaultValue={specialistInfo.streetAddress}
-            variant="outlined"
-            name="streetAddress"
+            InputLabelProps={{ required: true }}
             onChange={handleChange}
           />
         </Grid>
@@ -167,6 +155,7 @@ function EditSpecialistProfileModal({
             defaultValue={specialistInfo.province}
             variant="outlined"
             name="province"
+            InputLabelProps={{ required: true }}
             onChange={handleChange}
           />
         </Grid>
@@ -177,21 +166,102 @@ function EditSpecialistProfileModal({
             defaultValue={specialistInfo.postalCode}
             variant="outlined"
             name="postalCode"
+            InputLabelProps={{ required: true }}
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <TextField
+            fullWidth={true}
+            label="Phone Number"
+            defaultValue={specialistInfo.phoneNumber}
+            variant="outlined"
+            name="phoneNumber"
+            InputLabelProps={{ required: true }}
             onChange={handleChange}
           />
         </Grid>
 
-        <Grid item xs={12}>
-          <h3>About Me</h3>
+        <Grid item md={8}>
+          <FormLabel>
+            Service Types you offer (check all that apply)
+          </FormLabel>
+        </Grid>
+        {/* {SERVICE_TYPES.map((s, index) => (
+            <FormControlLabel
+              key={index}
+              control={
+                <Checkbox
+                  onChange={(e) => {
+                    if (!e.target.checked) {
+                      setServiceTypes(
+                        serviceTypes.filter((item) => item !== s.name)
+                      );
+                    } else {
+                      setServiceTypes([...serviceTypes, s.name]);
+                    }
+                  }}
+                  name={s.name}
+                  color="primary"
+                />
+              }
+              label={s.label}
+            />
+          ))}
+          <br />* You cannot uncheck a service type which contains service list
+        </Grid> */}
 
+        <Grid item xs={4}>
+          <FormControlLabel
+            value="top"
+            control={
+              <Checkbox
+                // onChange={() =>
+                //   setProvideHomeVisitService(!provideHomeVisitService)
+                // }
+                color="primary"
+              />
+            }
+            //id="ProvideHomeVisitService"
+            label="Provide Home Visit Service?"
+            name="ProvideHomeVisitService"
+            labelPlacement="end"
+          />
+          {/*provideHomeVisitService && */(
+            <DistanceSlider
+              //setValue={(value) => setRadius(value)}
+              id="radius"
+            />
+          )}
+        </Grid>
+        <Grid item xs={12}>
+          <h6>About Me</h6>
           <TextareaAutosize
-            rowsMin={3}
+            rowsMin={5}
+            rowsMax={6}
             style={{ width: "100%" }}
-            placeholder="About me"
+            placeholder="About me (Certification, experience, service detail...)"
             defaultValue={specialistInfo.aboutMe}
+            InputLabelProps={{ required: true }}
             name="aboutMe"
             onChange={handleChange}
           />
+        </Grid>
+
+        <Grid item xs={12} style={{ textAlign: "center" }}>
+          <Button
+            onClick={cancelClick}
+            variant="contained">
+            Cancel
+          </Button>
+          <Button
+            style={{ marginLeft: "20px" }}
+            variant="contained"
+            color="primary"
+            startIcon={<SaveIcon />}
+            onClick={updateSpecialistInfo}>
+            Save
+          </Button>
         </Grid>
       </Grid>
     </div>
