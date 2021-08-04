@@ -23,6 +23,7 @@ import MUIRichTextEditor from "mui-rte";
 import { convertToRaw, convertFromRaw } from "draft-js";
 import { convertToHTML } from "draft-convert";
 import axios from "axios";
+import SaveIcon from '@material-ui/icons/Save';
 
 const useStyles = makeStyles((theme) => ({
   imgContainer: {
@@ -130,20 +131,7 @@ const EditDogModal = ({ cancelClick, dog }) => {
     <div className={classes.paper}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <h1>Edit dog: </h1>
-          <div>
-            <Button
-              style={{ marginRight: "20px" }}
-              variant="contained"
-              color="primary"
-              onClick={editDog}
-            >
-              Edit dog
-            </Button>
-            <Button onClick={cancelClick} variant="contained">
-              Cancel
-            </Button>
-          </div>
+          <h1>Edit dog</h1>
         </Grid>
         <hr></hr>
         <Grid item xs={6}>
@@ -154,6 +142,17 @@ const EditDogModal = ({ cancelClick, dog }) => {
             variant="outlined"
             onChange={(e) => {
               setDogName(e.target.value);
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Breed"
+            defaultValue={dogBreed}
+            variant="outlined"
+            onChange={(e) => {
+              setDogBreed(e.target.value);
             }}
           />
         </Grid>
@@ -181,17 +180,7 @@ const EditDogModal = ({ cancelClick, dog }) => {
             }}
           />
         </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Breed"
-            defaultValue={dogBreed}
-            variant="outlined"
-            onChange={(e) => {
-              setDogBreed(e.target.value);
-            }}
-          />
-        </Grid>
+
         <Grid item xs={6}>
           <TextField
             fullWidth={true}
@@ -254,6 +243,22 @@ const EditDogModal = ({ cancelClick, dog }) => {
             defaultValue={aboutDog}
             onChange={(e) => setAboutDog(e.target.value)}
           />
+        </Grid>
+
+        <Grid item xs={12} style={{ textAlign: "center" }}>
+          <Button
+            onClick={cancelClick}
+            variant="contained">
+            Cancel
+          </Button>
+          <Button
+            style={{ marginLeft: "20px" }}
+            variant="contained"
+            color="primary"
+            startIcon={<SaveIcon />}
+            onClick={editDog}>
+            Save
+          </Button>
         </Grid>
       </Grid>
     </div>

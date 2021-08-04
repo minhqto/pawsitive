@@ -4,8 +4,11 @@ import {
   Box,
   Grid,
   Button,
+  IconButton,
   makeStyles,
   Modal,
+  Icon,
+  Typography,
   TextField,
   Paper,
   TextareaAutosize,
@@ -24,10 +27,17 @@ import MUIRichTextEditor from "mui-rte";
 import { convertToRaw, convertFromRaw } from "draft-js";
 import { convertToHTML } from "draft-convert";
 import axios from "axios";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import EditIcon from '@material-ui/icons/Edit';
+import FaceIcon from '@material-ui/icons/Face';
+import PetsIcon from '@material-ui/icons/Pets';
 
 const useStyles = makeStyles((theme) => ({
   imgContainer: {
+    margin: "20px",
+    marginBotton: "20px",
     marginRight: "20px",
+    marginLeft: "20px",
   },
   clientImg: {
     width: "200px",
@@ -38,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
   },
   clientAddress: {
     fontSize: "1.1em",
-    color: "grey",
   },
   clientBio: {
     fontSize: "1em",
@@ -46,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
   petSection: {
     marginTop: "20px",
+    fontsize: "1.1em",
   },
   dogItem: {
     display: "flex",
@@ -54,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
   },
   dogImg: {
     width: "150px",
-    marginRight: "20px",
   },
   dogInfo: {
     fontSize: "1.2em",
@@ -62,7 +71,8 @@ const useStyles = makeStyles((theme) => ({
   },
   editButton: {
     height: "30px",
-    marginLeft: "20px",
+    marginLeft: "0px",
+    marginRight: "0px",
   },
 
   modal: {
@@ -118,12 +128,18 @@ export default function ProfileView() {
   // };
 
   if (clientProfile) {
-    const { imageUrl, firstName, lastName, address } = clientProfile.client;
+    const { imageUrl, firstName, lastName, email, phoneNumber, address } = clientProfile.client;
     const { aboutMe, dogs } = clientProfile;
 
     return (
       <Container>
+        <Grid mb={1} >
+          <h3>
+            My Profile
+          </h3>
+        </Grid>
         <Box
+          marginTop="20px"
           width="100%"
           display="flex"
           flexDirection="row"
@@ -131,14 +147,15 @@ export default function ProfileView() {
         >
           {/* Client Info */}
           <div className={classes.imgContainer}>
-            <img
+            {imageUrl ? (<img
               className={classes.clientImg}
               src={imageUrl}
               alt="Client Image"
-            />
+            />) : (
+              <FaceIcon color="disabled" style={{ fontSize: 150 }} />)}
           </div>
           {firstName != null ? (
-            <Box
+            <Grid
               display="flex"
               flexDirection="column"
               justifyContent="flex-start"
@@ -146,34 +163,39 @@ export default function ProfileView() {
             >
               <div
                 className={classes.clientName}
-              >{`${firstName} ${lastName}`}</div>
-              <div
-                className={classes.clientAddress}
-              >{`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`}</div>
+                alignItems="center"
+              ><h3>{`${firstName} ${lastName}`}&nbsp;
+                  {isAuthorized && (
+                    <IconButton
+                      className={classes.editButton}
+                      size="small"
+                      onClick={() => setOpenClientProfileModal(true)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  )}</h3>
+              </div>
+
+              <div className={classes.clientAddress}>
+                <b> Email: </b>{email} <br />
+                <b> Phone: </b>{phoneNumber} <br />
+                <b> Address: </b>{`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`} <br />
+                <b> About Me: </b>{aboutMe}<br />
+              </div>
               {/* <div
               dangerouslySetInnerHTML={{ __html: getAboutMeHTML() }}
               className={classes.clientBio}
             ></div> */}
-              <p>{aboutMe}</p>
-            </Box>
+
+            </Grid>
           ) : (
             <h3>
-              You don't have any profile to display, please click edit to add
-              your information
+              You don't have any profile to display.
+              Please click edit button to add your information
             </h3>
           )}
 
-          {isAuthorized && (
-            <Button
-              className={classes.editButton}
-              size="small"
-              variant="outlined"
-              color="primary"
-              onClick={() => setOpenClientProfileModal(true)}
-            >
-              Edit
-            </Button>
-          )}
+
           <Modal
             open={openClientProfileModal}
             onClose={() => setOpenClientProfileModal(false)}
@@ -198,7 +220,7 @@ export default function ProfileView() {
                   color="primary"
                   onClick={() => setOpenAddDogModal(true)}
                 >
-                  Add
+                  + Add
                 </Button>
               )}
               <Modal
@@ -216,26 +238,30 @@ export default function ProfileView() {
           {/* Each pet detail */}
           {dogs.map((dog, index) => (
             <Grid key={index} className={classes.dogItem} item xs={6}>
-              <img className={classes.dogImg} src={dog.imageUrl} />
-              <div>
-                <h4>{dog.dogName}</h4>
-                <br></br>
-                <p>{dog.aboutDog}</p>
+              <div className={classes.imgContainer}>
+                {dog.imageUrl ? (<img className={classes.dogImg} src={dog.imageUrl} />) : (
+                  <PetsIcon color="disabled" style={{ fontSize: 100 }} />)}
               </div>
-
-              <Button
-                className={classes.editButton}
-                size="small"
-                variant="outlined"
-                color="primary"
-                onClick={() => {
-                  setOpenEditDogModal(true);
-                  setSelectedDogForEdit(dog);
-                }}
-              >
-                Edit
-              </Button>
-
+              <div>
+                <h4>{dog.dogName}&nbsp;
+                  <IconButton
+                    className={classes.editButton}
+                    size="small"
+                    onClick={() => {
+                      setOpenEditDogModal(true);
+                      setSelectedDogForEdit(dog);
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </h4>
+                <p>
+                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Breed: {dog.dogBreed}<br />
+                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} />  Sex: {dog.dogSex}<br />
+                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} />  Weight: {dog.dogWeight}<br />
+                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} />  Birth Date:{dog.dogBirthDate}<br />
+                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} />  About: {dog.aboutDog}</p>
+              </div>
               <Modal
                 open={openEditDogModal}
                 onClose={() => setOpenEditDogModal(false)}
@@ -252,6 +278,8 @@ export default function ProfileView() {
     );
   } else {
     // Show loading component
-    return <h1>Loading...</h1>;
+    return <div className={classes.root}>
+      <CircularProgress />
+    </div>;
   }
 }
