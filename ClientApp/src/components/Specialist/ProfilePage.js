@@ -58,12 +58,24 @@ const useStyles = makeStyles({
     marginBotton: "20px",
     marginRight: "20px",
     marginLeft: "20px",
-    width: "300px",
-    height: "300px",
+    fontSize: "1.2em",
+    alignItems: "center",
+    textAlign: "center",
   },
-  clientImg: {
-    width: "200px",
+  specialistImg: {
+    maxHeight: "300px",
+    maxWidth: "200px",
   },
+  specialistName: {
+    margin: "20px",
+    fontSize: "1.25em",
+    fontWeight: "500",
+  },
+  specialistProfile: {
+    margin: "20px",
+    fontSize: "1.2em",
+  },
+
 });
 
 
@@ -164,32 +176,38 @@ export const ProfilePage = function (specialistData) {
               My Profile
             </h3>
           </Grid>
-          <div>
-            <Grid container spacing={2}>
-              <Grid item xs={3}
-                direction="row"
-                justifyContent="center"
-                alignItems="center">
-                <div className={classes.imgContainer}>
-                  {specialist.imageUrl ? (<img
-                    className={classes.root}
-                    src={specialist.imageUrl}
-                    alt="Client Image"
-                  />) : (
-                    <FaceIcon color="disabled" style={{ fontSize: 150 }} />)}
-                </div>
-                <br />
-                <Typography variant="subtitle1">
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Phone#: {specialist.phoneNumber}<br />
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Email: {specialist.email}<br />
-                </Typography>
+          <Box
+            marginTop="20px"
+            width="100%"
+            display="flex"
+            flexDirection="row"
+            justifyContent="flex-start"
+          >
+            {/* Specialist Info */}
+            <div className={classes.imgContainer}>
+              {specialist.imageUrl ? (<img
+                className={classes.specialistImg}
+                src={specialist.imageUrl}
+                alt="Specialist Image"
+              />) : (
+                <FaceIcon color="disabled" style={{ fontSize: 150 }} />)}
 
+              <br />
+              <Grid alignItems="center">
+                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Phone#</b><br /> {specialist.phoneNumber}<br />
+                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Email</b><br />{specialist.email}<br />
               </Grid>
-
-              <Grid item xs={8} direction="column">
-                <Typography variant="h5">
-                  {specialist.firstName} {specialist.lastName}{" "}
-                  &nbsp;
+            </div>
+            <Grid
+              display="flex"
+              flexDirection="column"
+              justifyContent="flex-start"
+              alignItems="flex-start"
+            >
+              <div
+                className={classes.specialistName}
+                alignItems="center"
+              ><h3>{`${specialist.firstName} ${specialist.lastName}`}&nbsp;
                   {(
                     <IconButton
                       className={classes.editButton}
@@ -198,64 +216,63 @@ export const ProfilePage = function (specialistData) {
                     >
                       <EditIcon />
                     </IconButton>
-                  )}
-                </Typography>
-                <br />
-                <Typography variant="subtitle1">
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Business Name: {specialistProfile.businessName}<br />
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Address:
-                  {specialist.address.streetAddress},{specialist.address.city},
-                  {specialist.address.province}, {specialist.address.postalCode}<br />
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> About Me:<br />
-                  {specialistProfile.aboutMe}
-                </Typography>
-              </Grid>
+                  )}</h3>
+              </div>
+              <div className={classes.specialistProfile}>
+                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Business Name: </b>{specialistProfile.businessName}<br />
+                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Address: </b>
+                {specialist.address.streetAddress},{specialist.address.city},
+                {specialist.address.province}, {specialist.address.postalCode}<br />
+                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>About Me:</b><br />
+                {specialistProfile.aboutMe}
+              </div>
             </Grid>
+          </Box>
 
-            {/* My Service List */}
-            <div className={classes.table}>
-              <Typography variant="h5">
-                My Service List{" "}
-                <Link to="/specialist/myprofile/editservice">
-                  &nbsp;
-                  {(
-                    <IconButton
-                      className={classes.editButton}
-                      size="small"
+          {/* My Service List */}
+          <div className={classes.table}>
+            <Typography variant="h5">
+              My Service List{" "}
+              <Link to="/specialist/myprofile/editservice">
+                &nbsp;
+                {(
+                  <IconButton
+                    className={classes.editButton}
+                    size="small"
 
+                  >
+                    <EditIcon />
+                  </IconButton>
+                )}
+              </Link>
+            </Typography>
+            <TableContainer component={Paper} className={classes.marginTop}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Service Name</TableCell>
+                    <TableCell align="right">Fee</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {services.map((row, index) => (
+                    <TableRow
+                      key={index}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
-                      <EditIcon />
-                    </IconButton>
-                  )}
-                </Link>
-              </Typography>
-              <TableContainer component={Paper} className={classes.marginTop}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Service Name</TableCell>
-                      <TableCell align="right">Fee</TableCell>
+                      <TableCell component="th" scope="row">
+                        {row.serviceName}
+                      </TableCell>
+                      <TableCell align="right">{row.price}</TableCell>
                     </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {services.map((row, index) => (
-                      <TableRow
-                        key={index}
-                        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {row.serviceName}
-                        </TableCell>
-                        <TableCell align="right">{row.price}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
+
         </div >
-      </Container>
+      </Container >
     );
   } else {
     return <div className={classes.root}>

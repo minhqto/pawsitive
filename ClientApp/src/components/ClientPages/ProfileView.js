@@ -43,7 +43,8 @@ const useStyles = makeStyles((theme) => ({
     width: "200px",
   },
   clientName: {
-    fontSize: "1.3em",
+    margin: "10px",
+    fontSize: "1.25em",
     fontWeight: "500",
   },
   clientAddress: {
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     fontStyle: "italic",
   },
   petSection: {
-    marginTop: "20px",
+    marginTop: "10px",
     fontsize: "1.1em",
   },
   dogItem: {
@@ -175,7 +176,6 @@ export default function ProfileView() {
                     </IconButton>
                   )}</h3>
               </div>
-
               <div className={classes.clientAddress}>
                 <b> Email: </b>{email} <br />
                 <b> Phone: </b>{phoneNumber} <br />
@@ -220,7 +220,7 @@ export default function ProfileView() {
         </Box>
 
         {/* Pet Info */}
-        <Grid className={classes.petSection} container spacing={3}>
+        <Grid className={classes.petSection} container spacing={2}>
           <Grid item xs={12}>
             <h3>
               My Pets{" "}
@@ -255,7 +255,7 @@ export default function ProfileView() {
                   <PetsIcon color="disabled" style={{ fontSize: 100 }} />)}
               </div>
               <div>
-                <h4>{dog.dogName}&nbsp;
+                <h5>{dog.dogName}&nbsp;
                   <IconButton
                     className={classes.editButton}
                     size="small"
@@ -266,7 +266,7 @@ export default function ProfileView() {
                   >
                     <EditIcon />
                   </IconButton>
-                </h4>
+                </h5>
                 <p>
                   <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Breed: {dog.dogBreed}<br />
                   <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} />  Sex: {dog.dogSex}<br />
