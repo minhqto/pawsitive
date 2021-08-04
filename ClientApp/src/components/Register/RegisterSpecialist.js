@@ -491,9 +491,9 @@ const RegisterSpecialist = () => {
             </Grid>
             <br />
             <Grid container spacing={3}>
-              <Grid item md={12}>
+              <Grid item md={8}>
                 <FormLabel component="legend">
-                  Services you offer (check all that apply)
+                  Service Types you offer (check all that apply)
                 </FormLabel>
 
                 {SERVICE_TYPES.map((s, index) => (
@@ -542,10 +542,11 @@ const RegisterSpecialist = () => {
                 )}
               </Grid>
 
-              <Grid item xs={8}>
-                About Me
+              <Grid item xs={12}>
+                <b>About Me</b>
                 <MUIRichTextEditor
-                  label="Tell us about yourself!"
+                  rowsMin={5}
+                  label="Tell us about you (Certification, experience, service detail...)"
                   onChange={getAboutMe}
                 />
               </Grid>
