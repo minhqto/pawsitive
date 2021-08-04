@@ -16,6 +16,7 @@ import Button from "@material-ui/core/Button";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
+import SearchIcon from '@material-ui/icons/Search';
 import { TestMenu } from "./TestMenu";
 
 const useStyles = makeStyles((theme) => ({
@@ -79,6 +80,11 @@ export const NavMenu = () => {
     prevOpen.current = open;
   }, [open]);
 
+  const search = () => {
+    history.push("/search");
+    setOpen(false);
+  };
+
   const logout = () => {
     dispatch(setCurrentUser({}));
     localStorage.removeItem("jwtToken");
@@ -102,11 +108,6 @@ export const NavMenu = () => {
     setOpen(false);
   };
 
-  // In case we need this later
-  const search = () => {
-    history.push("/search");
-    setOpen(false);
-  };
 
   return (
     <header>
@@ -136,8 +137,7 @@ export const NavMenu = () => {
               justify="center"
               alignItems="center"
             >
-              <TestMenu />
-              &nbsp;&nbsp;
+              <MenuItem onClick={search} id="search"><SearchIcon />Find Specialists </MenuItem>
             </Grid>
             <Grid
               item
