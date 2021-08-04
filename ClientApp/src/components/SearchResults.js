@@ -14,7 +14,8 @@ import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import { useHistory } from "react-router-dom";
 import Chip from "@material-ui/core/Chip";
-import { changePoint } from "./Map";
+import { loadMap } from "./Map";
+import PetsIcon from "@material-ui/icons/Pets";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,6 +61,7 @@ const SearchResults = (props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const classes = useStyles();
   const history = useHistory();
+  var test = [];
   //const [items, setItems] = useState([]);
   useEffect(() => {
     axios.get("/api/Specialist/allSpecialists").then((result) => {
@@ -70,6 +72,32 @@ const SearchResults = (props) => {
 
   const handleListItemClick = (userId) => {
     history.push(`/specialistServicePage/${userId}`);
+  };
+
+  const ShowNoResult = function () {
+    return users.filter((user) =>
+      user.address.city
+        .toLowerCase()
+        .includes(document.getElementById("search").value.toLocaleLowerCase())
+    ).length == 0 ? (
+      <h4 id="no_value">
+        <br />
+        <PetsIcon
+          color="action"
+          style={{ fontSize: 30, color: "#89CFF0" }}
+        />{" "}
+        Ops...No results found!
+      </h4>
+    ) : (
+      <h4 id="no_value" style={{ display: "none" }}>
+        <br />
+        <PetsIcon
+          color="action"
+          style={{ fontSize: 30, color: "#89CFF0" }}
+        />{" "}
+        Ops...No results found!
+      </h4>
+    );
   };
 
   return (
@@ -86,15 +114,20 @@ const SearchResults = (props) => {
           aria-label="search"
           onClick={() => {
             setSearchTerm(document.getElementById("search").value);
-            changePoint(
-              users.filter((user) =>
+            loadMap(
+              (test = users.filter((user) =>
                 user.address.city
                   .toLowerCase()
                   .includes(
                     document.getElementById("search").value.toLocaleLowerCase()
                   )
-              )
+              ))
             );
+            if (test.length == 0) {
+              ShowNoResult(false);
+            } else {
+              ShowNoResult(true);
+            }
           }}
         >
           <SearchIcon />
@@ -102,6 +135,7 @@ const SearchResults = (props) => {
       </Paper>
       <br />
       <h2>Search Results</h2>
+      <ShowNoResult />
       {users.length != 0 ? (
         users
           .filter((user) => {
