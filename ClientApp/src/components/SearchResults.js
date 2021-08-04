@@ -14,6 +14,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import { useHistory } from "react-router-dom";
 import Chip from "@material-ui/core/Chip";
+import { changePoint } from "./Map";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,13 +57,13 @@ const useStyles = makeStyles((theme) => ({
 
 const SearchResults = (props) => {
   const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const classes = useStyles();
   const history = useHistory();
   //const [items, setItems] = useState([]);
   useEffect(() => {
     axios.get("/api/Specialist/allSpecialists").then((result) => {
       setUsers(result.data);
-      console.log(result.data);
       props.parentCallback(result.data);
     });
   }, []);
@@ -75,14 +76,26 @@ const SearchResults = (props) => {
     <div>
       <Paper component="form" className={classes.root}>
         <InputBase
+          id="search"
           className={classes.input}
-          placeholder="Search"
+          placeholder="Enter a city name"
           inputProps={{ "aria-label": "search" }}
         />
         <IconButton
-          type="submit"
           className={classes.iconButton}
           aria-label="search"
+          onClick={() => {
+            setSearchTerm(document.getElementById("search").value);
+            changePoint(
+              users.filter((user) =>
+                user.address.city
+                  .toLowerCase()
+                  .includes(
+                    document.getElementById("search").value.toLocaleLowerCase()
+                  )
+              )
+            );
+          }}
         >
           <SearchIcon />
         </IconButton>
@@ -90,104 +103,99 @@ const SearchResults = (props) => {
       <br />
       <h2>Search Results</h2>
       {users.length != 0 ? (
-        users.map(function (user, index) {
-          return (
-            <div>
-              <List className={classes.rootList}>
-                <ListItem
-                  button
-                  alignItems="flex-start"
-                  onClick={() => {
-                    handleListItemClick(user.id);
-                  }}
-                >
-                  <ListItemAvatar>
-                    <Avatar
-                      src={
-                        user.imageUrl == null
-                          ? "https://joeschmoe.io/api/v1/random"
-                          : user.imageUrl
-                      }
-                      className={classes.backColour}
-                    >
-                      {index + 1}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          className={classes.inline}
-                          color="textPrimary"
-                        >
-                          {user.firstName + " " + user.lastName}
-                        </Typography>
-                        <br></br>
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          className={classes.inline}
-                          color="textSecondary"
-                        >
-                          {user.address.streetAddress}
-                        </Typography>
-                        <br></br>
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          className={classes.inline}
-                          color="textSecondary"
-                        >
-                          {user.address.city}
-                        </Typography>
-                        <br></br>
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          className={classes.inline}
-                          color="textSecondary"
-                        >
-                          {user.email}
-                        </Typography>
-                        <br></br>
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          className={classes.inline}
-                          color="textSecondary"
-                        >
-                          {user.phoneNumber}
-                        </Typography>
-                        <br></br>
-                        <div className={classes.chip}>
-                          {user.specialistProfile.serviceTypes.map(
+        users
+          .filter((user) => {
+            if (searchTerm == "") return user;
+            else
+              return user.address.city
+                .toLowerCase()
+                .includes(searchTerm.toLocaleLowerCase());
+          })
+          .map(function (user, index) {
+            return (
+              <div>
+                <List className={classes.rootList}>
+                  <ListItem
+                    button
+                    alignItems="flex-start"
+                    onClick={() => {
+                      handleListItemClick(user.id);
+                    }}
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        src={
+                          user.imageUrl == null
+                            ? "https://joeschmoe.io/api/v1/random"
+                            : user.imageUrl
+                        }
+                        className={classes.backColour}
+                      >
+                        {index + 1}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      secondary={
+                        <React.Fragment>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            className={classes.inline}
+                            color="textPrimary"
+                          >
+                            {user.firstName + " " + user.lastName}
+                          </Typography>
+                          <br></br>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            className={classes.inline}
+                            color="textSecondary"
+                          >
+                            {user.address.streetAddress}
+                          </Typography>
+                          <br></br>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            className={classes.inline}
+                            color="textSecondary"
+                          >
+                            {user.address.city}
+                          </Typography>
+                          <br></br>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            className={classes.inline}
+                            color="textSecondary"
+                          >
+                            {user.email}
+                          </Typography>
+                          <br></br>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            className={classes.inline}
+                            color="textSecondary"
+                          >
+                            {user.phoneNumber}
+                          </Typography>
+                          <br></br>
+                          {user.specialistProfile.services.forEach(
                             (element) => {
-                              return (
-                                <Chip
-                                  size="small"
-                                  color="primary"
-                                  label={
-                                    element.serviceTypeName
-                                      .charAt(0)
-                                      .toUpperCase() +
-                                    element.serviceTypeName.slice(1)
-                                  }
-                                />
-                              );
+                              return <Chip label={element} />;
                             }
                           )}
-                        </div>
-                      </React.Fragment>
-                    }
-                  />
-                </ListItem>
-                <Divider variant="inset" component="li" />
-              </List>
-            </div>
-          );
-        })
+                        </React.Fragment>
+                      }
+                    />
+                  </ListItem>
+                  <Divider variant="inset" component="li" />
+                </List>
+              </div>
+            );
+          })
       ) : (
         <div>Loading...</div>
       )}
