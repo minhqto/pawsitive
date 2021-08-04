@@ -189,10 +189,22 @@ export default function ProfileView() {
 
             </Grid>
           ) : (
-            <h3>
-              You don't have any profile to display.
-              Please click edit button to add your information
-            </h3>
+            <h5>
+              You don't have any profile to display.<br />
+              Please add your information.<br /><br />
+              {isAuthorized && (
+                <Button
+                  className={classes.editButton}
+                  margin="20px"
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenClientProfileModal(true)}
+                >
+                  + Add Profile
+                </Button>
+              )}
+            </h5>
           )}
 
 
