@@ -519,6 +519,9 @@ const RegisterSpecialist = () => {
                 ))}
               </Grid>
               <Grid item xs={4}>
+                <FormLabel component="legend">
+                  Home Visit Service
+                </FormLabel>
                 <FormControlLabel
                   value="top"
                   control={
