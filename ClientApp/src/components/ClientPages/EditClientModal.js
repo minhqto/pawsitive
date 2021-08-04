@@ -6,6 +6,7 @@ import {
   TextField,
   TextareaAutosize,
 } from "@material-ui/core";
+import SaveIcon from '@material-ui/icons/Save';
 
 // import MUIRichTextEditor from "mui-rte";
 // import { convertToRaw, convertFromRaw } from "draft-js";
@@ -38,7 +39,7 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
     phoneNumber: phoneNumber,
     email: email,
     imageUrl: imageUrl,
-    country: country,
+    country: "Canada",
     city: city,
     street: streetAddress,
     province: province,
@@ -74,20 +75,7 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
     <div className={classes.paper}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <h1>Edit your profile: </h1>
-          <div>
-            <Button
-              style={{ marginRight: "20px" }}
-              variant="contained"
-              color="primary"
-              onClick={updateClientInfo}
-            >
-              Save changes
-            </Button>
-            <Button onClick={cancelClick} variant="contained">
-              Cancel
-            </Button>
-          </div>
+          <h1>Edit your profile</h1>
         </Grid>
         <hr></hr>
         <Grid item xs={6}>
@@ -118,7 +106,7 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
             }
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <TextField
             fullWidth={true}
             label="Phone Number"
@@ -132,7 +120,7 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
             }
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <TextField
             fullWidth={true}
             label="Email"
@@ -146,10 +134,10 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
             }
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={12}>
           <TextField
             fullWidth={true}
-            label="Image URL"
+            label="Profile Image URL"
             defaultValue={imageUrl}
             variant="outlined"
             onChange={(e) =>
@@ -160,16 +148,18 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
             }
           />
         </Grid>
-        <Grid item xs={2}>
+
+
+        <Grid item xs={6}>
           <TextField
             fullWidth={true}
-            label="Country"
-            defaultValue={country}
+            label="Street Address"
+            defaultValue={streetAddress}
             variant="outlined"
             onChange={(e) =>
               setClientObj({
                 ...clientObj,
-                country: e.target.value,
+                street: e.target.value,
               })
             }
           />
@@ -184,20 +174,6 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
               setClientObj({
                 ...clientObj,
                 city: e.target.value,
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <TextField
-            fullWidth={true}
-            label="Street Address"
-            defaultValue={streetAddress}
-            variant="outlined"
-            onChange={(e) =>
-              setClientObj({
-                ...clientObj,
-                street: e.target.value,
               })
             }
           />
@@ -251,6 +227,21 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
               })
             }
           />
+        </Grid>
+        <Grid item xs={12} style={{ textAlign: "center" }}>
+          <Button
+            onClick={cancelClick}
+            variant="contained">
+            Cancel
+          </Button>
+          <Button
+            style={{ marginLeft: "20px" }}
+            variant="contained"
+            color="primary"
+            startIcon={<SaveIcon />}
+            onClick={updateClientInfo}>
+            Save
+          </Button>
         </Grid>
       </Grid>
     </div>

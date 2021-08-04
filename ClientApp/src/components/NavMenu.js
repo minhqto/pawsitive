@@ -161,7 +161,7 @@ export const NavMenu = () => {
                     onClick={handleToggle}
                     id="navimenubtn"
                   >
-                    Hello, {user.email}!
+                    Hello, {user.email.substring(0, user.email.indexOf('@'))}!
                   </Button>
                   <Popper
                     open={open}

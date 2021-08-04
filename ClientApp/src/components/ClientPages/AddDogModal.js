@@ -10,6 +10,7 @@ import {
   FormControlLabel,
 } from "@material-ui/core";
 import axios from "axios";
+import SaveIcon from '@material-ui/icons/Save';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -67,20 +68,7 @@ const AddDogModal = ({ cancelClick, clientId }) => {
     <div className={classes.paper}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <h1>Add new dog: </h1>
-          <div>
-            <Button
-              style={{ marginRight: "20px" }}
-              variant="contained"
-              color="primary"
-              onClick={addNewDog}
-            >
-              Add dog
-            </Button>
-            <Button onClick={cancelClick} variant="contained">
-              Cancel
-            </Button>
-          </div>
+          <h1>Add new dog</h1>
         </Grid>
         <hr></hr>
         <Grid item xs={6}>
@@ -89,8 +77,20 @@ const AddDogModal = ({ cancelClick, clientId }) => {
             label="Name"
             defaultValue=""
             variant="outlined"
+            InputLabelProps={{ required: true }}
             onChange={(e) => {
               setDogName(e.target.value);
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth={true}
+            label="Breed"
+            defaultValue=""
+            variant="outlined"
+            onChange={(e) => {
+              setDogBreed(e.target.value);
             }}
           />
         </Grid>
@@ -114,17 +114,6 @@ const AddDogModal = ({ cancelClick, clientId }) => {
             InputLabelProps={{ shrink: true, required: true }}
             onChange={(e) => {
               setDogBirthDate(e.target.value);
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth={true}
-            label="Breed"
-            defaultValue=""
-            variant="outlined"
-            onChange={(e) => {
-              setDogBreed(e.target.value);
             }}
           />
         </Grid>
@@ -190,6 +179,23 @@ const AddDogModal = ({ cancelClick, clientId }) => {
             onChange={(e) => setAboutDog(e.target.value)}
           />
         </Grid>
+
+        <Grid item xs={12} style={{ textAlign: "center" }}>
+          <Button
+            onClick={cancelClick}
+            variant="contained">
+            Cancel
+          </Button>
+          <Button
+            style={{ marginLeft: "20px" }}
+            variant="contained"
+            color="primary"
+            startIcon={<SaveIcon />}
+            onClick={addNewDog}>
+            Save
+          </Button>
+        </Grid>
+
       </Grid>
     </div>
   );
