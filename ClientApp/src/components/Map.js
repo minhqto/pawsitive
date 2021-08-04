@@ -3,6 +3,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 const Map = (props) => {
+  var permissionDenied = true;
+  var permissionLat = 0;
+  var permissionLng = 0;
   const tourStops = [
     // [{ lat: 34.8791806, lng: -111.8265049 }, "Boynton Pass"],
     // [{ lat: 34.8559195, lng: -111.7988186 }, "Airport Mesa"],
@@ -11,88 +14,58 @@ const Map = (props) => {
     // [{ lat: 34.800326, lng: -111.7665047 }, "Bell Rock"],
   ];
 
-  const loader = new Loader({
-    apiKey: process.env.REACT_APP_API_KEY,
-    version: "weekly",
-  });
-
-  var options = {
-    method: "GET",
-    url: "https://google-maps-geocoding.p.rapidapi.com/geocode/json",
-    params: { address: "", language: "en" },
-    headers: {
-      "x-rapidapi-key": "b45077c411msh3b11fddee5a5e95p114864jsn3d68c616da31",
-      "x-rapidapi-host": "google-maps-geocoding.p.rapidapi.com",
-    },
-  };
-
   useEffect(() => {
     if (props.user != null) {
-      props.user.forEach((user) => {
-        options.params.address =
-          user.address.streetAddress +
-          ", " +
-          user.address.city +
-          ", " +
-          user.address.province +
-          ", " +
-          user.address.country;
-
-        axios
-          .request(options)
-          .then(function (response) {
-            tourStops.push([
-              {
-                lat: response.data.results[0].geometry.location.lat, //43.65107,
-                lng: response.data.results[0].geometry.location.lng, //-79.347015
-              },
-              user.firstName + " " + user.lastName,
-            ]);
-            if (tourStops.length == props.user.length) {
-              loader
-                .load()
-                .then(() => {
-                  const map = new window.google.maps.Map(
-                    document.getElementById("map"),
-                    {
-                      center: {
-                        lat: 43.65107,
-                        lng: -79.347015,
-                      }, //tourStops[0][0],
-                      zoom: 6,
-                    }
-                  );
-                  tourStops.forEach(([position, title], i) => {
-                    const marker = new window.google.maps.Marker({
-                      position,
-                      map,
-                      title: `${i + 1}. ${title}`,
-                      label: `${i + 1}`,
-                      optimized: false,
-                    });
-                  });
-                })
-                .catch((err) => {
-                  console.log(err);
-                });
-            }
-            console.log(tourStops);
-          })
-          .catch(function (error) {
-            console.error(error);
-          });
-      });
+      getLocation(props.user);
+      loadMap(props.user, permissionDenied);
     }
   }, [props]);
+
+  function getLocation(users) {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => showPosition(position, users),
+        (error) => errorCallback(error, users)
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  }
+
+  function showPosition(position, users) {
+    localStorage.setItem("permissionLat", position.coords.latitude);
+    localStorage.setItem("permissionLng", position.coords.longitude);
+    localStorage.setItem("permissionDenied", false);
+    permissionLat = position.coords.latitude;
+    permissionLng = position.coords.longitude;
+    permissionDenied = false;
+    loadMap(users, permissionDenied, permissionLat, permissionLng);
+  }
+
+  function errorCallback(error, users) {
+    if (error.code == error.PERMISSION_DENIED) {
+      localStorage.setItem("permissionDenied", true);
+      localStorage.removeItem("permissionLat");
+      localStorage.removeItem("permissionLng");
+      permissionDenied = true;
+      loadMap(users, permissionDenied, permissionLat, permissionLng);
+    } else {
+      console.log(error);
+    }
+  }
 
   return (
     <div>
       <div className={props.className} id="map"></div>
+      <p>
+        © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>{" "}
+        contributors
+      </p>
     </div>
   );
 };
 
-export function changePoint(users) {
+export function loadMap(users, permissionDenied, permissionLat, permissionLng) {
   const tourStops = [];
 
   const loader = new Loader({
@@ -102,32 +75,38 @@ export function changePoint(users) {
 
   var options = {
     method: "GET",
-    url: "https://google-maps-geocoding.p.rapidapi.com/geocode/json",
-    params: { address: "", language: "en" },
+    url: "https://forward-reverse-geocoding.p.rapidapi.com/v1/forward",
+    params: {
+      street: "", //'12 West 4th Street',
+      city: "", //'New York City',
+      state: "", //'NY',
+      postalcode: "", //"10012",
+      country: "", //"USA",
+      "accept-language": "en",
+      polygon_threshold: "0.0",
+    },
     headers: {
       "x-rapidapi-key": "b45077c411msh3b11fddee5a5e95p114864jsn3d68c616da31",
-      "x-rapidapi-host": "google-maps-geocoding.p.rapidapi.com",
+      "x-rapidapi-host": "forward-reverse-geocoding.p.rapidapi.com",
     },
   };
 
   if (users.length > 0) {
     users.forEach((user) => {
-      options.params.address =
-        user.address.streetAddress +
-        ", " +
-        user.address.city +
-        ", " +
-        user.address.province +
-        ", " +
-        user.address.country;
+      console.log(user.address.postalCode.replace(" ", ""));
+      options.params.street = user.address.streetAddress;
+      options.params.city = user.address.city;
+      options.params.state = user.address.province;
+      options.params.country = user.address.country;
 
       axios
         .request(options)
         .then(function (response) {
+          console.log(response);
           tourStops.push([
             {
-              lat: response.data.results[0].geometry.location.lat, //43.65107,
-              lng: response.data.results[0].geometry.location.lng, //-79.347015
+              lat: parseFloat(response.data[0].lat), //43.65107,
+              lng: parseFloat(response.data[0].lon), //-79.347015,
             },
             user.firstName + " " + user.lastName,
           ]);
@@ -139,10 +118,24 @@ export function changePoint(users) {
                   document.getElementById("map"),
                   {
                     center: {
-                      lat: 43.65107,
-                      lng: -79.347015,
+                      lat:
+                        localStorage.getItem("permissionDenied") == "true" ||
+                        permissionDenied
+                          ? 49.15675
+                          : parseFloat(localStorage.getItem("permissionLat")) ||
+                            permissionLat,
+                      lng:
+                        localStorage.getItem("permissionDenied") == "true" ||
+                        permissionDenied
+                          ? -84.4395
+                          : parseFloat(localStorage.getItem("permissionLng")) ||
+                            permissionLng,
                     }, //tourStops[0][0],
-                    zoom: 6,
+                    zoom:
+                      localStorage.getItem("permissionDenied") == "true" ||
+                      permissionDenied
+                        ? 5
+                        : 11,
                   }
                 );
                 tourStops.forEach(([position, title], i) => {
@@ -161,10 +154,10 @@ export function changePoint(users) {
           }
         })
         .catch(function (error) {
-          console.error(error);
+          console.error("Axios error: " + error);
         });
     });
-  } else {
+  } else if (window.google) {
     const map = new window.google.maps.Map(document.getElementById("map"), {
       center: {
         lat: 62.24,
