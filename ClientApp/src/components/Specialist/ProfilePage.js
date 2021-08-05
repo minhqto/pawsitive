@@ -252,13 +252,8 @@ export const ProfilePage = function (specialistData) {
             <Typography variant="h5">
               My Service List{" "}&nbsp;
               <Link to="/specialist/myprofile/editservice">
-
-                {(
-                  <IconButton
-                    className={classes.editButton}
-                    size="small"
-                  >
-
+                {
+                  <IconButton className={classes.editButton} size="small">
                     <EditIcon />
                   </IconButton>
                 }
