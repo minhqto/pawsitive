@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   table: {
-    minWidth: 400,
+    maxWidth: 600,
   },
 
   visuallyHidden: {
@@ -458,7 +458,7 @@ const EditService = () => {
                       />
                     ))
                   ) : (
-                    <CircularProgress gravity="center" />
+                    <CircularProgress />
                   )}
                 </Tabs>
               </Paper>
