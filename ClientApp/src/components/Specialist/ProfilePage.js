@@ -259,7 +259,7 @@ export const ProfilePage = function (specialistData) {
                 />{" "}
                 <b>Home Visit available? </b>
                 {specialistProfile.provideHomeVisitService ? (
-                  <Typography>&nbsp;&nbsp; : Yes, within {specialist.radius}km </Typography>
+                  <Typography>&nbsp;&nbsp; : Yes, within {specialistProfile.radius}km </Typography>
                 ) : (
                   <Typography>&nbsp;&nbsp; : No</Typography>
                 )}
