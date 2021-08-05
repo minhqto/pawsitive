@@ -31,7 +31,14 @@ const Map = (props) => {
   );
 };
 
-export function loadMap(users, permissionDenied, permissionLat, permissionLng) {
+export function loadMap(
+  users,
+  permissionDenied,
+  permissionLat,
+  permissionLng,
+  search,
+  city
+) {
   const tourStops = [];
 
   const loader = new Loader({
@@ -39,7 +46,7 @@ export function loadMap(users, permissionDenied, permissionLat, permissionLng) {
     version: "weekly",
   });
 
-  var options = {
+  /*var options = {
     method: "GET",
     url: "https://forward-reverse-geocoding.p.rapidapi.com/v1/forward",
     params: {
@@ -55,20 +62,71 @@ export function loadMap(users, permissionDenied, permissionLat, permissionLng) {
       "x-rapidapi-key": "b45077c411msh3b11fddee5a5e95p114864jsn3d68c616da31",
       "x-rapidapi-host": "forward-reverse-geocoding.p.rapidapi.com",
     },
+  };*/
+
+  var options = {
+    method: "GET",
+    url: "https://geocode-worldwide.p.rapidapi.com/search.php",
+    params: {
+      q: "", //'82 Blackthorn Dr, Vaughan, ON, Canada',
+      format: "json",
+      "accept-language": "en",
+      limit: "5",
+    },
+    headers: {
+      "x-rapidapi-key": "b45077c411msh3b11fddee5a5e95p114864jsn3d68c616da31",
+      "x-rapidapi-host": "geocode-worldwide.p.rapidapi.com",
+    },
   };
 
+  /*options.params.address =
+        user.address.streetAddress +
+        ", " +
+        user.address.city +
+        ", " +
+        user.address.province +
+        ", " +
+        user.address.country;*/
+
   if (users.length > 0) {
+    if (
+      localStorage.getItem("permissionDenied") != null &&
+      localStorage.getItem("permissionDenied") == "false" &&
+      users.find((user) =>
+        localStorage.getItem("city") == null
+          ? city.includes(user.address.city.toLowerCase())
+          : localStorage
+              .getItem("city")
+              .toLocaleLowerCase()
+              .includes(user.address.city.toLowerCase())
+      )
+    )
+      users = users.filter((user) =>
+        localStorage
+          .getItem("city")
+          .toLocaleLowerCase()
+          .includes(user.address.city.toLowerCase())
+      );
+
     users.forEach((user) => {
+      /*console.log(user);
       console.log(user.address.postalCode.replace(" ", ""));
       options.params.street = user.address.streetAddress;
       options.params.city = user.address.city;
       options.params.state = user.address.province;
-      options.params.country = user.address.country;
+      options.params.country = user.address.country;*/
+      options.params.q =
+        user.address.streetAddress +
+        ", " +
+        user.address.city +
+        ", " +
+        user.address.province +
+        ", " +
+        user.address.country;
 
       axios
         .request(options)
         .then(function (response) {
-          console.log(response);
           tourStops.push([
             {
               lat: parseFloat(response.data[0].lat), //43.65107,
@@ -76,6 +134,12 @@ export function loadMap(users, permissionDenied, permissionLat, permissionLng) {
             },
             user.firstName + " " + user.lastName,
           ]);
+
+          if (search == true) {
+            permissionLat = tourStops[0][0].lat;
+            permissionLng = tourStops[0][0].lng;
+          }
+
           if (tourStops.length == users.length) {
             loader
               .load()
@@ -85,16 +149,20 @@ export function loadMap(users, permissionDenied, permissionLat, permissionLng) {
                   {
                     center: {
                       lat:
-                        localStorage.getItem("permissionDenied") == "true" ||
-                        permissionDenied
+                        !search &&
+                        (localStorage.getItem("permissionDenied") == null ||
+                          localStorage.getItem("permissionDenied") == "true" ||
+                          permissionDenied)
                           ? 49.15675
                           : search == true
                           ? permissionLat
                           : parseFloat(localStorage.getItem("permissionLat")) ||
                             permissionLat,
                       lng:
-                        localStorage.getItem("permissionDenied") == "true" ||
-                        permissionDenied
+                        !search &&
+                        (localStorage.getItem("permissionDenied") == null ||
+                          localStorage.getItem("permissionDenied") == "true" ||
+                          permissionDenied)
                           ? -84.4395
                           : search == true
                           ? permissionLng
@@ -102,8 +170,10 @@ export function loadMap(users, permissionDenied, permissionLat, permissionLng) {
                             permissionLng,
                     }, //tourStops[0][0],
                     zoom:
-                      localStorage.getItem("permissionDenied") == "true" ||
-                      permissionDenied
+                      !search &&
+                      (localStorage.getItem("permissionDenied") == null ||
+                        localStorage.getItem("permissionDenied") == "true" ||
+                        permissionDenied)
                         ? 5
                         : 11,
                   }
