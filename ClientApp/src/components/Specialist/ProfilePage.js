@@ -168,8 +168,10 @@ export const ProfilePage = function (specialistData) {
                 province: specialist.address.province,
                 postalCode: specialist.address.postalCode,
                 aboutMe: specialistProfile.aboutMe,
-                provideHomeVisitService: specialist.provideHomeVisitService,
-                radius: specialist.radius,
+                provideHomeVisitService:
+                  specialistProfile.provideHomeVisitService,
+                radius: specialistProfile.radius,
+                serviceTypes: serviceTypes.map((s) => s.serviceTypeName),
               }}
               specialistId={user.id}
             />
@@ -236,17 +238,39 @@ export const ProfilePage = function (specialistData) {
                 </h3>
               </div>
               <div className={classes.specialistProfile}>
-
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Business Name: </b>{specialistProfile.businessName}<br />
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Address: </b>
-                {specialist.address.streetAddress}, {specialist.address.city}, {specialist.address.province}, {specialist.address.postalCode}<br />
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Home Visit available? </b>
-                {specialistProfile.provideHomeVisitService ? (<Typography>&nbsp;&nbsp; : Yes, within {specialist.radius}km </Typography>)
-                  : (<Typography>&nbsp;&nbsp; : No</Typography>)}<br />
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>About Me:</b><br />
-                <Typography variant="h6">
-                  {specialistProfile.aboutMe}
-                </Typography>
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>Business Name: </b>
+                {specialistProfile.businessName}
+                <br />
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>Address: </b>
+                {specialist.address.streetAddress}, {specialist.address.city},{" "}
+                {specialist.address.province}, {specialist.address.postalCode}
+                <br />
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>Home Visit available? </b>
+                {specialistProfile.provideHomeVisitService ? (
+                  <Typography>&nbsp;&nbsp; : Yes, within {specialist.radius}km </Typography>
+                ) : (
+                  <Typography>&nbsp;&nbsp; : No</Typography>
+                )}
+                <br />
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>About Me:</b>
+                <br />
+                {specialistProfile.aboutMe}
               </div>
             </Grid>
           </Box>
@@ -254,7 +278,7 @@ export const ProfilePage = function (specialistData) {
           {/* My Service List */}
           <div className={classes.service}>
             <Typography variant="h5">
-              My Service List{" "}&nbsp;
+              My Service List &nbsp;
               <Link to="/specialist/myprofile/editservice">
                 {
                   <IconButton className={classes.editButton} size="small">
@@ -294,12 +318,8 @@ export const ProfilePage = function (specialistData) {
                 {
                   <div>
                     {/* Service List */}
-                    <TableContainer
-                      component={Paper}
-
-                    >
-                      <Table aria-label="simple table" margin="0"
-                        padding="0">
+                    <TableContainer component={Paper} margin="0" padding="0">
+                      <Table aria-label="simple table">
                         <TableHead>
                           <TableRow>
                             <TableCell align="center"><b>Service Name</b></TableCell>

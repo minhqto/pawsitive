@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import FormLabel from "@material-ui/core/FormLabel";
+import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
@@ -43,29 +44,29 @@ const useStyles = makeStyles((theme) => ({
 
 const SERVICE_TYPES = [
   {
-    name: "training",
+    name: "Training",
     label: "Dog Training",
   },
   {
-    name: "grooming",
+    name: "Grooming",
     label: "Dog Grooming",
   },
   {
-    name: "food",
+    name: "Pet Food",
     label: "Dog Food",
   },
   {
-    name: "therapy",
+    name: "Therapist",
     label: "Behavioural Therapy",
   },
-  {
-    name: "daycare",
-    label: "Daycare",
-  },
-  {
-    name: "boarding",
-    label: "Boarding",
-  },
+  // {
+  //   name: "daycare",
+  //   label: "Daycare",
+  // },
+  // {
+  //   name: "boarding",
+  //   label: "Boarding",
+  // },
 ];
 
 const RegisterSpecialist = () => {
@@ -519,9 +520,7 @@ const RegisterSpecialist = () => {
                 ))}
               </Grid>
               <Grid item xs={4}>
-                <FormLabel component="legend">
-                  Home Visit Service
-                </FormLabel>
+                <FormLabel component="legend">Home Visit Service</FormLabel>
                 <FormControlLabel
                   value="top"
                   control={
@@ -547,10 +546,14 @@ const RegisterSpecialist = () => {
 
               <Grid item xs={12}>
                 <b>About Me</b>
-                <MUIRichTextEditor
+                <TextareaAutosize
                   rowsMin={5}
-                  label="Tell us about you (Certification, experience, service detail...)"
-                  onChange={getAboutMe}
+                  rowsMax={6}
+                  style={{ width: "100%" }}
+                  placeholder="About me (Certification, experience, service detail...)"
+                  InputLabelProps={{ required: true }}
+                  name="aboutMe"
+                  onChange={(e) => setAboutMe(e.target.value)}
                 />
               </Grid>
             </Grid>
