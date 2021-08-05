@@ -5,13 +5,9 @@ import { useSelector } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Button from "reactstrap/lib/Button";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Grid,
-  IconButton,
-  Container,
-} from "@material-ui/core";
+import { Grid, IconButton, Container } from "@material-ui/core";
 import PropTypes from "prop-types";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -21,9 +17,12 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Modal from "@material-ui/core/Modal";
-import EditIcon from '@material-ui/icons/Edit';
-import FaceIcon from '@material-ui/icons/Face';
-import PetsIcon from '@material-ui/icons/Pets';
+import EditIcon from "@material-ui/icons/Edit";
+import FaceIcon from "@material-ui/icons/Face";
+import PetsIcon from "@material-ui/icons/Pets";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 import axios from "axios";
 import EditSpecialistProfileModal from "./EditSpecialistProfileModal";
@@ -75,9 +74,7 @@ const useStyles = makeStyles({
     margin: "20px",
     fontSize: "1.2em",
   },
-
 });
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -112,7 +109,6 @@ function a11yProps(index) {
   };
 }
 
-
 //Logic for My Service List
 function createDataService(name, fee) {
   return { name, fee };
@@ -123,6 +119,7 @@ export const ProfilePage = function (specialistData) {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [specialistProfile, setSpecialistProfile] = useState(null);
   const [services, setServices] = useState([]);
+  const [serviceTypes, setServiceTypes] = useState([]);
   const [openEditSpecialistModal, setOpenEditSpecialistModal] = useState(false);
 
   const classes = useStyles();
@@ -137,6 +134,7 @@ export const ProfilePage = function (specialistData) {
         .then((res) => {
           setSpecialistProfile(res.data.specialistProfile);
           setServices(res.data.specialistProfile.services);
+          setServiceTypes(res.data.specialistProfile.serviceTypes);
         })
         .catch((err) => {
           console.log(err);
@@ -171,10 +169,8 @@ export const ProfilePage = function (specialistData) {
               specialistId={user.id}
             />
           </Modal>
-          <Grid mb={1} >
-            <h3>
-              My Profile
-            </h3>
+          <Grid mb={1}>
+            <h3>My Profile</h3>
           </Grid>
           <Box
             marginTop="20px"
@@ -185,17 +181,33 @@ export const ProfilePage = function (specialistData) {
           >
             {/* Specialist Info */}
             <div className={classes.imgContainer}>
-              {specialist.imageUrl ? (<img
-                className={classes.specialistImg}
-                src={specialist.imageUrl}
-                alt="Specialist Image"
-              />) : (
-                <FaceIcon color="disabled" style={{ fontSize: 150 }} />)}
+              {specialist.imageUrl ? (
+                <img
+                  className={classes.specialistImg}
+                  src={specialist.imageUrl}
+                  alt="Specialist Image"
+                />
+              ) : (
+                <FaceIcon color="disabled" style={{ fontSize: 150 }} />
+              )}
 
               <br />
               <Grid alignItems="center">
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Phone#</b><br /> {specialist.phoneNumber}<br />
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Email</b><br />{specialist.email}<br />
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>Phone#</b>
+                <br /> {specialist.phoneNumber}
+                <br />
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>Email</b>
+                <br />
+                {specialist.email}
+                <br />
               </Grid>
             </div>
             <Grid
@@ -204,11 +216,10 @@ export const ProfilePage = function (specialistData) {
               justifyContent="flex-start"
               alignItems="flex-start"
             >
-              <div
-                className={classes.specialistName}
-                alignItems="center"
-              ><h3>{`${specialist.firstName} ${specialist.lastName}`}&nbsp;
-                  {(
+              <div className={classes.specialistName} alignItems="center">
+                <h3>
+                  {`${specialist.firstName} ${specialist.lastName}`}&nbsp;
+                  {
                     <IconButton
                       className={classes.editButton}
                       size="small"
@@ -216,14 +227,31 @@ export const ProfilePage = function (specialistData) {
                     >
                       <EditIcon />
                     </IconButton>
-                  )}</h3>
+                  }
+                </h3>
               </div>
               <div className={classes.specialistProfile}>
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Business Name: </b>{specialistProfile.businessName}<br />
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Address: </b>
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>Business Name: </b>
+                {specialistProfile.businessName}
+                <br />
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>Address: </b>
                 {specialist.address.streetAddress},{specialist.address.city},
-                {specialist.address.province}, {specialist.address.postalCode}<br />
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>About Me:</b><br />
+                {specialist.address.province}, {specialist.address.postalCode}
+                <br />
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>About Me:</b>
+                <br />
                 {specialistProfile.aboutMe}
               </div>
             </Grid>
@@ -235,48 +263,98 @@ export const ProfilePage = function (specialistData) {
               My Service List{" "}
               <Link to="/specialist/myprofile/editservice">
                 &nbsp;
-                {(
-                  <IconButton
-                    className={classes.editButton}
-                    size="small"
-
-                  >
+                {
+                  <IconButton className={classes.editButton} size="small">
                     <EditIcon />
                   </IconButton>
-                )}
+                }
               </Link>
             </Typography>
-            <TableContainer component={Paper} className={classes.marginTop}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Service Name</TableCell>
-                    <TableCell align="right">Fee</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {services.map((row, index) => (
-                    <TableRow
+            {/* Services offered section */}
+            <div className={classes.rootProduct}>
+              {/* Navigation bar among service types */}
+              <AppBar position="static" color="default">
+                <Tabs
+                  value={valueProduct}
+                  onChange={handleChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  aria-label="scrollable auto tabs example"
+                  centered
+                >
+                  {serviceTypes.map((serviceType, index) => (
+                    <Tab
                       key={index}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.serviceName}
-                      </TableCell>
-                      <TableCell align="right">{row.price}</TableCell>
-                    </TableRow>
+                      label={serviceType.serviceTypeName}
+                      {...a11yProps(0)}
+                    />
                   ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                </Tabs>
+              </AppBar>
+              {serviceTypes.map((serviceType, index) => (
+                <TabPanel value={valueProduct} index={index}>
+                  {
+                    <div>
+                      {/* Training List */}
+                      <div className={classes.marginTop}>
+                        <TableContainer
+                          component={Paper}
+                          className={classes.marginTop}
+                        >
+                          <Table
+                            sx={{ minWidth: 650 }}
+                            aria-label="simple table"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Service Name</TableCell>
+                                <TableCell align="right">Fee</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {services
+                                .filter(
+                                  (service) =>
+                                    service.serviceType.serviceTypeName ==
+                                    serviceType.serviceTypeName
+                                )
+                                .map((row, index) => (
+                                  <TableRow
+                                    key={index}
+                                    sx={{
+                                      "&:last-child td, &:last-child th": {
+                                        border: 0,
+                                      },
+                                    }}
+                                  >
+                                    <TableCell component="th" scope="row">
+                                      {row.serviceName}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      {row.price}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </div>
+                    </div>
+                  }
+                </TabPanel>
+              ))}
+            </div>
           </div>
-
-        </div >
-      </Container >
+        </div>
+      </Container>
     );
   } else {
-    return <div className={classes.root}>
-      <CircularProgress />
-    </div>;
+    return (
+      <div className={classes.root}>
+        <CircularProgress />
+      </div>
+    );
   }
 };
