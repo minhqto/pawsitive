@@ -57,15 +57,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SearchResults = (props) => {
+  const [axResult, setAxResult] = useState("");
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [tempSearchValue, setTempSearchValue] = useState("");
   const classes = useStyles();
   const history = useHistory();
   var test = [];
   //const [items, setItems] = useState([]);
   useEffect(() => {
     axios.get("/api/Specialist/allSpecialists").then((result) => {
-      setUsers(result.data);
+      if (
+        localStorage.getItem("permissionDenied") != null &&
+        localStorage.getItem("permissionDenied") == "false"
+      ) {
+        console.log(searchTerm);
+        localStorage.getItem("city") != null &&
+          setUsers(
+            result.data.filter((user) =>
+              localStorage
+                .getItem("city")
+                .toLocaleLowerCase()
+                .includes(user.address.city.toLowerCase())
+            )
+          );
+      } else setUsers(result.data);
+      setAxResult(result.data);
       props.parentCallback(result.data);
     });
   }, []);
@@ -76,9 +93,7 @@ const SearchResults = (props) => {
 
   const ShowNoResult = function () {
     return users.filter((user) =>
-      user.address.city
-        .toLowerCase()
-        .includes(document.getElementById("search").value.toLocaleLowerCase())
+      user.address.city.toLowerCase().includes(searchTerm.toLocaleLowerCase())
     ).length == 0 ? (
       <h4 id="no_value">
         <br />
@@ -105,6 +120,9 @@ const SearchResults = (props) => {
       <Paper component="form" className={classes.root}>
         <InputBase
           id="search"
+          onChange={(event) => {
+            setTempSearchValue(event.target.value);
+          }}
           className={classes.input}
           placeholder="Enter a city name"
           inputProps={{ "aria-label": "search" }}
@@ -113,21 +131,29 @@ const SearchResults = (props) => {
           className={classes.iconButton}
           aria-label="search"
           onClick={() => {
-            setSearchTerm(document.getElementById("search").value);
+            //if (localStorage.getItem("permissionDenied") == "true") {
+            setUsers(axResult);
+            //}
+            if (localStorage.getItem("permissionDenied") == "false") {
+              setSearchTerm(
+                users.find((user) =>
+                  localStorage.getItem("city").includes(user.address.city)
+                ).address.city
+              );
+            } else {
+              setSearchTerm(tempSearchValue);
+            }
             loadMap(
               (test = users.filter((user) =>
                 user.address.city
                   .toLowerCase()
-                  .includes(
-                    document.getElementById("search").value.toLocaleLowerCase()
-                  )
-              ))
+                  .includes(tempSearchValue.toLocaleLowerCase())
+              )),
+              null,
+              null,
+              null,
+              tempSearchValue != ""
             );
-            if (test.length == 0) {
-              ShowNoResult(false);
-            } else {
-              ShowNoResult(true);
-            }
           }}
         >
           <SearchIcon />
