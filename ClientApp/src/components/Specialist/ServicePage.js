@@ -170,7 +170,7 @@ const ServicePage = (specialistData) => {
         <Grid>
           <Container component="main" maxWidth="lg">
 
-            {/* New Navigation bar among service types */}
+            {/* New Navigation bar among service types 
             <Paper square>
               <Tabs
                 value={valueProduct}
@@ -192,7 +192,7 @@ const ServicePage = (specialistData) => {
                   <CircularProgress gravity="center" />
                 )}
               </Tabs>
-            </Paper>
+            </Paper>*/}
             {/* Navigation bar among service types */}
             <AppBar position="static" color="default">
               <Tabs
