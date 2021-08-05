@@ -57,15 +57,35 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SearchResults = (props) => {
+  const [axResult, setAxResult] = useState("");
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [tempSearchValue, setTempSearchValue] = useState("");
   const classes = useStyles();
   const history = useHistory();
+  var permissionDenied = true;
+  var permissionLat = 0;
+  var permissionLng = 0;
   var test = [];
   //const [items, setItems] = useState([]);
   useEffect(() => {
     axios.get("/api/Specialist/allSpecialists").then((result) => {
-      setUsers(result.data);
+      if (
+        localStorage.getItem("permissionDenied") != null &&
+        localStorage.getItem("permissionDenied") == "false"
+      ) {
+        localStorage.getItem("city") != null &&
+          setUsers(
+            result.data.filter((user) =>
+              localStorage
+                .getItem("city")
+                .toLocaleLowerCase()
+                .includes(user.address.city.toLowerCase())
+            )
+          );
+      } else setUsers(result.data);
+      setAxResult(result.data);
+      getLocation(result.data);
       props.parentCallback(result.data);
     });
   }, []);
@@ -76,9 +96,7 @@ const SearchResults = (props) => {
 
   const ShowNoResult = function () {
     return users.filter((user) =>
-      user.address.city
-        .toLowerCase()
-        .includes(document.getElementById("search").value.toLocaleLowerCase())
+      user.address.city.toLowerCase().includes(searchTerm.toLocaleLowerCase())
     ).length == 0 ? (
       <h4 id="no_value">
         <br />
@@ -100,11 +118,100 @@ const SearchResults = (props) => {
     );
   };
 
+  function getLocation(users) {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => showPosition(position, users),
+        (error) => errorCallback(error, users)
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  }
+
+  function showPosition(position, users) {
+    localStorage.setItem("permissionLat", position.coords.latitude);
+    localStorage.setItem("permissionLng", position.coords.longitude);
+    localStorage.setItem("permissionDenied", false);
+    permissionLat = position.coords.latitude;
+    permissionLng = position.coords.longitude;
+    permissionDenied = false;
+    reverseGeocoding(
+      position.coords.latitude,
+      position.coords.longitude,
+      users
+    );
+  }
+
+  function errorCallback(error, users) {
+    if (error.code == error.PERMISSION_DENIED) {
+      localStorage.setItem("permissionDenied", true);
+      localStorage.removeItem("permissionLat");
+      localStorage.removeItem("permissionLng");
+      permissionDenied = true;
+      loadMap(users, permissionDenied, permissionLat, permissionLng);
+    } else {
+      console.log(error);
+    }
+  }
+
+  function reverseGeocoding(lat, lng, users) {
+    var options = {
+      method: "GET",
+      url: "https://forward-reverse-geocoding.p.rapidapi.com/v1/reverse",
+      params: {
+        lat: lat,
+        lon: lng,
+        "accept-language": "en",
+        polygon_threshold: "0.0",
+      },
+      headers: {
+        "x-rapidapi-key": "b45077c411msh3b11fddee5a5e95p114864jsn3d68c616da31",
+        "x-rapidapi-host": "forward-reverse-geocoding.p.rapidapi.com",
+      },
+    };
+
+    axios
+      .request(options)
+      .then(function (response) {
+        localStorage.setItem("city", response.data.address.city.toString());
+        setSearchTerm(
+          users.find((user) =>
+            response.data.address.city
+              .toLowerCase()
+              .toString()
+              .includes(user.address.city.toLowerCase())
+          ) == undefined
+            ? response.data.address.city
+            : users.find((user) =>
+                response.data.address.city
+                  .toLowerCase()
+                  .toString()
+                  .includes(user.address.city.toLowerCase())
+              ).address.city
+        );
+        loadMap(
+          users,
+          permissionDenied,
+          permissionLat,
+          permissionLng,
+          null,
+          response.data.address.city.toString()
+        );
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  }
+
   return (
     <div>
       <Paper component="form" className={classes.root}>
         <InputBase
           id="search"
+          onChange={(event) => {
+            setTempSearchValue(event.target.value);
+          }}
           className={classes.input}
           placeholder="Enter a city name"
           inputProps={{ "aria-label": "search" }}
@@ -113,21 +220,43 @@ const SearchResults = (props) => {
           className={classes.iconButton}
           aria-label="search"
           onClick={() => {
-            setSearchTerm(document.getElementById("search").value);
+            //if (localStorage.getItem("permissionDenied") == "true") {
+            //setUsers(axResult);
+            //}
+            if (localStorage.getItem("permissionDenied") == "false") {
+              /*var searchResult = axResult.find((user) =>
+              user.address.city
+                .toLowerCase()
+                .includes(tempSearchValue.toLowerCase())
+            ) == undefined ? ;*/
+
+              setSearchTerm(
+                axResult.find((user) =>
+                  user.address.city
+                    .toLowerCase()
+                    .includes(tempSearchValue.toLowerCase())
+                ) == undefined
+                  ? tempSearchValue
+                  : axResult.find((user) =>
+                      user.address.city
+                        .toLowerCase()
+                        .includes(tempSearchValue.toLowerCase())
+                    ).address.city
+              );
+            } else {
+              setSearchTerm(tempSearchValue);
+            }
             loadMap(
-              (test = users.filter((user) =>
+              (test = axResult.filter((user) =>
                 user.address.city
                   .toLowerCase()
-                  .includes(
-                    document.getElementById("search").value.toLocaleLowerCase()
-                  )
-              ))
+                  .includes(tempSearchValue.toLocaleLowerCase())
+              )),
+              null,
+              null,
+              null,
+              tempSearchValue != ""
             );
-            if (test.length == 0) {
-              ShowNoResult(false);
-            } else {
-              ShowNoResult(true);
-            }
           }}
         >
           <SearchIcon />
@@ -177,7 +306,11 @@ const SearchResults = (props) => {
                             className={classes.inline}
                             color="textPrimary"
                           >
-                            {user.firstName + " " + user.lastName}
+                            {user.firstName +
+                              " " +
+                              user.lastName +
+                              " - " +
+                              (index + 1)}
                           </Typography>
                           <br></br>
                           <Typography
