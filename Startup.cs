@@ -41,7 +41,7 @@ namespace pawsitive
             // For Entity Framework
             if (_env.IsDevelopment())
             {
-                services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalConnection")));
+                services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDatabase")));
             }
             else
             {
