@@ -86,7 +86,7 @@ const SearchResults = (props) => {
           color="action"
           style={{ fontSize: 30, color: "#89CFF0" }}
         />{" "}
-        Ops...No results found!
+        Oops...No results found!
       </h4>
     ) : (
       <h4 id="no_value" style={{ display: "none" }}>
@@ -95,7 +95,7 @@ const SearchResults = (props) => {
           color="action"
           style={{ fontSize: 30, color: "#89CFF0" }}
         />{" "}
-        Ops...No results found!
+        Oops...No results found!
       </h4>
     );
   };
@@ -216,11 +216,24 @@ const SearchResults = (props) => {
                             {user.phoneNumber}
                           </Typography>
                           <br></br>
-                          {user.specialistProfile.services.forEach(
-                            (element) => {
-                              return <Chip label={element} />;
-                            }
-                          )}
+                          <div className={classes.chip}>
+                            {user.specialistProfile.serviceTypes.map(
+                              (element) => {
+                                return (
+                                  <Chip
+                                    size="small"
+                                    color="primary"
+                                    label={
+                                      element.serviceTypeName
+                                        .charAt(0)
+                                        .toUpperCase() +
+                                      element.serviceTypeName.slice(1)
+                                    }
+                                  />
+                                );
+                              }
+                            )}
+                          </div>
                         </React.Fragment>
                       }
                     />
