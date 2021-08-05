@@ -18,5 +18,8 @@ namespace pawsitive.ViewModels
         public string province { get; set; }
         public string postalCode { get; set; }
         public string aboutMe { get; set; }
+        public bool provideHomeVisitService { get; set; }
+        public int? radius { get; set; }
+        public List<string> serviceTypes { get; set; }
     }
 }

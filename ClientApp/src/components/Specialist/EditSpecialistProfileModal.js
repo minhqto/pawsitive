@@ -10,7 +10,7 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@material-ui/core";
-import SaveIcon from '@material-ui/icons/Save';
+import SaveIcon from "@material-ui/icons/Save";
 import DistanceSlider from "../DistanceSlider";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,10 +32,32 @@ function EditSpecialistProfileModal({
 }) {
   const classes = useStyles();
   const [specObj, setSpecObj] = useState(specialistInfo);
+  const [serviceTypes, setServiceTypes] = useState([]);
+
+  const SERVICE_TYPES = [
+    {
+      name: "Training",
+      label: "Dog Training",
+    },
+    {
+      name: "Grooming",
+      label: "Dog Grooming",
+    },
+    {
+      name: "Pet Food",
+      label: "Dog Food",
+    },
+    {
+      name: "Therapist",
+      label: "Behavioural Therapy",
+    },
+  ];
+
   const updateSpecialistInfo = () => {
     console.log(specObj);
 
     if (validateInput()) {
+      specObj.serviceTypes = serviceTypes;
       // make api call to update client information
       axios
         .put(`/api/Specialist/editSpecialist/${specialistId}`, specObj)
@@ -49,8 +71,18 @@ function EditSpecialistProfileModal({
 
   const validateInput = () => {
     for (var key of Object.keys(specObj)) {
+      if (
+        key == "businessName" ||
+        key == "radius" ||
+        key == "provideHomeVisitService" ||
+        key == "serviceTypes"
+      )
+        continue;
+
       if (specObj[key] == "") {
-        alert("Invalid input, make sure all the required fields are not empty!");
+        alert(
+          "Invalid input, make sure all the required fields are not empty!"
+        );
         return false;
       }
     }
@@ -183,53 +215,60 @@ function EditSpecialistProfileModal({
         </Grid>
 
         <Grid item md={8}>
-          <FormLabel>
-            Service Types you offer (check all that apply)
-          </FormLabel>
+          <FormLabel>Service Types you offer (check all that apply)</FormLabel>
+          <div>
+            {SERVICE_TYPES.map((s, index) => (
+              <FormControlLabel
+                key={index}
+                control={
+                  <Checkbox
+                    defaultChecked={specObj.serviceTypes.includes(s.name)}
+                    disabled={specObj.serviceTypes.includes(s.name)}
+                    onChange={(e) => {
+                      if (!e.target.checked) {
+                        setServiceTypes(
+                          serviceTypes.filter((item) => item !== s.name)
+                        );
+                      } else {
+                        setServiceTypes([...serviceTypes, s.name]);
+                      }
+                    }}
+                    name={s.name}
+                    color="primary"
+                  />
+                }
+                label={s.label}
+              />
+            ))}
+          </div>
         </Grid>
-        {/* {SERVICE_TYPES.map((s, index) => (
-            <FormControlLabel
-              key={index}
-              control={
-                <Checkbox
-                  onChange={(e) => {
-                    if (!e.target.checked) {
-                      setServiceTypes(
-                        serviceTypes.filter((item) => item !== s.name)
-                      );
-                    } else {
-                      setServiceTypes([...serviceTypes, s.name]);
-                    }
-                  }}
-                  name={s.name}
-                  color="primary"
-                />
-              }
-              label={s.label}
-            />
-          ))}
-          <br />* You cannot uncheck a service type which contains service list
-        </Grid> */}
 
         <Grid item xs={4}>
           <FormControlLabel
             value="top"
             control={
               <Checkbox
-                // onChange={() =>
-                //   setProvideHomeVisitService(!provideHomeVisitService)
-                // }
+                defaultChecked={specObj.provideHomeVisitService}
+                onChange={() =>
+                  setSpecObj({
+                    ...specObj,
+                    provideHomeVisitService: !specObj.provideHomeVisitService,
+                  })
+                }
                 color="primary"
               />
             }
             //id="ProvideHomeVisitService"
             label="Provide Home Visit Service?"
-            name="ProvideHomeVisitService"
+            name="provideHomeVisitService"
             labelPlacement="end"
           />
-          {/*provideHomeVisitService && */(
+          {specObj.provideHomeVisitService && (
             <DistanceSlider
-              //setValue={(value) => setRadius(value)}
+              defaultValue={specObj.radius}
+              setValue={(value) => {
+                setSpecObj({ ...specObj, radius: value });
+              }}
               id="radius"
             />
           )}
@@ -249,9 +288,7 @@ function EditSpecialistProfileModal({
         </Grid>
 
         <Grid item xs={12} style={{ textAlign: "center" }}>
-          <Button
-            onClick={cancelClick}
-            variant="contained">
+          <Button onClick={cancelClick} variant="contained">
             Cancel
           </Button>
           <Button
@@ -259,7 +296,8 @@ function EditSpecialistProfileModal({
             variant="contained"
             color="primary"
             startIcon={<SaveIcon />}
-            onClick={updateSpecialistInfo}>
+            onClick={updateSpecialistInfo}
+          >
             Save
           </Button>
         </Grid>

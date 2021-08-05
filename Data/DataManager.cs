@@ -352,7 +352,7 @@ namespace pawsitive.Data
 
         public async Task<User> updateSpecialist(string specialistId, EditSpecialistBody reqBody)
         {
-            var user = userManager.Users.Include("Address").Include("SpecialistProfile").SingleOrDefault(u => u.Id.Equals(specialistId));
+            var user = userManager.Users.Include("Address").Include("SpecialistProfile.ServiceTypes").SingleOrDefault(u => u.Id.Equals(specialistId));
             if (user == null) return null;
 
             // Update user information with new information from request body
@@ -370,6 +370,15 @@ namespace pawsitive.Data
 
             user.ImageUrl = reqBody.imageUrl;
             user.SpecialistProfile.BusinessName = reqBody.businessName;
+            user.SpecialistProfile.ProvideHomeVisitService = reqBody.provideHomeVisitService;
+            user.SpecialistProfile.Radius = reqBody.radius;
+
+            foreach(string serviceType in reqBody.serviceTypes)
+            {
+                var tmpServiceType = dtx.ServiceType.SingleOrDefault(e => e.ServiceTypeName.ToLower().Equals(serviceType.ToLower()));
+
+                user.SpecialistProfile.ServiceTypes.Add(tmpServiceType);
+            }
 
             await userManager.UpdateAsync(user);
             return user;
