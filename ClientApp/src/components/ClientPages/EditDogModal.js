@@ -12,7 +12,6 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
-  InputAdornment,
 } from "@material-ui/core";
 import EditClientModal from "./EditClientModal";
 import AddDogModal from "./AddDogModal";
@@ -163,9 +162,6 @@ const EditDogModal = ({ cancelClick, dog }) => {
             label="Weight"
             defaultValue={dogWeight}
             variant="outlined"
-            InputProps={{
-              endAdornment: <InputAdornment position="end">lbs</InputAdornment>,
-            }}
             onChange={(e) => {
               setDogWeight(e.target.value);
             }}

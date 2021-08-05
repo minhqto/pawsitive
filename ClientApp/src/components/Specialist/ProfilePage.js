@@ -165,8 +165,6 @@ export const ProfilePage = function (specialistData) {
                 province: specialist.address.province,
                 postalCode: specialist.address.postalCode,
                 aboutMe: specialistProfile.aboutMe,
-                provideHomeVisitService: specialist.provideHomeVisitService,
-                radius: specialist.radius,
               }}
               specialistId={user.id}
             />
@@ -233,15 +231,27 @@ export const ProfilePage = function (specialistData) {
                 </h3>
               </div>
               <div className={classes.specialistProfile}>
-
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Business Name: </b>{specialistProfile.businessName}<br />
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Address: </b>
-                {specialist.address.streetAddress}, {specialist.address.city}, {specialist.address.province}, {specialist.address.postalCode}<br />
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Home Visit available? : </b>
-                {specialistProfile.provideHomeVisitService ? (<Typography>Yes, within {specialist.radius}km </Typography>)
-                  : ("No")}<br />
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>About Me:</b><br />
-
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>Business Name: </b>
+                {specialistProfile.businessName}
+                <br />
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>Address: </b>
+                {specialist.address.streetAddress},{specialist.address.city},
+                {specialist.address.province}, {specialist.address.postalCode}
+                <br />
+                <PetsIcon
+                  color="action"
+                  style={{ fontSize: 15, color: "#89CFF0" }}
+                />{" "}
+                <b>About Me:</b>
+                <br />
                 {specialistProfile.aboutMe}
               </div>
             </Grid>
@@ -250,8 +260,9 @@ export const ProfilePage = function (specialistData) {
           {/* My Service List */}
           <div className={classes.table}>
             <Typography variant="h5">
-              My Service List{" "}&nbsp;
+              My Service List{" "}
               <Link to="/specialist/myprofile/editservice">
+                &nbsp;
                 {
                   <IconButton className={classes.editButton} size="small">
                     <EditIcon />
@@ -259,76 +270,82 @@ export const ProfilePage = function (specialistData) {
                 }
               </Link>
             </Typography>
-
-            {/* Navigation bar among service types */}
-            <AppBar position="static" color="default" className={classes.marginTop}>
-              <Tabs
-                value={valueProduct}
-                onChange={handleChange}
-                indicatorColor="primary"
-                textColor="primary"
-                variant="scrollable"
-                scrollButtons="auto"
-                aria-label="scrollable auto tabs example"
-                centered
-              >
-                {serviceTypes.map((serviceType, index) => (
-                  <Tab
-                    key={index}
-                    label={serviceType.serviceTypeName}
-                    {...a11yProps(0)}
-                  />
-                ))}
-              </Tabs>
-            </AppBar>
-            {serviceTypes.map((serviceType, index) => (
-              <TabPanel value={valueProduct} index={index}>
-                {
-                  <div>
-                    {/* Service List */}
-                    <TableContainer
-                      component={Paper}
-                      margin="0"
-                      padding="0"
-                    >
-                      <Table aria-label="simple table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Service Name</TableCell>
-                            <TableCell align="right">Fee($)</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {services
-                            .filter(
-                              (service) =>
-                                service.serviceType.serviceTypeName ==
-                                serviceType.serviceTypeName
-                            )
-                            .map((row, index) => (
-                              <TableRow
-                                key={index}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell component="th" scope="row">
-                                  {row.serviceName}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {row.price}
-                                </TableCell>
+            {/* Services offered section */}
+            <div className={classes.rootProduct}>
+              {/* Navigation bar among service types */}
+              <AppBar position="static" color="default">
+                <Tabs
+                  value={valueProduct}
+                  onChange={handleChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  aria-label="scrollable auto tabs example"
+                  centered
+                >
+                  {serviceTypes.map((serviceType, index) => (
+                    <Tab
+                      key={index}
+                      label={serviceType.serviceTypeName}
+                      {...a11yProps(0)}
+                    />
+                  ))}
+                </Tabs>
+              </AppBar>
+              {serviceTypes.map((serviceType, index) => (
+                <TabPanel value={valueProduct} index={index}>
+                  {
+                    <div>
+                      {/* Training List */}
+                      <div className={classes.marginTop}>
+                        <TableContainer
+                          component={Paper}
+                          className={classes.marginTop}
+                        >
+                          <Table
+                            sx={{ minWidth: 650 }}
+                            aria-label="simple table"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Service Name</TableCell>
+                                <TableCell align="right">Fee</TableCell>
                               </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </div>
-                }
-              </TabPanel>
-            ))}
+                            </TableHead>
+                            <TableBody>
+                              {services
+                                .filter(
+                                  (service) =>
+                                    service.serviceType.serviceTypeName ==
+                                    serviceType.serviceTypeName
+                                )
+                                .map((row, index) => (
+                                  <TableRow
+                                    key={index}
+                                    sx={{
+                                      "&:last-child td, &:last-child th": {
+                                        border: 0,
+                                      },
+                                    }}
+                                  >
+                                    <TableCell component="th" scope="row">
+                                      {row.serviceName}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                      {row.price}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </div>
+                    </div>
+                  }
+                </TabPanel>
+              ))}
+            </div>
           </div>
         </div>
       </Container>

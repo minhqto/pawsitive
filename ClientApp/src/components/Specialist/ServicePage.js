@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
-import { Grid, CircularProgress, Container } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -21,8 +21,6 @@ import Paper from "@material-ui/core/Paper";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import PageNotFound from "../PageNotFound";
-import FaceIcon from '@material-ui/icons/Face';
-import PetsIcon from '@material-ui/icons/Pets';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -59,11 +57,10 @@ function a11yProps(index) {
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 300,
-    maxHeight: 500,
+    maxWidth: 345,
   },
-  specialistImg: {
-    width: 300,
+  media: {
+    height: 250,
   },
   rootProduct: {
     flexGrow: 1,
@@ -123,53 +120,50 @@ const ServicePage = (specialistData) => {
     const { specialist } = specialistProfile;
     return (
       <div>
-        <Grid container spacing={2}>
-          <Grid item xs={8} direction="column">
-            <h3>
-              {specialist.firstName} {specialist.lastName}
-            </h3>
-            <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Business Name: </b>{specialistProfile.businessName}<br />
-            <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Address: </b>
-            {specialist.address.streetAddress}, {specialist.address.city}, {specialist.address.province}, {specialist.address.postalCode}<br />
-            <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Home Visit available? </b>
-            {specialistProfile.provideHomeVisitService ? (<Typography> : Yes, within {specialist.radius}km </Typography>)
-              : (<Typography> : No</Typography>)}<br />
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              component="p"
-            >
-              {specialistProfile.aboutMe}
-            </Typography>
+        <div>
+          <Grid container spacing={2}>
+            <Grid item xs={8} direction="column">
+              <Typography variant="h5">
+                {specialist.firstName} {specialist.lastName}
+              </Typography>
+              <Typography variant="subtitle1">
+                {specialistProfile.businessName}
+              </Typography>
+              <Typography variant="subtitle2" paragraph>
+                {specialist.email}
+                <br></br>
+                {specialist.address.streetAddress}
+                <br></br>
+                {specialist.address.city}
+                <br></br>
+                {specialist.phoneNumber}
+              </Typography>
+            </Grid>
 
-          </Grid>
-
-          <Grid item xs={4} direction="row" justifyContent="flex-end">
-            <Card className={classes.root}>
-              {specialist.imageUrl ? (
+            <Grid item xs={4} direction="row" justifyContent="flex-end">
+              <Card className={classes.root}>
                 <CardMedia
-                  component="img"
-                  alt="Specialist Profile"
-                  width="200"
-                  maxheight="250"
+                  className={classes.media}
                   image={specialist.imageUrl}
                   title="Specialist Profile"
-                />) : (
-                <CardContent><FaceIcon color="disabled" style={{ fontSize: 150 }} /></CardContent>)}
-
-              <CardContent>
-                <b>&lt;Contact Me&gt;<br /></b>
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Phone#</b><br /> {specialist.phoneNumber}<br />
-                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Email</b><br />{specialist.email}<br />
-              </CardContent>
-            </Card>
+                />
+                <CardContent>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    {specialistProfile.aboutMe}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
-        {/* Services offered section */}
-        <Grid>
-          <Container component="main" maxWidth="lg">
+
+          {/* Services offered section */}
+          <div className={classes.rootProduct}>
             {/* Navigation bar among service types */}
-            <AppBar position="static" color="default" className={classes.marginTop}>
+            <AppBar position="static" color="default">
               <Tabs
                 value={valueProduct}
                 onChange={handleChange}
@@ -193,56 +187,60 @@ const ServicePage = (specialistData) => {
               <TabPanel value={valueProduct} index={index}>
                 {
                   <div>
-                    {/* Service List */}
-                    <TableContainer
-                      component={Paper}
-                    >
-                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Service Name</TableCell>
-                            <TableCell align="right">Fee($)</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {services
-                            .filter(
-                              (service) =>
-                                service.serviceType.serviceTypeName ==
-                                serviceType.serviceTypeName
-                            )
-                            .map((row, index) => (
-                              <TableRow
-                                key={index}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell component="th" scope="row">
-                                  {row.serviceName}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {row.price}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                    {/* Training List */}
+                    <div className={classes.marginTop}>
+                      <TableContainer
+                        component={Paper}
+                        className={classes.marginTop}
+                      >
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Service Name</TableCell>
+                              <TableCell align="right">Fee</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {services
+                              .filter(
+                                (service) =>
+                                  service.serviceType.serviceTypeName ==
+                                  serviceType.serviceTypeName
+                              )
+                              .map((row, index) => (
+                                <TableRow
+                                  key={index}
+                                  sx={{
+                                    "&:last-child td, &:last-child th": {
+                                      border: 0,
+                                    },
+                                  }}
+                                >
+                                  <TableCell component="th" scope="row">
+                                    {row.serviceName}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {row.price}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </div>
                   </div>
                 }
               </TabPanel>
             ))}
-          </Container>
-        </Grid>
+          </div>
 
-        {/* <Button variant="contained" color="primary">
+          <br />
+
+          {/* <Button variant="contained" color="primary">
             Book a Service
           </Button> */}
-
-      </div >
+        </div>
+      </div>
     );
   } else {
     return <PageNotFound />;

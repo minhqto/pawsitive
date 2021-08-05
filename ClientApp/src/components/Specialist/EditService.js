@@ -5,7 +5,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import { Container, Box, Grid, Button, Link, } from "@material-ui/core";
+import { Container, Box, Grid, Button } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { ThemeProvider } from "@material-ui/core/styles";
@@ -168,13 +168,13 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === "light"
       ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-      }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
       : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark,
-      },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
   title: {
     flex: "1 1 100%",
   },
@@ -207,7 +207,6 @@ const EnhancedTableToolbar = (props) => {
             variant="h6"
             id="tableTitle"
             component="div"
-            textAlign="left"
           >
             Select items to delete
           </Typography>
@@ -429,10 +428,10 @@ const EditService = () => {
   };
 
   return (
-    <Container>
+    <ThemeProvider theme={pawTheme}>
       <Grid mb={1}>
-        <Typography variant="h5">
-          <Link href="/specialist/myprofile" color="inherit">My Profile</Link> &gt; Edit Service List
+        <Typography component="h1" variant="h6">
+          My Profile &gt; Edit Service List
         </Typography>
       </Grid>
       <Grid>
@@ -619,7 +618,7 @@ const EditService = () => {
           </div>
         </Container>
       </Grid>
-    </Container>
+    </ThemeProvider>
   );
 };
 //}
