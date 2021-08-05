@@ -10,7 +10,7 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@material-ui/core";
-import SaveIcon from '@material-ui/icons/Save';
+import SaveIcon from "@material-ui/icons/Save";
 import DistanceSlider from "../DistanceSlider";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,6 +32,7 @@ function EditSpecialistProfileModal({
 }) {
   const classes = useStyles();
   const [specObj, setSpecObj] = useState(specialistInfo);
+  console.log(specialistInfo);
   const updateSpecialistInfo = () => {
     console.log(specObj);
 
@@ -49,8 +50,17 @@ function EditSpecialistProfileModal({
 
   const validateInput = () => {
     for (var key of Object.keys(specObj)) {
+      if (
+        key == "businessName" ||
+        key == "radius" ||
+        key == "provideHomeVisitService"
+      )
+        continue;
+
       if (specObj[key] == "") {
-        alert("Invalid input, make sure all the required fields are not empty!");
+        alert(
+          "Invalid input, make sure all the required fields are not empty!"
+        );
         return false;
       }
     }
@@ -183,9 +193,7 @@ function EditSpecialistProfileModal({
         </Grid>
 
         <Grid item md={8}>
-          <FormLabel>
-            Service Types you offer (check all that apply)
-          </FormLabel>
+          <FormLabel>Service Types you offer (check all that apply)</FormLabel>
         </Grid>
         {/* {SERVICE_TYPES.map((s, index) => (
             <FormControlLabel
@@ -216,20 +224,27 @@ function EditSpecialistProfileModal({
             value="top"
             control={
               <Checkbox
-                // onChange={() =>
-                //   setProvideHomeVisitService(!provideHomeVisitService)
-                // }
+                defaultChecked={specObj.provideHomeVisitService}
+                onChange={() =>
+                  setSpecObj({
+                    ...specObj,
+                    provideHomeVisitService: !specObj.provideHomeVisitService,
+                  })
+                }
                 color="primary"
               />
             }
             //id="ProvideHomeVisitService"
             label="Provide Home Visit Service?"
-            name="ProvideHomeVisitService"
+            name="provideHomeVisitService"
             labelPlacement="end"
           />
-          {/*provideHomeVisitService && */(
+          {specObj.provideHomeVisitService && (
             <DistanceSlider
-              //setValue={(value) => setRadius(value)}
+              defaultValue={specObj.radius}
+              setValue={(value) => {
+                setSpecObj({ ...specObj, radius: value });
+              }}
               id="radius"
             />
           )}
@@ -249,9 +264,7 @@ function EditSpecialistProfileModal({
         </Grid>
 
         <Grid item xs={12} style={{ textAlign: "center" }}>
-          <Button
-            onClick={cancelClick}
-            variant="contained">
+          <Button onClick={cancelClick} variant="contained">
             Cancel
           </Button>
           <Button
@@ -259,7 +272,8 @@ function EditSpecialistProfileModal({
             variant="contained"
             color="primary"
             startIcon={<SaveIcon />}
-            onClick={updateSpecialistInfo}>
+            onClick={updateSpecialistInfo}
+          >
             Save
           </Button>
         </Grid>

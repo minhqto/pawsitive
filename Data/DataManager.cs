@@ -370,6 +370,8 @@ namespace pawsitive.Data
 
             user.ImageUrl = reqBody.imageUrl;
             user.SpecialistProfile.BusinessName = reqBody.businessName;
+            user.SpecialistProfile.ProvideHomeVisitService = reqBody.provideHomeVisitService;
+            user.SpecialistProfile.Radius = reqBody.radius;
 
             await userManager.UpdateAsync(user);
             return user;

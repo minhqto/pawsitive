@@ -27,7 +27,7 @@ function valuetext(value) {
   return `{value}km`;
 }
 
-const DistanceSlider = ({ setValue }) => {
+const DistanceSlider = ({ setValue, defaultValue }) => {
   const classes = useStyles();
 
   return (
@@ -37,7 +37,7 @@ const DistanceSlider = ({ setValue }) => {
       </Typography>
       <Slider
         onChange={(e, val) => setValue(val)}
-        defaultValue={20}
+        defaultValue={defaultValue ? defaultValue : 20}
         getAriaValueText={valuetext}
         aria-labelledby="discrete-slider-custom"
         step={1}
