@@ -57,8 +57,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SearchResults = (props) => {
+  const [axResult, setAxResult] = useState("");
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [tempSearchValue, setTempSearchValue] = useState("");
   const classes = useStyles();
   const history = useHistory();
   var permissionDenied = true;
@@ -94,9 +96,7 @@ const SearchResults = (props) => {
 
   const ShowNoResult = function () {
     return users.filter((user) =>
-      user.address.city
-        .toLowerCase()
-        .includes(document.getElementById("search").value.toLocaleLowerCase())
+      user.address.city.toLowerCase().includes(searchTerm.toLocaleLowerCase())
     ).length == 0 ? (
       <h4 id="no_value">
         <br />
@@ -209,6 +209,9 @@ const SearchResults = (props) => {
       <Paper component="form" className={classes.root}>
         <InputBase
           id="search"
+          onChange={(event) => {
+            setTempSearchValue(event.target.value);
+          }}
           className={classes.input}
           placeholder="Enter a city name"
           inputProps={{ "aria-label": "search" }}
@@ -247,16 +250,13 @@ const SearchResults = (props) => {
               (test = axResult.filter((user) =>
                 user.address.city
                   .toLowerCase()
-                  .includes(
-                    document.getElementById("search").value.toLocaleLowerCase()
-                  )
-              ))
+                  .includes(tempSearchValue.toLocaleLowerCase())
+              )),
+              null,
+              null,
+              null,
+              tempSearchValue != ""
             );
-            if (test.length == 0) {
-              ShowNoResult(false);
-            } else {
-              ShowNoResult(true);
-            }
           }}
         >
           <SearchIcon />
