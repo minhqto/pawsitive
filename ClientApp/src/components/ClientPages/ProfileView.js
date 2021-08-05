@@ -269,10 +269,10 @@ export default function ProfileView() {
                 </h5>
                 <p>
                   <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Breed: {dog.dogBreed}<br />
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} />  Sex: {dog.dogSex}<br />
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} />  Weight: {dog.dogWeight}<br />
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} />  Birth Date:{dog.dogBirthDate}<br />
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} />  About: {dog.aboutDog}</p>
+                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Sex: {dog.dogSex}<br />
+                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Weight: {dog.dogWeight}lbs<br />
+                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Birth Date:{dog.dogBirthDate}<br />
+                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> About: {dog.aboutDog}</p>
               </div>
               <Modal
                 open={openEditDogModal}
