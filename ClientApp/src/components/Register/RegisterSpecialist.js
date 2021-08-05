@@ -43,29 +43,29 @@ const useStyles = makeStyles((theme) => ({
 
 const SERVICE_TYPES = [
   {
-    name: "training",
+    name: "Training",
     label: "Dog Training",
   },
   {
-    name: "grooming",
+    name: "Grooming",
     label: "Dog Grooming",
   },
   {
-    name: "food",
+    name: "Pet Food",
     label: "Dog Food",
   },
   {
-    name: "therapy",
+    name: "Therapist",
     label: "Behavioural Therapy",
   },
-  {
-    name: "daycare",
-    label: "Daycare",
-  },
-  {
-    name: "boarding",
-    label: "Boarding",
-  },
+  // {
+  //   name: "daycare",
+  //   label: "Daycare",
+  // },
+  // {
+  //   name: "boarding",
+  //   label: "Boarding",
+  // },
 ];
 
 const RegisterSpecialist = () => {
@@ -519,9 +519,7 @@ const RegisterSpecialist = () => {
                 ))}
               </Grid>
               <Grid item xs={4}>
-                <FormLabel component="legend">
-                  Home Visit Service
-                </FormLabel>
+                <FormLabel component="legend">Home Visit Service</FormLabel>
                 <FormControlLabel
                   value="top"
                   control={

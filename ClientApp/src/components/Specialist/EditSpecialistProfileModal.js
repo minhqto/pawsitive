@@ -32,11 +32,32 @@ function EditSpecialistProfileModal({
 }) {
   const classes = useStyles();
   const [specObj, setSpecObj] = useState(specialistInfo);
-  console.log(specialistInfo);
+  const [serviceTypes, setServiceTypes] = useState([]);
+
+  const SERVICE_TYPES = [
+    {
+      name: "Training",
+      label: "Dog Training",
+    },
+    {
+      name: "Grooming",
+      label: "Dog Grooming",
+    },
+    {
+      name: "Pet Food",
+      label: "Dog Food",
+    },
+    {
+      name: "Therapist",
+      label: "Behavioural Therapy",
+    },
+  ];
+
   const updateSpecialistInfo = () => {
     console.log(specObj);
 
     if (validateInput()) {
+      specObj.serviceTypes = serviceTypes;
       // make api call to update client information
       axios
         .put(`/api/Specialist/editSpecialist/${specialistId}`, specObj)
@@ -53,7 +74,8 @@ function EditSpecialistProfileModal({
       if (
         key == "businessName" ||
         key == "radius" ||
-        key == "provideHomeVisitService"
+        key == "provideHomeVisitService" ||
+        key == "serviceTypes"
       )
         continue;
 
@@ -194,30 +216,32 @@ function EditSpecialistProfileModal({
 
         <Grid item md={8}>
           <FormLabel>Service Types you offer (check all that apply)</FormLabel>
+          <div>
+            {SERVICE_TYPES.map((s, index) => (
+              <FormControlLabel
+                key={index}
+                control={
+                  <Checkbox
+                    defaultChecked={specObj.serviceTypes.includes(s.name)}
+                    disabled={specObj.serviceTypes.includes(s.name)}
+                    onChange={(e) => {
+                      if (!e.target.checked) {
+                        setServiceTypes(
+                          serviceTypes.filter((item) => item !== s.name)
+                        );
+                      } else {
+                        setServiceTypes([...serviceTypes, s.name]);
+                      }
+                    }}
+                    name={s.name}
+                    color="primary"
+                  />
+                }
+                label={s.label}
+              />
+            ))}
+          </div>
         </Grid>
-        {/* {SERVICE_TYPES.map((s, index) => (
-            <FormControlLabel
-              key={index}
-              control={
-                <Checkbox
-                  onChange={(e) => {
-                    if (!e.target.checked) {
-                      setServiceTypes(
-                        serviceTypes.filter((item) => item !== s.name)
-                      );
-                    } else {
-                      setServiceTypes([...serviceTypes, s.name]);
-                    }
-                  }}
-                  name={s.name}
-                  color="primary"
-                />
-              }
-              label={s.label}
-            />
-          ))}
-          <br />* You cannot uncheck a service type which contains service list
-        </Grid> */}
 
         <Grid item xs={4}>
           <FormControlLabel

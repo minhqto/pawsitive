@@ -168,6 +168,7 @@ export const ProfilePage = function (specialistData) {
                 provideHomeVisitService:
                   specialistProfile.provideHomeVisitService,
                 radius: specialistProfile.radius,
+                serviceTypes: serviceTypes.map((s) => s.serviceTypeName),
               }}
               specialistId={user.id}
             />

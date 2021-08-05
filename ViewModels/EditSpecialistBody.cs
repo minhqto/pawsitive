@@ -20,5 +20,6 @@ namespace pawsitive.ViewModels
         public string aboutMe { get; set; }
         public bool provideHomeVisitService { get; set; }
         public int? radius { get; set; }
+        public List<string> serviceTypes { get; set; }
     }
 }
