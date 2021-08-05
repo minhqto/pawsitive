@@ -167,6 +167,8 @@ export const ProfilePage = function (specialistData) {
                 province: specialist.address.province,
                 postalCode: specialist.address.postalCode,
                 aboutMe: specialistProfile.aboutMe,
+                provideHomeVisitService: specialist.provideHomeVisitService,
+                radius: specialist.radius,
               }}
               specialistId={user.id}
             />
@@ -221,8 +223,10 @@ export const ProfilePage = function (specialistData) {
               <div className={classes.specialistProfile}>
                 <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Business Name: </b>{specialistProfile.businessName}<br />
                 <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Address: </b>
-                {specialist.address.streetAddress},{specialist.address.city},
-                {specialist.address.province}, {specialist.address.postalCode}<br />
+                {specialist.address.streetAddress}, {specialist.address.city}, {specialist.address.province}, {specialist.address.postalCode}<br />
+                <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Home Visit available? : </b>
+                {specialistProfile.provideHomeVisitService ? (<Typography>Yes, within {specialist.radius}km </Typography>)
+                  : ("No")}<br />
                 <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>About Me:</b><br />
                 {specialistProfile.aboutMe}
               </div>
@@ -232,14 +236,12 @@ export const ProfilePage = function (specialistData) {
           {/* My Service List */}
           <div className={classes.table}>
             <Typography variant="h5">
-              My Service List{" "}
+              My Service List{" "}&nbsp;
               <Link to="/specialist/myprofile/editservice">
-                &nbsp;
                 {(
                   <IconButton
                     className={classes.editButton}
                     size="small"
-
                   >
                     <EditIcon />
                   </IconButton>
@@ -251,7 +253,7 @@ export const ProfilePage = function (specialistData) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Service Name</TableCell>
-                    <TableCell align="right">Fee</TableCell>
+                    <TableCell align="right">Fee($)</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

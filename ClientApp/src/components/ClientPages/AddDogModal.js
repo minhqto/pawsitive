@@ -8,6 +8,7 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
+  InputAdornment,
 } from "@material-ui/core";
 import axios from "axios";
 import SaveIcon from '@material-ui/icons/Save';
@@ -100,6 +101,9 @@ const AddDogModal = ({ cancelClick, clientId }) => {
             label="Weight"
             defaultValue=""
             variant="outlined"
+            InputProps={{
+              endAdornment: <InputAdornment position="end">lbs</InputAdornment>,
+            }}
             onChange={(e) => {
               setDogWeight(e.target.value);
             }}
