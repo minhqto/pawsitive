@@ -29,8 +29,8 @@ import EditSpecialistProfileModal from "./EditSpecialistProfileModal";
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 300,
-    maxHeight: 300,
+    maxWidth: 800,
+    maxHeight: 800,
   },
   media: {
     height: 250,
@@ -45,12 +45,15 @@ const useStyles = makeStyles({
     textAlign: "center",
     lineHeight: 0,
   },
-  table: {
+  service: {
     marginTop: 30,
-    maxWidth: "100%",
   },
-  marginTop: {
+  appBar: {
+    maxWidth: "600",
     marginTop: 20,
+  },
+  table: {
+    maxWidth: "600",
   },
   imgContainer: {
     margin: "20px",
@@ -254,11 +257,11 @@ export const ProfilePage = function (specialistData) {
                   color="action"
                   style={{ fontSize: 15, color: "#89CFF0" }}
                 />{" "}
-                <b>Home Visit available? : </b>
+                <b>Home Visit available? </b>
                 {specialistProfile.provideHomeVisitService ? (
-                  <Typography>Yes, within {specialist.radius}km </Typography>
+                  <Typography>&nbsp;&nbsp; : Yes, within {specialistProfile.radius}km </Typography>
                 ) : (
-                  "No"
+                  <Typography>&nbsp;&nbsp; : No</Typography>
                 )}
                 <br />
                 <PetsIcon
@@ -273,7 +276,7 @@ export const ProfilePage = function (specialistData) {
           </Box>
 
           {/* My Service List */}
-          <div className={classes.table}>
+          <div className={classes.service}>
             <Typography variant="h5">
               My Service List &nbsp;
               <Link to="/specialist/myprofile/editservice">
@@ -286,11 +289,7 @@ export const ProfilePage = function (specialistData) {
             </Typography>
 
             {/* Navigation bar among service types */}
-            <AppBar
-              position="static"
-              color="default"
-              className={classes.marginTop}
-            >
+            <AppBar position="static" color="default" className={classes.appBar}>
               <Tabs
                 value={valueProduct}
                 onChange={handleChange}
@@ -311,7 +310,11 @@ export const ProfilePage = function (specialistData) {
               </Tabs>
             </AppBar>
             {serviceTypes.map((serviceType, index) => (
-              <TabPanel value={valueProduct} index={index}>
+              <TabPanel value={valueProduct}
+                margin="0"
+                padding="0"
+                index={index}
+                className={classes.table}>
                 {
                   <div>
                     {/* Service List */}
@@ -319,8 +322,8 @@ export const ProfilePage = function (specialistData) {
                       <Table aria-label="simple table">
                         <TableHead>
                           <TableRow>
-                            <TableCell>Service Name</TableCell>
-                            <TableCell align="right">Fee($)</TableCell>
+                            <TableCell align="center"><b>Service Name</b></TableCell>
+                            <TableCell align="center"><b>Fee($)</b></TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -342,7 +345,9 @@ export const ProfilePage = function (specialistData) {
                                 <TableCell component="th" scope="row">
                                   {row.serviceName}
                                 </TableCell>
-                                <TableCell align="right">{row.price}</TableCell>
+                                <TableCell align="center">
+                                  {row.price}
+                                </TableCell>
                               </TableRow>
                             ))}
                         </TableBody>
@@ -358,9 +363,11 @@ export const ProfilePage = function (specialistData) {
     );
   } else {
     return (
-      <div className={classes.root}>
-        <CircularProgress />
-      </div>
+      <div>
+        <Grid style={{ textAlign: "center" }}>
+          <CircularProgress />
+        </Grid>
+      </div >
     );
   }
 };

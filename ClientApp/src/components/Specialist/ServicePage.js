@@ -60,10 +60,10 @@ function a11yProps(index) {
 const useStyles = makeStyles({
   root: {
     maxWidth: 300,
-    maxHeight: 500,
+    maxHeight: 600,
   },
   specialistImg: {
-    width: 300,
+    width: 200,
   },
   rootProduct: {
     flexGrow: 1,
@@ -71,6 +71,16 @@ const useStyles = makeStyles({
   },
   marginTop: {
     marginTop: 20,
+  },
+  service: {
+    marginTop: 30,
+  },
+  appBar: {
+    maxWidth: "600",
+    marginTop: 40,
+  },
+  table: {
+    maxWidth: "600",
   },
 });
 
@@ -132,10 +142,11 @@ const ServicePage = (specialistData) => {
             <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Address: </b>
             {specialist.address.streetAddress}, {specialist.address.city}, {specialist.address.province}, {specialist.address.postalCode}<br />
             <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Home Visit available? </b>
-            {specialistProfile.provideHomeVisitService ? (<Typography> : Yes, within {specialist.radius}km </Typography>)
-              : (<Typography> : No</Typography>)}<br />
+            {specialistProfile.provideHomeVisitService ? (<Typography>&nbsp;&nbsp; : Yes, within {specialist.radius}km </Typography>)
+              : (<Typography>&nbsp;&nbsp; : No</Typography>)}<br />
+            <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>About Me:</b><br />
             <Typography
-              variant="body2"
+              variant="body1"
               color="textSecondary"
               component="p"
             >
@@ -169,7 +180,7 @@ const ServicePage = (specialistData) => {
         <Grid>
           <Container component="main" maxWidth="lg">
             {/* Navigation bar among service types */}
-            <AppBar position="static" color="default" className={classes.marginTop}>
+            <AppBar position="static" color="default" className={classes.appBar}>
               <Tabs
                 value={valueProduct}
                 onChange={handleChange}
@@ -197,38 +208,48 @@ const ServicePage = (specialistData) => {
                     <TableContainer
                       component={Paper}
                     >
-                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                      <Table aria-label="simple table" margin="0"
+                        padding="0">
                         <TableHead>
                           <TableRow>
-                            <TableCell>Service Name</TableCell>
-                            <TableCell align="right">Fee($)</TableCell>
+                            <TableCell align="center"><b>Service Name</b></TableCell>
+                            <TableCell align="center"><b>Fee($)</b></TableCell>
                           </TableRow>
                         </TableHead>
-                        <TableBody>
-                          {services
-                            .filter(
-                              (service) =>
-                                service.serviceType.serviceTypeName ==
-                                serviceType.serviceTypeName
-                            )
-                            .map((row, index) => (
-                              <TableRow
-                                key={index}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell component="th" scope="row">
-                                  {row.serviceName}
-                                </TableCell>
-                                <TableCell align="right">
-                                  {row.price}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
+                        {services ? (
+                          <TableBody>
+                            {services
+                              .filter(
+                                (service) =>
+                                  service.serviceType.serviceTypeName ==
+                                  serviceType.serviceTypeName
+                              )
+                              .map((row, index) => (
+
+                                <TableRow
+                                  key={index}
+                                  sx={{
+                                    "&:last-child td, &:last-child th": {
+                                      border: 0,
+                                    },
+                                  }}
+                                >
+                                  <TableCell component="th" scope="row">
+                                    {row.serviceName}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {row.price}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>) : (
+                          <TableBody>
+                            <TableRow>
+                              <TableCell align="center">
+                                This specialist doesn't provide the service list yet.
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>)}
                       </Table>
                     </TableContainer>
                   </div>
