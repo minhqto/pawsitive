@@ -83,7 +83,9 @@ const SearchResults = (props) => {
                 .includes(user.address.city.toLowerCase())
             )
           );
-      } else setUsers(result.data);
+      }
+
+      setUsers(result.data);
       setAxResult(result.data);
       getLocation(result.data);
       props.parentCallback(result.data);
@@ -204,9 +206,53 @@ const SearchResults = (props) => {
       });
   }
 
+  const onSearchEnter = () => {
+    if (localStorage.getItem("permissionDenied") == "false") {
+      /*var searchResult = axResult.find((user) =>
+      user.address.city
+        .toLowerCase()
+        .includes(tempSearchValue.toLowerCase())
+    ) == undefined ? ;*/
+
+      setSearchTerm(
+        axResult.find((user) =>
+          user.address.city
+            .toLowerCase()
+            .includes(tempSearchValue.toLowerCase())
+        ) == undefined
+          ? tempSearchValue
+          : axResult.find((user) =>
+              user.address.city
+                .toLowerCase()
+                .includes(tempSearchValue.toLowerCase())
+            ).address.city
+      );
+    } else {
+      setSearchTerm(tempSearchValue);
+    }
+    loadMap(
+      (test = axResult.filter((user) =>
+        user.address.city
+          .toLowerCase()
+          .includes(tempSearchValue.toLocaleLowerCase())
+      )),
+      null,
+      null,
+      null,
+      tempSearchValue != ""
+    );
+  };
+
   return (
     <div>
-      <Paper component="form" className={classes.root}>
+      <Paper
+        component="form"
+        className={classes.root}
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSearchEnter();
+        }}
+      >
         <InputBase
           id="search"
           onChange={(event) => {
@@ -220,43 +266,7 @@ const SearchResults = (props) => {
           className={classes.iconButton}
           aria-label="search"
           onClick={() => {
-            //if (localStorage.getItem("permissionDenied") == "true") {
-            //setUsers(axResult);
-            //}
-            if (localStorage.getItem("permissionDenied") == "false") {
-              /*var searchResult = axResult.find((user) =>
-              user.address.city
-                .toLowerCase()
-                .includes(tempSearchValue.toLowerCase())
-            ) == undefined ? ;*/
-
-              setSearchTerm(
-                axResult.find((user) =>
-                  user.address.city
-                    .toLowerCase()
-                    .includes(tempSearchValue.toLowerCase())
-                ) == undefined
-                  ? tempSearchValue
-                  : axResult.find((user) =>
-                      user.address.city
-                        .toLowerCase()
-                        .includes(tempSearchValue.toLowerCase())
-                    ).address.city
-              );
-            } else {
-              setSearchTerm(tempSearchValue);
-            }
-            loadMap(
-              (test = axResult.filter((user) =>
-                user.address.city
-                  .toLowerCase()
-                  .includes(tempSearchValue.toLocaleLowerCase())
-              )),
-              null,
-              null,
-              null,
-              tempSearchValue != ""
-            );
+            onSearchEnter();
           }}
         >
           <SearchIcon />
@@ -276,7 +286,7 @@ const SearchResults = (props) => {
           })
           .map(function (user, index) {
             return (
-              <div>
+              <div key={index}>
                 <List className={classes.rootList}>
                   <ListItem
                     button
@@ -351,9 +361,10 @@ const SearchResults = (props) => {
                           <br></br>
                           <div className={classes.chip}>
                             {user.specialistProfile.serviceTypes.map(
-                              (element) => {
+                              (element, index) => {
                                 return (
                                   <Chip
+                                    key={index}
                                     size="small"
                                     color="primary"
                                     label={
