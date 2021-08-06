@@ -42,7 +42,7 @@ namespace pawsitive.Data
 
             List<string> serviceTypesString = new List<string>()
             {
-                "Training", "Grooming", "Therapist", "Pet Food"
+                "Training", "Grooming", "Therapy", "Pet Food"
             };
 
             // Convert the list of service type (string) into service type (entity model)
@@ -70,36 +70,36 @@ namespace pawsitive.Data
 
             List<Dog> dogs = new List<Dog>()
             {
-                new Dog{AboutDog="Beautiful dog", BirthDate=baseDate, DogBreed="Breed A", DogName="Bolt", DogSex="Male", DogWeight=10, HasBiteHistory=false, ImageUrl="https://images.dog.ceo/breeds/puggle/IMG_122350.jpg", IsVaccinated=true},
-                new Dog{AboutDog="Ugly dog", BirthDate=baseDate, DogBreed="Breed B", DogName="Poke", DogSex="Female", DogWeight=10, HasBiteHistory=false, ImageUrl="https://images.dog.ceo/breeds/brabancon/n02112706_1394.jpg", IsVaccinated=true},
-                new Dog{AboutDog="Funny dog", BirthDate=baseDate, DogBreed="Breed C", DogName="Lex", DogSex="Male", DogWeight=10, HasBiteHistory=false, ImageUrl="https://images.dog.ceo/breeds/african/n02116738_634.jpg", IsVaccinated=true},
+                new Dog{AboutDog="A wonderful guard dog.", BirthDate=baseDate, DogBreed="German Sheppard", DogName="Bolt", DogSex="Male", DogWeight=60, HasBiteHistory=false, ImageUrl="https://images.dog.ceo/breeds/germanshepherd/n02106662_14247.jpg", IsVaccinated=true},
+                new Dog{AboutDog="Herds everything and is crazy!", BirthDate=baseDate, DogBreed="Australian Cattle Dog", DogName="Klaus", DogSex="Male", DogWeight=35, HasBiteHistory=false, ImageUrl="https://images.dog.ceo/breeds/cattledog-australian/IMG_4421.jpg", IsVaccinated=true},
+                new Dog{AboutDog="Such a chill dog.", BirthDate=baseDate, DogBreed="Doberman", DogName="Misty", DogSex="Female", DogWeight=50, HasBiteHistory=false, ImageUrl="https://images.dog.ceo/breeds/doberman/n02107142_7459.jpg", IsVaccinated=true},
             };
 
             List<SpecialistProfile> specialistProfiles = new List<SpecialistProfile>()
             {
-                new SpecialistProfile{AboutMe="Best specialist", Availability="Everyday from 9am to 5pm", BusinessName="Spec1", ProvideHomeVisitService=false, Radius=20, ServiceTypes=serviceTypes, Status=true},
-                new SpecialistProfile{AboutMe="Good specialist", Availability="Everyday from 9am to 5pm", BusinessName="Spec2", ProvideHomeVisitService=false, Radius=20, ServiceTypes=serviceTypes, Status=true},
-                new SpecialistProfile{AboutMe="Okay specialist", Availability="Everyday from 9am to 5pm", BusinessName="Spec3", ProvideHomeVisitService=false, Radius=20, ServiceTypes=serviceTypes, Status=true},
+                new SpecialistProfile{AboutMe="I offer the best grooming services in the GTA, and I also have my own line of dog food.", Availability="Everyday from 9am to 5pm", BusinessName="Paws and Treats", ProvideHomeVisitService=false, Radius=20, ServiceTypes=serviceTypes, Status=true},
+                new SpecialistProfile{AboutMe="I do group play sessions, protection services and have my own line of dog treats!", Availability="Everyday from 9am to 5pm", BusinessName="K9 Strength", ProvideHomeVisitService=false, Radius=20, ServiceTypes=serviceTypes, Status=true},
+                new SpecialistProfile{AboutMe="I specialize in positive reinforcement training for young and adult dogs!", Availability="Everyday from 9am to 5pm", BusinessName="Kikopup", ProvideHomeVisitService=false, Radius=20, ServiceTypes=serviceTypes, Status=true},
             };
 
             List<ClientProfile> clientProfiles = new List<ClientProfile>()
             {
-                new ClientProfile{AboutMe="I love dogs", Dogs=new List<Dog> { dogs.ElementAt(0)} },
-                new ClientProfile{AboutMe="I like dogs", Dogs=new List<Dog> { dogs.ElementAt(1)} },
-                new ClientProfile{AboutMe="I hate dogs", Dogs=new List<Dog> { dogs.ElementAt(2)} },
+                new ClientProfile{AboutMe="I love dogs.", Dogs=new List<Dog> { dogs.ElementAt(0)} },
+                new ClientProfile{AboutMe="I love dogs more.", Dogs=new List<Dog> { dogs.ElementAt(1)} },
+                new ClientProfile{AboutMe="I love dogs the most!", Dogs=new List<Dog> { dogs.ElementAt(2)} },
             };
 
             List<User> users = new List<User>()
             {
                 // users with client role
-                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="client1@example.com", Email="client1@example.com", FirstName="C1FName", LastName ="C1LName", Address=addresses.ElementAt(0), ClientProfile=clientProfiles.ElementAt(0), ImageUrl="https://via.placeholder.com/150"},
-                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="client2@example.com", Email="client2@example.com", FirstName="C2FName", LastName ="C2LName", Address=addresses.ElementAt(1), ClientProfile=clientProfiles.ElementAt(1), ImageUrl="https://via.placeholder.com/150"},
-                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="client3@example.com", Email="client3@example.com", FirstName="C3FName", LastName ="C3LName", Address=addresses.ElementAt(2), ClientProfile=clientProfiles.ElementAt(2), ImageUrl="https://via.placeholder.com/150"},
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="client1@example.com", Email="client1@example.com", FirstName="Suni", LastName ="Lee", Address=addresses.ElementAt(0), ClientProfile=clientProfiles.ElementAt(0), ImageUrl="https://media-cldnry.s-nbcnews.com/image/upload/t_fit-760w,f_auto,q_auto:best/newscms/2021_30/3495031/210729-sunisa-lee-beam-ew-1235p.jpg"},
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="client2@example.com", Email="client2@example.com", FirstName="Andre", LastName ="De Grasse", Address=addresses.ElementAt(1), ClientProfile=clientProfiles.ElementAt(1), ImageUrl="https://olympic.ca/wp-content/uploads/2016/08/hbao_andredegrasse_competition.jpg"},
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="client3@example.com", Email="client3@example.com", FirstName="Lin", LastName ="Dan", Address=addresses.ElementAt(2), ClientProfile=clientProfiles.ElementAt(2), ImageUrl="https://static.straitstimes.com.sg/s3fs-public/articles/2020/07/04/nz_lindan_040756.jpg"},
 
                 // users with specialist role
-                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="specialist1@example.com", Email="specialist1@example.com", FirstName="S1FName", LastName ="S1LName", Address=addresses.ElementAt(3), SpecialistProfile=specialistProfiles.ElementAt(0), ImageUrl="https://via.placeholder.com/150"},
-                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="specialist2@example.com", Email="specialist2@example.com", FirstName="S2FName", LastName ="S2LName", Address=addresses.ElementAt(4), SpecialistProfile=specialistProfiles.ElementAt(1), ImageUrl="https://via.placeholder.com/150"},
-                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="specialist3@example.com", Email="specialist3@example.com", FirstName="S3FName", LastName ="S3LName", Address = addresses.ElementAt(5), SpecialistProfile = specialistProfiles.ElementAt(2), ImageUrl = "https://via.placeholder.com/150"},
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="specialist1@example.com", Email="specialist1@example.com", FirstName="Zac", LastName ="George", Address=addresses.ElementAt(3), SpecialistProfile=specialistProfiles.ElementAt(0), ImageUrl="https://images-na.ssl-images-amazon.com/images/I/B16UbTtfGAS.jpg"},
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="specialist2@example.com", Email="specialist2@example.com", FirstName="Joel", LastName ="Beckman", Address=addresses.ElementAt(4), SpecialistProfile=specialistProfiles.ElementAt(1), ImageUrl="https://beckmansdogtraining.com/wp-content/uploads/2018/10/BECKMANs-DOG-TRAINING-9-e1539820915421.png"},
+                new User{ SecurityStamp=Guid.NewGuid().ToString(), UserName="specialist3@example.com", Email="specialist3@example.com", FirstName="Emily", LastName ="L", Address = addresses.ElementAt(5), SpecialistProfile = specialistProfiles.ElementAt(2), ImageUrl = "https://i.pinimg.com/originals/ab/93/e7/ab93e772f7e6ab4816f300efae8b8019.png"},
             };
 
             string defaultPassword = "Password123!";
