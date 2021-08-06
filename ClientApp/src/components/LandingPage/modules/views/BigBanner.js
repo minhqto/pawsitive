@@ -1,11 +1,11 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "../components/Typography";
 import ProductHeroLayout from "./BigBannerLayout";
 import Button from "../components/Button";
 import Grid from "@material-ui/core/Grid";
+import { Link } from "react-router-dom";
 import TextField from "../components/TextField";
 
 const backgroundImage = "https://i.imgur.com/KVXc7xQ.jpeg";
@@ -43,7 +43,6 @@ const styles = (theme) => ({
 
 const BigBanner = (props) => {
   const { classes } = props;
-  const { isAuthenticated } = useSelector((state) => state.auth);
 
   return (
     <ProductHeroLayout backgroundClassName={classes.background}>
@@ -63,35 +62,26 @@ const BigBanner = (props) => {
         {/* This is a hack to get it to be in the center */}
         <Grid item xs={3}></Grid>
         <Grid item xs={3}>
-          {isAuthenticated ? (
+          <Link to="/search">
             <Button
               variant="contained"
               className={classes.button}
               component="a"
-              href="/search"
             >
               Find services
             </Button>
-          ) : (
-            <Button
-              variant="contained"
-              className={classes.button}
-              component="a"
-              href="/signupClient"
-            >
-              Find services
-            </Button>
-          )}
+          </Link>
         </Grid>
         <Grid item xs={3}>
-          <Button
-            variant="contained"
-            className={classes.button}
-            component="a"
-            href="/signupSpecialist"
-          >
-            Be a service provider
-          </Button>
+          <Link to="/signupSpecialist">
+            <Button
+              variant="contained"
+              className={classes.button}
+              component="a"
+            >
+              Be a service provider
+            </Button>
+          </Link>
         </Grid>
       </Grid>
       {/* <Grid container>
