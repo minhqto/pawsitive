@@ -123,7 +123,6 @@ export default function ProfileView() {
   };
 
   const deleteDog = (dogId) => {
-    console.log("delete button clicked");
     axios
       .delete(`/api/Client/clientDetail/deleteDog/${dogId}`)
       .then((res) => {
