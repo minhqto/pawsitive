@@ -4,11 +4,10 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
-import Box from '@material-ui/core/Box';
+import Box from "@material-ui/core/Box";
 import Link from "@material-ui/core/Link";
 import { useHistory } from "react-router-dom";
 import PawsitiveTheme from "../../Theme";
-
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -28,13 +27,13 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonRows: {
     //background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-    background: 'linear-gradient(45deg, #89CFF0 30%, #53a6ff 90%)',
+    background: "linear-gradient(45deg, #89CFF0 30%, #53a6ff 90%)",
     borderRadius: 3,
     border: 0,
-    color: 'white',
+    color: "white",
     height: 48,
-    padding: '0 30px',
-    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+    padding: "0 30px",
+    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -95,18 +94,21 @@ const RegisterModal = () => {
         }}
       >
         <Fade in={open}>
-          <div className={classes.paper} >
-            <Box mb={3} ><h4 id="transition-modal-title">
-              How do you want to use Pawsitive?
-            </h4></Box>
+          <div className={classes.paper}>
+            <Box mb={3}>
+              <h4 id="transition-modal-title">
+                How do you want to use Pawsitive?
+              </h4>
+            </Box>
             <div className={classes.buttonRows}>
               <Button onClick={() => handleClientClick()}>
                 <b>Client</b>: I want to use the service
-              </Button></div>
+              </Button>
+            </div>
             <Box m={2} />
             <div className={classes.buttonRows}>
               <Button onClick={() => handleSpecialistClick()}>
-                <b>Specialist</b>: I want to privide the service
+                <b>Specialist</b>: I want to provide the service
               </Button>
             </div>
           </div>

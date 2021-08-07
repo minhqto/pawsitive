@@ -259,7 +259,9 @@ export const ProfilePage = function (specialistData) {
                 />{" "}
                 <b>Home Visit available? </b>
                 {specialistProfile.provideHomeVisitService ? (
-                  <Typography>&nbsp;&nbsp; : Yes, within {specialistProfile.radius}km </Typography>
+                  <Typography>
+                    &nbsp;&nbsp; : Yes, within {specialistProfile.radius}km{" "}
+                  </Typography>
                 ) : (
                   <Typography>&nbsp;&nbsp; : No</Typography>
                 )}
@@ -289,7 +291,11 @@ export const ProfilePage = function (specialistData) {
             </Typography>
 
             {/* Navigation bar among service types */}
-            <AppBar position="static" color="default" className={classes.appBar}>
+            <AppBar
+              position="static"
+              color="default"
+              className={classes.appBar}
+            >
               <Tabs
                 value={valueProduct}
                 onChange={handleChange}
@@ -310,11 +316,13 @@ export const ProfilePage = function (specialistData) {
               </Tabs>
             </AppBar>
             {serviceTypes.map((serviceType, index) => (
-              <TabPanel value={valueProduct}
+              <TabPanel
+                value={valueProduct}
                 margin="0"
                 padding="0"
                 index={index}
-                className={classes.table}>
+                className={classes.table}
+              >
                 {
                   <div>
                     {/* Service List */}
@@ -322,8 +330,12 @@ export const ProfilePage = function (specialistData) {
                       <Table aria-label="simple table">
                         <TableHead>
                           <TableRow>
-                            <TableCell align="center"><b>Service Name</b></TableCell>
-                            <TableCell align="center"><b>Fee($)</b></TableCell>
+                            <TableCell align="center">
+                              <b>Service Name</b>
+                            </TableCell>
+                            <TableCell align="center">
+                              <b>Fee($)</b>
+                            </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -367,7 +379,7 @@ export const ProfilePage = function (specialistData) {
         <Grid style={{ textAlign: "center" }}>
           <CircularProgress />
         </Grid>
-      </div >
+      </div>
     );
   }
 };

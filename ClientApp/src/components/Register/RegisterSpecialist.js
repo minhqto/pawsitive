@@ -175,6 +175,10 @@ const RegisterSpecialist = () => {
           console.error(err);
           setServerError(message);
         });
+    } else {
+      alert(
+        "Registration incomplete! Please ensure all required fields are filled out."
+      );
     }
   };
   const handleValidation = () => {
@@ -545,7 +549,7 @@ const RegisterSpecialist = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <b>About Me</b>
+                <b>About Me (Required)</b>
                 <TextareaAutosize
                   rowsMin={5}
                   rowsMax={6}

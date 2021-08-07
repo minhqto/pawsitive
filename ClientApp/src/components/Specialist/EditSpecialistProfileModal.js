@@ -55,8 +55,6 @@ function EditSpecialistProfileModal({
   ];
 
   const updateSpecialistInfo = () => {
-    console.log(specObj);
-
     if (validateInput()) {
       specObj.serviceTypes = serviceTypes;
       // make api call to update client information
@@ -275,7 +273,7 @@ function EditSpecialistProfileModal({
           )}
         </Grid>
         <Grid item xs={12}>
-          <h6>About Me</h6>
+          <h6>About Me (Required)</h6>
           <TextareaAutosize
             rowsMin={5}
             rowsMax={6}
