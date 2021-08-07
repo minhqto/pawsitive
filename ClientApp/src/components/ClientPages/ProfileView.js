@@ -27,10 +27,11 @@ import MUIRichTextEditor from "mui-rte";
 import { convertToRaw, convertFromRaw } from "draft-js";
 import { convertToHTML } from "draft-convert";
 import axios from "axios";
-import CircularProgress from '@material-ui/core/CircularProgress';
-import EditIcon from '@material-ui/icons/Edit';
-import FaceIcon from '@material-ui/icons/Face';
-import PetsIcon from '@material-ui/icons/Pets';
+import CircularProgress from "@material-ui/core/CircularProgress";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import FaceIcon from "@material-ui/icons/Face";
+import PetsIcon from "@material-ui/icons/Pets";
 
 const useStyles = makeStyles((theme) => ({
   imgContainer: {
@@ -121,6 +122,16 @@ export default function ProfileView() {
       .catch((e) => console.log(e));
   };
 
+  const deleteDog = (dogId) => {
+    axios
+      .delete(`/api/Client/clientDetail/deleteDog/${dogId}`)
+      .then((res) => {
+        alert("Delete dog successfully! Reloading...");
+        window.location.reload();
+      })
+      .catch((e) => console.log(e));
+  };
+
   // const getAboutMeHTML = () => {
   //   let contentState = convertFromRaw(JSON.parse(clientProfile.aboutMe)); // convert json string to content state object
   //   let html = convertToHTML(contentState); // convert content state object to html
@@ -129,15 +140,14 @@ export default function ProfileView() {
   // };
 
   if (clientProfile) {
-    const { imageUrl, firstName, lastName, email, phoneNumber, address } = clientProfile.client;
+    const { imageUrl, firstName, lastName, email, phoneNumber, address } =
+      clientProfile.client;
     const { aboutMe, dogs } = clientProfile;
 
     return (
       <Container>
-        <Grid mb={1} >
-          <h3>
-            My Profile
-          </h3>
+        <Grid mb={1}>
+          <h3>My Profile</h3>
         </Grid>
         <Box
           marginTop="20px"
@@ -148,12 +158,15 @@ export default function ProfileView() {
         >
           {/* Client Info */}
           <div className={classes.imgContainer}>
-            {imageUrl ? (<img
-              className={classes.clientImg}
-              src={imageUrl}
-              alt="Client Image"
-            />) : (
-              <FaceIcon color="disabled" style={{ fontSize: 150 }} />)}
+            {imageUrl ? (
+              <img
+                className={classes.clientImg}
+                src={imageUrl}
+                alt="Client Image"
+              />
+            ) : (
+              <FaceIcon color="disabled" style={{ fontSize: 150 }} />
+            )}
           </div>
           {firstName != null ? (
             <Grid
@@ -162,10 +175,9 @@ export default function ProfileView() {
               justifyContent="flex-start"
               alignItems="flex-start"
             >
-              <div
-                className={classes.clientName}
-                alignItems="center"
-              ><h3>{`${firstName} ${lastName}`}&nbsp;
+              <div className={classes.clientName} alignItems="center">
+                <h3>
+                  {`${firstName} ${lastName}`}&nbsp;
                   {isAuthorized && (
                     <IconButton
                       className={classes.editButton}
@@ -174,24 +186,33 @@ export default function ProfileView() {
                     >
                       <EditIcon />
                     </IconButton>
-                  )}</h3>
+                  )}
+                </h3>
               </div>
               <div className={classes.clientAddress}>
-                <b> Email: </b>{email} <br />
-                <b> Phone: </b>{phoneNumber} <br />
-                <b> Address: </b>{`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`} <br />
-                <b> About Me: </b>{aboutMe}<br />
+                <b> Email: </b>
+                {email} <br />
+                <b> Phone: </b>
+                {phoneNumber} <br />
+                <b> Address: </b>
+                {`${address.streetAddress}, ${address.city}, ${address.province} ${address.postalCode}, ${address.country}`}{" "}
+                <br />
+                <b> About Me: </b>
+                {aboutMe}
+                <br />
               </div>
               {/* <div
               dangerouslySetInnerHTML={{ __html: getAboutMeHTML() }}
               className={classes.clientBio}
             ></div> */}
-
             </Grid>
           ) : (
             <h5>
-              You don't have any profile to display.<br />
-              Please add your information.<br /><br />
+              You don't have any profile to display.
+              <br />
+              Please add your information.
+              <br />
+              <br />
               {isAuthorized && (
                 <Button
                   className={classes.editButton}
@@ -206,7 +227,6 @@ export default function ProfileView() {
               )}
             </h5>
           )}
-
 
           <Modal
             open={openClientProfileModal}
@@ -251,11 +271,15 @@ export default function ProfileView() {
           {dogs.map((dog, index) => (
             <Grid key={index} className={classes.dogItem} item xs={6}>
               <div className={classes.imgContainer}>
-                {dog.imageUrl ? (<img className={classes.dogImg} src={dog.imageUrl} />) : (
-                  <PetsIcon color="disabled" style={{ fontSize: 100 }} />)}
+                {dog.imageUrl ? (
+                  <img className={classes.dogImg} src={dog.imageUrl} />
+                ) : (
+                  <PetsIcon color="disabled" style={{ fontSize: 100 }} />
+                )}
               </div>
               <div>
-                <h5>{dog.dogName}&nbsp;
+                <h5>
+                  {dog.dogName}&nbsp;
                   <IconButton
                     className={classes.editButton}
                     size="small"
@@ -266,13 +290,47 @@ export default function ProfileView() {
                   >
                     <EditIcon />
                   </IconButton>
+                  <IconButton
+                    className={classes.editButton}
+                    size="small"
+                    onClick={() => {
+                      deleteDog(dog.id);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </h5>
                 <p>
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Breed: {dog.dogBreed}<br />
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Sex: {dog.dogSex}<br />
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Weight: {dog.dogWeight}lbs<br />
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> Birth Date:{dog.dogBirthDate}<br />
-                  <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> About: {dog.aboutDog}</p>
+                  <PetsIcon
+                    color="action"
+                    style={{ fontSize: 15, color: "#89CFF0" }}
+                  />{" "}
+                  Breed: {dog.dogBreed}
+                  <br />
+                  <PetsIcon
+                    color="action"
+                    style={{ fontSize: 15, color: "#89CFF0" }}
+                  />{" "}
+                  Sex: {dog.dogSex}
+                  <br />
+                  <PetsIcon
+                    color="action"
+                    style={{ fontSize: 15, color: "#89CFF0" }}
+                  />{" "}
+                  Weight: {dog.dogWeight}lbs
+                  <br />
+                  <PetsIcon
+                    color="action"
+                    style={{ fontSize: 15, color: "#89CFF0" }}
+                  />{" "}
+                  Birth Date:{dog.dogBirthDate}
+                  <br />
+                  <PetsIcon
+                    color="action"
+                    style={{ fontSize: 15, color: "#89CFF0" }}
+                  />{" "}
+                  About: {dog.aboutDog}
+                </p>
               </div>
               <Modal
                 open={openEditDogModal}
@@ -290,8 +348,10 @@ export default function ProfileView() {
     );
   } else {
     // Show loading component
-    return <div className={classes.root}>
-      <CircularProgress />
-    </div>;
+    return (
+      <div className={classes.root}>
+        <CircularProgress />
+      </div>
+    );
   }
 }
