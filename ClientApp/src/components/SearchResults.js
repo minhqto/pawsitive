@@ -5,7 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import SearchIcon from "@material-ui/icons/Search";
+import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -269,7 +269,7 @@ const SearchResults = (props) => {
             onSearchEnter();
           }}
         >
-          <SearchIcon />
+          <LocationSearchingIcon />
         </IconButton>
       </Paper>
       <br />
