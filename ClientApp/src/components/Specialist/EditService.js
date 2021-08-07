@@ -69,17 +69,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-
 const headCells = [
   { id: "name", numeric: false, disablePadding: true, label: "Service Name" },
   { id: "price", numeric: true, disablePadding: false, label: "Fee ($)" },
@@ -309,41 +298,6 @@ const EditService = () => {
     return true;
   };
 
-  // Material UI Table
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    let newSelected = [...selected];
-    if (event.target.checked) {
-      services
-        .filter(
-          (s) => s.serviceType.serviceTypeName == serviceType.serviceTypeName
-        )
-        .map((n) => n.id)
-        .forEach((serviceId) => {
-          if (!selected.includes(serviceId)) {
-            newSelected.push(serviceId);
-          }
-        });
-
-      setSelected(newSelected);
-    } else {
-      services
-        .filter(
-          (s) => s.serviceType.serviceTypeName == serviceType.serviceTypeName
-        )
-        .map((n) => n.id)
-        .forEach((serviceId) => {
-          const index = selected.indexOf(serviceId);
-          newSelected.splice(index, 1);
-        });
-    }
-  };
-
   const handleClick = (event, service) => {
     let newSelected = [...selected];
     if (selected.includes(service.id)) {
@@ -355,15 +309,6 @@ const EditService = () => {
     }
 
     setSelected(newSelected);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   const isSelected = (service) => selected.includes(service.id);
