@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     width: "100%",
     marginBottom: theme.spacing(1),
+
   },
 
   submit: {
@@ -48,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
   margin: {
     margin: theme.spacing(1),
+    fontWeight: "bold",
   },
 
   table: {
@@ -67,32 +69,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
 const headCells = [
   { id: "name", numeric: false, disablePadding: true, label: "Service Name" },
   { id: "price", numeric: true, disablePadding: false, label: "Fee ($)" },
@@ -108,9 +84,6 @@ function EnhancedTableHead(props) {
     rowCount,
     onRequestSort,
   } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
 
   return (
     <TableHead>
@@ -128,19 +101,11 @@ function EnhancedTableHead(props) {
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "normal"}
-            sortDirection={orderBy === headCell.id ? order : false}
+            style={{ fontWeight: "bold" }}
           >
             <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </span>
-              ) : null}
             </TableSortLabel>
           </TableCell>
         ))}
@@ -204,7 +169,7 @@ const EnhancedTableToolbar = (props) => {
         ) : (
           <Typography
             className={classes.title}
-            variant="h6"
+            variant="subtitle1"
             id="tableTitle"
             component="div"
             textAlign="left"
@@ -333,41 +298,6 @@ const EditService = () => {
     return true;
   };
 
-  // Material UI Table
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    let newSelected = [...selected];
-    if (event.target.checked) {
-      services
-        .filter(
-          (s) => s.serviceType.serviceTypeName == serviceType.serviceTypeName
-        )
-        .map((n) => n.id)
-        .forEach((serviceId) => {
-          if (!selected.includes(serviceId)) {
-            newSelected.push(serviceId);
-          }
-        });
-
-      setSelected(newSelected);
-    } else {
-      services
-        .filter(
-          (s) => s.serviceType.serviceTypeName == serviceType.serviceTypeName
-        )
-        .map((n) => n.id)
-        .forEach((serviceId) => {
-          const index = selected.indexOf(serviceId);
-          newSelected.splice(index, 1);
-        });
-    }
-  };
-
   const handleClick = (event, service) => {
     let newSelected = [...selected];
     if (selected.includes(service.id)) {
@@ -379,15 +309,6 @@ const EditService = () => {
     }
 
     setSelected(newSelected);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   const isSelected = (service) => selected.includes(service.id);
@@ -458,7 +379,7 @@ const EditService = () => {
                       />
                     ))
                   ) : (
-                    <CircularProgress />
+                    null
                   )}
                 </Tabs>
               </Paper>
@@ -473,10 +394,6 @@ const EditService = () => {
                       <EnhancedTableHead
                         classes={classes}
                         numSelected={selected.length}
-                        order={order}
-                        orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
-                        onRequestSort={handleRequestSort}
                         rowCount={
                           services.filter(
                             (s) =>
@@ -534,21 +451,6 @@ const EditService = () => {
                     </Table>
                   </TableContainer>
 
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={
-                      services.filter(
-                        (s) =>
-                          s.serviceType.serviceTypeName ==
-                          serviceType.serviceTypeName
-                      ).length
-                    }
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
                   <EnhancedTableToolbar
                     numSelected={selected.length}
                     onDeleteClick={(e) => deleteOnClick(e)}
