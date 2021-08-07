@@ -142,7 +142,7 @@ const ServicePage = (specialistData) => {
             <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Address: </b>
             {specialist.address.streetAddress}, {specialist.address.city}, {specialist.address.province}, {specialist.address.postalCode}<br />
             <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>Home Visit available? </b>
-            {specialistProfile.provideHomeVisitService ? (<Typography>&nbsp;&nbsp; : Yes, within {specialist.radius}km </Typography>)
+            {specialistProfile.provideHomeVisitService ? (<Typography>&nbsp;&nbsp; : Yes, within {specialistProfile.radius}km </Typography>)
               : (<Typography>&nbsp;&nbsp; : No</Typography>)}<br />
             <PetsIcon color="action" style={{ fontSize: 15, color: "#89CFF0" }} /> <b>About Me:</b><br />
             <Typography
