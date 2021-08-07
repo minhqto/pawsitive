@@ -115,7 +115,7 @@ const AddDogModal = ({ cancelClick, clientId }) => {
             label="Birth Date"
             type="date"
             variant="outlined"
-            InputLabelProps={{ shrink: true, required: true }}
+            InputLabelProps={{ shrink: true }}
             onChange={(e) => {
               setDogBirthDate(e.target.value);
             }}

@@ -140,6 +140,7 @@ const EditDogModal = ({ cancelClick, dog }) => {
             fullWidth={true}
             label="Name"
             defaultValue={dogName}
+            InputLabelProps={{ required: true }}
             variant="outlined"
             onChange={(e) => {
               setDogName(e.target.value);
@@ -177,7 +178,7 @@ const EditDogModal = ({ cancelClick, dog }) => {
             label="Birth Date"
             type="date"
             variant="outlined"
-            InputLabelProps={{ shrink: true, required: true }}
+            InputLabelProps={{ shrink: true }}
             defaultValue={new Date(dogBirthDate).toISOString().split("T")[0]}
             onChange={(e) => {
               setDogBirthDate(e.target.value);
