@@ -49,8 +49,8 @@ function EditSpecialistProfileModal({
       label: "Dog Food",
     },
     {
-      name: "Therapist",
-      label: "Behavioural Therapy",
+      name: "Therapy",
+      label: "Therapy",
     },
   ];
 

@@ -56,8 +56,8 @@ const SERVICE_TYPES = [
     label: "Dog Food",
   },
   {
-    name: "Therapist",
-    label: "Behavioural Therapy",
+    name: "Therapy",
+    label: "Therapy",
   },
   // {
   //   name: "daycare",
