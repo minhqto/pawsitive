@@ -549,12 +549,13 @@ const RegisterSpecialist = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <b>About Me (Required)</b>
+                About Me
                 <TextareaAutosize
                   rowsMin={5}
                   rowsMax={6}
+                  InputLabelProps={{ required: true }}
                   style={{ width: "100%" }}
-                  placeholder="About me (Certification, experience, service detail...)"
+                  placeholder="Tell us about your business (Certification, experience, service detail...)"
                   InputLabelProps={{ required: true }}
                   name="aboutMe"
                   onChange={(e) => setAboutMe(e.target.value)}

@@ -126,6 +126,7 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
             label="Email"
             defaultValue={email}
             variant="outlined"
+            InputLabelProps={{ required: true }}
             onChange={(e) =>
               setClientObj({
                 ...clientObj,
