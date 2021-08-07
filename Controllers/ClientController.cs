@@ -93,5 +93,27 @@ namespace pawsitive.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { error = e.Message });
             }
         }
+
+        // Edit dog information based on dog id in the req body
+        [HttpDelete]
+        [Route("clientDetail/deleteDog/{dogId}")]
+        public IActionResult EditDog([FromRoute] int dogId)
+        {
+            try
+            {
+                dm.deleteDogById(dogId);
+
+                return Ok(new
+                {
+                    message = "Dog deleted successfully",
+                });
+
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = e.Message });
+            }
+        }
     }
 }

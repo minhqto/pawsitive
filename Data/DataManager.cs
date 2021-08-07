@@ -383,5 +383,15 @@ namespace pawsitive.Data
             await userManager.UpdateAsync(user);
             return user;
         }
+
+        public void deleteDogById(int dogId)
+        {
+            var dog = dtx.Dog.Find(dogId);
+            if (dog == null) return;
+            dtx.Dog.Remove(dog);
+            dtx.SaveChanges();
+            return;
+        }
+
     }
 }
