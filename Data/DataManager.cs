@@ -42,7 +42,7 @@ namespace pawsitive.Data
 
             List<string> serviceTypesString = new List<string>()
             {
-                "Training", "Grooming", "Therapist", "Pet Food"
+                "Training", "Grooming", "Therapy", "Pet Food"
             };
 
             // Convert the list of service type (string) into service type (entity model)
