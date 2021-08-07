@@ -323,7 +323,7 @@ export default function ProfileView() {
                     color="action"
                     style={{ fontSize: 15, color: "#89CFF0" }}
                   />{" "}
-                  Birth Date:{dog.dogBirthDate}
+                  Birth Date: {dog.birthDate.substring(0, dog.birthDate.indexOf('T'))}
                   <br />
                   <PetsIcon
                     color="action"
