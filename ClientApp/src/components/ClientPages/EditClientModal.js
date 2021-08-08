@@ -6,7 +6,7 @@ import {
   TextField,
   TextareaAutosize,
 } from "@material-ui/core";
-import SaveIcon from '@material-ui/icons/Save';
+import SaveIcon from "@material-ui/icons/Save";
 
 // import MUIRichTextEditor from "mui-rte";
 // import { convertToRaw, convertFromRaw } from "draft-js";
@@ -33,6 +33,8 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
   const { aboutMe } = clientProfile;
 
   const classes = useStyles();
+
+  const [emailErr, setEmailErr] = useState("");
   const [clientObj, setClientObj] = useState({
     firstName: firstName,
     lastName: lastName,
@@ -59,7 +61,7 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
   // };
 
   const updateClientInfo = () => {
-    console.log(clientObj);
+    if (!isValidInput()) return;
 
     // make api call to update client information
     axios
@@ -69,6 +71,14 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
         window.location.reload();
       })
       .catch((e) => console.error(e));
+  };
+
+  const isValidInput = () => {
+    if (clientObj.email == "") {
+      setEmailErr("Email must not be empty");
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -84,12 +94,12 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
             label="First Name"
             defaultValue={firstName}
             variant="outlined"
-            onChange={(e) =>
+            onChange={(e) => {
               setClientObj({
                 ...clientObj,
                 firstName: e.target.value,
-              })
-            }
+              });
+            }}
           />
         </Grid>
         <Grid item xs={6}>
@@ -127,12 +137,15 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
             defaultValue={email}
             variant="outlined"
             InputLabelProps={{ required: true }}
-            onChange={(e) =>
+            onChange={(e) => {
               setClientObj({
                 ...clientObj,
                 email: e.target.value,
-              })
-            }
+              });
+              setEmailErr("");
+            }}
+            error={emailErr != ""}
+            helperText={emailErr}
           />
         </Grid>
         <Grid item xs={12}>
@@ -149,7 +162,6 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
             }
           />
         </Grid>
-
 
         <Grid item xs={6}>
           <TextField
@@ -230,9 +242,7 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
           />
         </Grid>
         <Grid item xs={12} style={{ textAlign: "center" }}>
-          <Button
-            onClick={cancelClick}
-            variant="contained">
+          <Button onClick={cancelClick} variant="contained">
             Cancel
           </Button>
           <Button
@@ -240,7 +250,8 @@ const EditClientModal = ({ cancelClick, clientProfile }) => {
             variant="contained"
             color="primary"
             startIcon={<SaveIcon />}
-            onClick={updateClientInfo}>
+            onClick={updateClientInfo}
+          >
             Save
           </Button>
         </Grid>
