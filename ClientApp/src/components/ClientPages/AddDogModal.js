@@ -11,7 +11,7 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import axios from "axios";
-import SaveIcon from '@material-ui/icons/Save';
+import SaveIcon from "@material-ui/icons/Save";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -27,18 +27,23 @@ const useStyles = makeStyles((theme) => ({
 
 const AddDogModal = ({ cancelClick, clientId }) => {
   const classes = useStyles();
+  const [dogNameErr, setDogNameErr] = useState("");
   const [dogName, setDogName] = useState("");
   const [dogAge, setDogAge] = useState(0);
   const [dogSex, setDogSex] = useState("");
   const [dogBreed, setDogBreed] = useState("");
   const [dogWeight, setDogWeight] = useState(0);
-  const [dogBirthDate, setDogBirthDate] = useState(Date.now());
+  const [dogBirthDate, setDogBirthDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [dogBiteHistory, setDogBiteHistory] = useState(false);
   const [dogIsVaccinated, setDogIsVaccinated] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [aboutDog, setAboutDog] = useState("");
 
   const addNewDog = () => {
+    if (!isValidInput()) return;
+
     const dogObj = {
       dogName: dogName,
       dogAge: dogAge,
@@ -65,6 +70,15 @@ const AddDogModal = ({ cancelClick, clientId }) => {
       );
   };
 
+  const isValidInput = () => {
+    if (dogName == "") {
+      setDogNameErr("Dog name must not be empty");
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <div className={classes.paper}>
       <Grid container spacing={3}>
@@ -81,7 +95,10 @@ const AddDogModal = ({ cancelClick, clientId }) => {
             InputLabelProps={{ required: true }}
             onChange={(e) => {
               setDogName(e.target.value);
+              setDogNameErr("");
             }}
+            error={dogNameErr != ""}
+            helperText={dogNameErr}
           />
         </Grid>
         <Grid item xs={6}>
@@ -185,9 +202,7 @@ const AddDogModal = ({ cancelClick, clientId }) => {
         </Grid>
 
         <Grid item xs={12} style={{ textAlign: "center" }}>
-          <Button
-            onClick={cancelClick}
-            variant="contained">
+          <Button onClick={cancelClick} variant="contained">
             Cancel
           </Button>
           <Button
@@ -195,11 +210,11 @@ const AddDogModal = ({ cancelClick, clientId }) => {
             variant="contained"
             color="primary"
             startIcon={<SaveIcon />}
-            onClick={addNewDog}>
+            onClick={addNewDog}
+          >
             Save
           </Button>
         </Grid>
-
       </Grid>
     </div>
   );
