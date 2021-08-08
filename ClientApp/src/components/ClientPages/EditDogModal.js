@@ -24,7 +24,7 @@ import MUIRichTextEditor from "mui-rte";
 import { convertToRaw, convertFromRaw } from "draft-js";
 import { convertToHTML } from "draft-convert";
 import axios from "axios";
-import SaveIcon from '@material-ui/icons/Save';
+import SaveIcon from "@material-ui/icons/Save";
 
 const useStyles = makeStyles((theme) => ({
   imgContainer: {
@@ -86,6 +86,7 @@ const EditDogModal = ({ cancelClick, dog }) => {
   console.log(dog);
   const classes = useStyles();
   const [dogName, setDogName] = useState(dog.dogName);
+  const [dogNameErr, setDogNameErr] = useState("");
   const [dogSex, setDogSex] = useState(dog.dogSex);
   const [dogBreed, setDogBreed] = useState(dog.dogBreed);
   const [dogWeight, setDogWeight] = useState(dog.dogWeight);
@@ -106,6 +107,8 @@ const EditDogModal = ({ cancelClick, dog }) => {
   };
 
   const editDog = () => {
+    if (!isValidInput()) return;
+
     const dogObj = {
       dogName: dogName,
       dogSex: dogSex,
@@ -128,6 +131,15 @@ const EditDogModal = ({ cancelClick, dog }) => {
       .catch((e) => console.log(e));
   };
 
+  const isValidInput = () => {
+    if (dogName == "") {
+      setDogNameErr("Dog name must not be empty");
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <div className={classes.paper}>
       <Grid container spacing={3}>
@@ -142,8 +154,11 @@ const EditDogModal = ({ cancelClick, dog }) => {
             defaultValue={dogName}
             InputLabelProps={{ required: true }}
             variant="outlined"
+            error={dogNameErr != ""}
+            helperText={dogNameErr}
             onChange={(e) => {
               setDogName(e.target.value);
+              setDogNameErr("");
             }}
           />
         </Grid>
@@ -251,9 +266,7 @@ const EditDogModal = ({ cancelClick, dog }) => {
         </Grid>
 
         <Grid item xs={12} style={{ textAlign: "center" }}>
-          <Button
-            onClick={cancelClick}
-            variant="contained">
+          <Button onClick={cancelClick} variant="contained">
             Cancel
           </Button>
           <Button
@@ -261,7 +274,8 @@ const EditDogModal = ({ cancelClick, dog }) => {
             variant="contained"
             color="primary"
             startIcon={<SaveIcon />}
-            onClick={editDog}>
+            onClick={editDog}
+          >
             Save
           </Button>
         </Grid>
