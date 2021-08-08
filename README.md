@@ -63,6 +63,7 @@ docker run -d --name pawsitive_app -p 80:80 qvnguyen/pawsitive:1.0
 ```
 
 ### Project Documents
+ * [Final SRS-PRJ566 - Winter 2021_Team9.docx](https://github.com/minhqto/pawsitive/files/6950086/Final.SRS-PRJ566.-.Winter.2021_Team9.docx)
  * [WBS Implementation Schedule.pdf](https://github.com/minhqto/pawsitive/files/6581437/WBS.Implementation.Schedule.pdf)
  * [Pawsitive Mockup.pdf](https://github.com/minhqto/pawsitive/files/6592879/Pawsitive.Mockup.pdf)
  * For new/updated pages in mock-up https://balsamiq.cloud/s873k0o/pz2325g/r3B12
