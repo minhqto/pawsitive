@@ -5,7 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
+import LocationSearchingIcon from "@material-ui/icons/LocationSearching";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -76,7 +76,7 @@ const SearchResults = (props) => {
       ) {
         localStorage.getItem("city") != null &&
           setUsers(
-            result.data.filter((user) =>
+            sortUser(result.data).filter((user) =>
               localStorage
                 .getItem("city")
                 .toLocaleLowerCase()
@@ -85,10 +85,10 @@ const SearchResults = (props) => {
           );
       }
 
-      setUsers(result.data);
-      setAxResult(result.data);
-      getLocation(result.data);
-      props.parentCallback(result.data);
+      setUsers(sortUser(result.data));
+      setAxResult(sortUser(result.data));
+      getLocation(sortUser(result.data));
+      props.parentCallback(sortUser(result.data));
     });
   }, []);
 
@@ -97,7 +97,7 @@ const SearchResults = (props) => {
   };
 
   const ShowNoResult = function () {
-    return users.filter((user) =>
+    return sortUser(users).filter((user) =>
       user.address.city.toLowerCase().includes(searchTerm.toLocaleLowerCase())
     ).length == 0 ? (
       <h4 id="no_value">
@@ -141,7 +141,7 @@ const SearchResults = (props) => {
     reverseGeocoding(
       position.coords.latitude,
       position.coords.longitude,
-      users
+      sortUser(users)
     );
   }
 
@@ -151,7 +151,7 @@ const SearchResults = (props) => {
       localStorage.removeItem("permissionLat");
       localStorage.removeItem("permissionLng");
       permissionDenied = true;
-      loadMap(users, permissionDenied, permissionLat, permissionLng);
+      loadMap(sortUser(users), permissionDenied, permissionLat, permissionLng);
     } else {
       console.log(error);
     }
@@ -193,7 +193,7 @@ const SearchResults = (props) => {
               ).address.city
         );
         loadMap(
-          users,
+          sortUser(users),
           permissionDenied,
           permissionLat,
           permissionLng,
@@ -204,6 +204,22 @@ const SearchResults = (props) => {
       .catch(function (error) {
         console.error(error);
       });
+  }
+
+  function sortUser(users) {
+    return users.sort(function (a, b) {
+      var nameA = a.firstName.toUpperCase(); // ignore upper and lowercase
+      var nameB = b.firstName.toUpperCase(); // ignore upper and lowercase
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      // names must be equal
+      return 0;
+    });
   }
 
   const onSearchEnter = () => {
@@ -231,7 +247,7 @@ const SearchResults = (props) => {
       setSearchTerm(tempSearchValue);
     }
     loadMap(
-      (test = axResult.filter((user) =>
+      (test = sortUser(axResult).filter((user) =>
         user.address.city
           .toLowerCase()
           .includes(tempSearchValue.toLocaleLowerCase())
@@ -276,7 +292,7 @@ const SearchResults = (props) => {
       <h2>Search Results</h2>
       <ShowNoResult />
       {users.length != 0 ? (
-        users
+        sortUser(users)
           .filter((user) => {
             if (searchTerm == "") return user;
             else
