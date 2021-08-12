@@ -70,13 +70,17 @@ const SearchResults = (props) => {
   //const [items, setItems] = useState([]);
   useEffect(() => {
     axios.get("/api/Specialist/allSpecialists").then((result) => {
+      
+      var sortedUser = sortUser(result.data);
+      console.log(sortedUser);
+      
       if (
         localStorage.getItem("permissionDenied") != null &&
         localStorage.getItem("permissionDenied") == "false"
       ) {
         localStorage.getItem("city") != null &&
           setUsers(
-            sortUser(result.data).filter((user) =>
+            sortedUser.filter((user) =>
               localStorage
                 .getItem("city")
                 .toLocaleLowerCase()
@@ -85,10 +89,10 @@ const SearchResults = (props) => {
           );
       }
 
-      setUsers(sortUser(result.data));
-      setAxResult(sortUser(result.data));
-      getLocation(sortUser(result.data));
-      props.parentCallback(sortUser(result.data));
+      setUsers(sortedUser);
+      setAxResult(sortedUser);
+      getLocation(sortedUser);
+      props.parentCallback(sortedUser);
     });
   }, []);
 
@@ -97,7 +101,7 @@ const SearchResults = (props) => {
   };
 
   const ShowNoResult = function () {
-    return sortUser(users).filter((user) =>
+    return users.filter((user) =>
       user.address.city.toLowerCase().includes(searchTerm.toLocaleLowerCase())
     ).length == 0 ? (
       <h4 id="no_value">
@@ -141,7 +145,7 @@ const SearchResults = (props) => {
     reverseGeocoding(
       position.coords.latitude,
       position.coords.longitude,
-      sortUser(users)
+      users
     );
   }
 
@@ -151,7 +155,7 @@ const SearchResults = (props) => {
       localStorage.removeItem("permissionLat");
       localStorage.removeItem("permissionLng");
       permissionDenied = true;
-      loadMap(sortUser(users), permissionDenied, permissionLat, permissionLng);
+      loadMap(users, permissionDenied, permissionLat, permissionLng);
     } else {
       console.log(error);
     }
@@ -193,7 +197,7 @@ const SearchResults = (props) => {
               ).address.city
         );
         loadMap(
-          sortUser(users),
+          users,
           permissionDenied,
           permissionLat,
           permissionLng,
@@ -247,7 +251,7 @@ const SearchResults = (props) => {
       setSearchTerm(tempSearchValue);
     }
     loadMap(
-      (test = sortUser(axResult).filter((user) =>
+      (test = axResult.filter((user) =>
         user.address.city
           .toLowerCase()
           .includes(tempSearchValue.toLocaleLowerCase())
@@ -292,7 +296,7 @@ const SearchResults = (props) => {
       <h2>Search Results</h2>
       <ShowNoResult />
       {users.length != 0 ? (
-        sortUser(users)
+        users
           .filter((user) => {
             if (searchTerm == "") return user;
             else
