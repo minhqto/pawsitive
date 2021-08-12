@@ -5,7 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
+import LocationSearchingIcon from "@material-ui/icons/LocationSearching";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -70,13 +70,17 @@ const SearchResults = (props) => {
   //const [items, setItems] = useState([]);
   useEffect(() => {
     axios.get("/api/Specialist/allSpecialists").then((result) => {
+      
+      var sortedUser = sortUser(result.data);
+      console.log(sortedUser);
+      
       if (
         localStorage.getItem("permissionDenied") != null &&
         localStorage.getItem("permissionDenied") == "false"
       ) {
         localStorage.getItem("city") != null &&
           setUsers(
-            result.data.filter((user) =>
+            sortedUser.filter((user) =>
               localStorage
                 .getItem("city")
                 .toLocaleLowerCase()
@@ -85,10 +89,10 @@ const SearchResults = (props) => {
           );
       }
 
-      setUsers(result.data);
-      setAxResult(result.data);
-      getLocation(result.data);
-      props.parentCallback(result.data);
+      setUsers(sortedUser);
+      setAxResult(sortedUser);
+      getLocation(sortedUser);
+      props.parentCallback(sortedUser);
     });
   }, []);
 
@@ -204,6 +208,22 @@ const SearchResults = (props) => {
       .catch(function (error) {
         console.error(error);
       });
+  }
+
+  function sortUser(users) {
+    return users.sort(function (a, b) {
+      var nameA = a.firstName.toUpperCase(); // ignore upper and lowercase
+      var nameB = b.firstName.toUpperCase(); // ignore upper and lowercase
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      // names must be equal
+      return 0;
+    });
   }
 
   const onSearchEnter = () => {

@@ -135,6 +135,8 @@ export function loadMap(
             user.firstName + " " + user.lastName,
           ]);
 
+          sortUser(tourStops);
+
           if (search == true) {
             permissionLat = tourStops[0][0].lat;
             permissionLng = tourStops[0][0].lng;
@@ -204,6 +206,22 @@ export function loadMap(
         lng: -96.4835,
       },
       zoom: 3.5,
+    });
+  }
+
+  function sortUser(users) {
+    return users.sort(function (a, b) {
+      var nameA = a[1].toUpperCase(); // ignore upper and lowercase
+      var nameB = b[1].toUpperCase(); // ignore upper and lowercase
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      // names must be equal
+      return 0;
     });
   }
 }
