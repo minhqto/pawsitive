@@ -67,7 +67,6 @@ const SearchResults = (props) => {
   var permissionLat = 0;
   var permissionLng = 0;
   var test = [];
-  //const [items, setItems] = useState([]);
   useEffect(() => {
     axios.get("/api/Specialist/allSpecialists").then((result) => {
       
@@ -172,8 +171,8 @@ const SearchResults = (props) => {
         polygon_threshold: "0.0",
       },
       headers: {
-        "x-rapidapi-key": "b45077c411msh3b11fddee5a5e95p114864jsn3d68c616da31",
-        "x-rapidapi-host": "forward-reverse-geocoding.p.rapidapi.com",
+        "x-rapidapi-key": "", //need key from RapidApi if wanted to use this api
+        "x-rapidapi-host": "", //need host from RapidApi if wanted to use this api
       },
     };
 
@@ -228,11 +227,6 @@ const SearchResults = (props) => {
 
   const onSearchEnter = () => {
     if (localStorage.getItem("permissionDenied") == "false") {
-      /*var searchResult = axResult.find((user) =>
-      user.address.city
-        .toLowerCase()
-        .includes(tempSearchValue.toLowerCase())
-    ) == undefined ? ;*/
 
       setSearchTerm(
         axResult.find((user) =>
