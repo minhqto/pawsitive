@@ -46,24 +46,6 @@ export function loadMap(
     version: "weekly",
   });
 
-  /*var options = {
-    method: "GET",
-    url: "https://forward-reverse-geocoding.p.rapidapi.com/v1/forward",
-    params: {
-      street: "", //'12 West 4th Street',
-      city: "", //'New York City',
-      state: "", //'NY',
-      postalcode: "", //"10012",
-      country: "", //"USA",
-      "accept-language": "en",
-      polygon_threshold: "0.0",
-    },
-    headers: {
-      "x-rapidapi-key": "b45077c411msh3b11fddee5a5e95p114864jsn3d68c616da31",
-      "x-rapidapi-host": "forward-reverse-geocoding.p.rapidapi.com",
-    },
-  };*/
-
   var options = {
     method: "GET",
     url: "https://geocode-worldwide.p.rapidapi.com/search.php",
@@ -74,19 +56,10 @@ export function loadMap(
       limit: "5",
     },
     headers: {
-      "x-rapidapi-key": "b45077c411msh3b11fddee5a5e95p114864jsn3d68c616da31",
-      "x-rapidapi-host": "geocode-worldwide.p.rapidapi.com",
+      "x-rapidapi-key": "", //need key from RapidApi if wanted to use this api
+      "x-rapidapi-host": "", //need host from RapidApi if wanted to use this api
     },
   };
-
-  /*options.params.address =
-        user.address.streetAddress +
-        ", " +
-        user.address.city +
-        ", " +
-        user.address.province +
-        ", " +
-        user.address.country;*/
 
   if (users.length > 0) {
     if (
@@ -109,12 +82,6 @@ export function loadMap(
       );
 
     users.forEach((user) => {
-      /*console.log(user);
-      console.log(user.address.postalCode.replace(" ", ""));
-      options.params.street = user.address.streetAddress;
-      options.params.city = user.address.city;
-      options.params.state = user.address.province;
-      options.params.country = user.address.country;*/
       options.params.q =
         user.address.streetAddress +
         ", " +
@@ -170,7 +137,7 @@ export function loadMap(
                           ? permissionLng
                           : parseFloat(localStorage.getItem("permissionLng")) ||
                             permissionLng,
-                    }, //tourStops[0][0],
+                    },
                     zoom:
                       !search &&
                       (localStorage.getItem("permissionDenied") == null ||
