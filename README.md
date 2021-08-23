@@ -1,4 +1,4 @@
-[Pawsitive_Url.xlsx](https://github.com/minhqto/pawsitive/files/6665344/Pawsitive_Url.xlsx)
+
 # Welcome to Pawsitive
 
 <!-- ABOUT THE PROJECT -->
@@ -69,5 +69,6 @@ docker run -d --name pawsitive_app -p 80:80 qvnguyen/pawsitive:1.0
  * For new/updated pages in mock-up https://balsamiq.cloud/s873k0o/pz2325g/r3B12
  * [Pawsitive_Url.xlsx](https://github.com/minhqto/pawsitive/files/6665864/Pawsitive_Url.xlsx)
  * [Testplan_Team17.xlsx](https://github.com/minhqto/pawsitive/files/6827400/Testplan_Team17.xlsx)
+ * [ERD PRJ566 - Team 9.pdf](https://github.com/minhqto/pawsitive/files/7034859/ERD.PRJ566.-.Team.9.pdf)
 
 
